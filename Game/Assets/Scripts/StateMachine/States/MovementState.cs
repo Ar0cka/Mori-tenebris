@@ -38,7 +38,7 @@ public class MovementState : State
     public override void PhysicUpdate()
     {
         base.PhysicUpdate();
-        Move(_playerScr.PlayerData.walkSpeed);
+        Move(_playerScr.StaticPlayerStats.walkSpeed);
     }
 
     public override void SetAnimation()

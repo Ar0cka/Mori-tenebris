@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f2a61eaffd44783ae231f4b80685531, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: 
-  _playerData:
-    MaxHitPoints: 100
-    MaxStamina: 100
-    Damage: 5
+  playerDataStats:
+  - nameState: HitPoint
+    currentStatLevel: 1
+    currentCountStats: 100
+    maxLevelStats: 99
+    countUpgradeStats: 10
+  playerDefaultStat:
     walkSpeed: 4
-    runSpeed: 0
