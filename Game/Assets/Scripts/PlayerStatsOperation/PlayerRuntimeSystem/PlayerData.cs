@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using DefaultNamespace.PlayerStatsOperation.IPlayerData;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace DefaultNamespace.PlayerStatsOperation
 {
@@ -16,18 +19,40 @@ namespace DefaultNamespace.PlayerStatsOperation
         
         public PlayerDataDontChangableStats GetPlayerDataStaticStats() => playerDataDontChangableStats;
 
+        private string filePath;
+        
         public void Initialize()
         {
-            playerDataDontChangableStats = _playerScrObj.StaticPlayerStats;
+            filePath = Path.Combine(Application.persistentDataPath, "playerStats.json");
             
-            foreach (var playerData in _playerScrObj.PlayerDataStats)
+            playerDataDontChangableStats = _playerScrObj.StaticPlayerStats;
+            PlayerDataStatsList.Clear();
+
+            var statList = LoadStat();
+
+            if (statList != null && statList.Count != 0)
             {
-                playerDataStats.Add(playerData.Clone());
+                playerDataStats = statList;
+            }
+            else
+            {
+                foreach (var playerData in _playerScrObj.PlayerDataStats)
+                {
+                    playerDataStats.Add(playerData.Clone());
+                }
             }
 
             foreach (var stat in playerDataStats)
             {
-                PlayerDataStatsList.Add(stat.nameState, stat);
+                if (!PlayerDataStatsList.ContainsKey(stat.nameState))
+                {
+                    PlayerDataStatsList.Add(stat.nameState, stat);
+                }
+                else
+                {
+                    Debug.LogError("Duplicate stat");
+                }
+               
             }
         }
 
@@ -40,5 +65,57 @@ namespace DefaultNamespace.PlayerStatsOperation
 
             return null;
         }
+
+        #region SaveRuntimeStatsSystem
+
+        public void SaveStat()
+        {
+            try
+            {
+                var listInSave = new ContainerInList<PlayerDataStats> { dataListInSave = playerDataStats };
+                string data = JsonUtility.ToJson(listInSave, true);
+                File.WriteAllText(filePath, data);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+                throw;
+            }
+        }
+
+        private List<PlayerDataStats> LoadStat()
+        {
+            try
+            {
+                if (!File.Exists(filePath))
+                {
+                    Debug.LogError("Not fiend path");
+                    return null;
+                }
+                
+                string dataReadText = File.ReadAllText(filePath);
+                var loadDataContainer = JsonUtility.FromJson<ContainerInList<PlayerDataStats>>(dataReadText);
+
+                return loadDataContainer?.dataListInSave;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+                throw;
+            }
+        }
+
+        private void OnApplicationQuit()
+        {
+            SaveStat();
+        }
+
+        #endregion
+    }
+
+    [Serializable]
+    public class ContainerInList<T>
+    {
+        public List<T> dataListInSave;
     }
 }
