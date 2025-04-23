@@ -1,18 +1,18 @@
 using System;
 using DefaultNamespace.Enums;
-using DefaultNamespace.Events;
 using DefaultNamespace.PlayerStatsOperation.IPlayerData;
 using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
+using DefaultNamespace.PlayerStatsOperation.StatUpgrade;
 using UnityEngine;
 using Zenject;
 
 namespace DefaultNamespace.PlayerStatsOperation.StatSystem
 {
-    public class Health : ITakeDamage, IRegeneration, IGetSubscribeInDieEvent
+    public class Health : ITakeDamage, IRegeneration, IDisposable
     {
         private readonly IGetPlayerStat _getPlayerStat;
+        private readonly IUpgradeStat _upgradeStat;
         private readonly Armour _armour;
-        private readonly string _statName;
         
         private int _maxHitPoint;
         public int CurrentHitPoint { get; private set; }
@@ -20,19 +20,16 @@ namespace DefaultNamespace.PlayerStatsOperation.StatSystem
         public event Action dieEvent;
 
         [Inject]
-        public Health(IGetPlayerStat getPlayerStat, Armour armour, string statName)
+        public Health(IGetPlayerStat getPlayerStat, Armour armour, IUpgradeStat upgradeStat)
         {
             _armour = armour;
             _getPlayerStat = getPlayerStat;
-            _statName = statName;
         }
 
         public void Initialize()
         {
-            Debug.Log($"{_getPlayerStat} {_armour} {_statName}");
-            
-            _maxHitPoint = (int)_getPlayerStat.TryGetStat(_statName).currentCountStats;
-            CurrentHitPoint = _maxHitPoint;
+            EventBus.Subscribe<SendUpdateStatEvent>(e => UpdateStats());
+            UpdateStats();
         }
 
         public void TakeDamage(int damage, DamageType damageType)
@@ -73,10 +70,24 @@ namespace DefaultNamespace.PlayerStatsOperation.StatSystem
 
         private void PlayerDead()
         {
-            dieEvent?.Invoke();
+            EventBus.Publish(new SendDieEvent());
         }
-        
-        public void SubscribeInDieEvent(Action action) => dieEvent += action;
-        public void UnsubscribeFromDieEvent(Action action) => dieEvent -= action;
+
+        private void UpdateStats()
+        {
+            PlayerDataStats loadData = _getPlayerStat.GetPlayerDataStats();
+            
+            _maxHitPoint = loadData.startMaxHitPoint + loadData.strength * 5;
+            CurrentHitPoint = _maxHitPoint;
+
+            Debug.Log($"Current hit point = {CurrentHitPoint}");
+        }
+
+        public void Dispose()
+        {
+            EventBus.Unsubscribe<SendDieEvent>(e => UpdateStats());
+        }
     }
 }
+
+public class SendDieEvent {}

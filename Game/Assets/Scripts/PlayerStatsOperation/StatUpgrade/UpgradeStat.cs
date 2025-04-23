@@ -1,4 +1,5 @@
-using DefaultNamespace.Interface;
+using System;
+using DefaultNamespace.Enums;
 using DefaultNamespace.PlayerStatsOperation.IPlayerData;
 using UnityEngine;
 using Zenject;
@@ -7,22 +8,13 @@ namespace DefaultNamespace.PlayerStatsOperation.StatUpgrade
 {
     public class UpgradeStat : IUpgradeStat
     {
-        [Inject] private IGetPlayerStat playerDataStats;
-
-        public void UpgradeStats(string statName)
+        [Inject] private IGetPlayerStat _playerStat;
+        public void Upgrade(StatType statType)
         {
-            if (statName == null)
-            {
-                Debug.LogError("Stat Name cannot be null");
-                return;
-            }
-
-            var state = playerDataStats.TryGetStat(statName);
-
-            if (state != null)
-            {
-                state.UpgradeStats();
-            }
+            _playerStat.GetPlayerDataStats().UpgradeStat(statType);
+            EventBus.Publish(new SendUpdateStatEvent());
         }
     }
+    
+    public class SendUpdateStatEvent{}
 }

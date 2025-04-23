@@ -2,7 +2,7 @@ namespace DefaultNamespace.PlayerStatsOperation.IPlayerData
 {
     public interface IGetPlayerStat
     {
-        PlayerDataStats TryGetStat(string name);
+        public PlayerDataStats GetPlayerDataStats();
         public PlayerDataDontChangableStats GetPlayerDataStaticStats();
     }
 }

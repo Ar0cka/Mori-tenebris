@@ -1,4 +1,5 @@
-using DefaultNamespace.Interface;
+using DefaultNamespace.Enums;
+using DefaultNamespace.PlayerStatsOperation.StatUpgrade;
 using UnityEngine;
 using Zenject;
 
@@ -6,14 +7,12 @@ namespace DefaultNamespace.UI
 {
     public class UpgradeStatButton : MonoBehaviour
     {
-        [Header("NameStat")]
-        [SerializeField] private string statName;
-        
+        [SerializeField] private StatType statType;
         [Inject] private IUpgradeStat _upgradeStat;
-        
-        public void UpdateStats()
+
+        public void Upgrade()
         {
-            _upgradeStat.UpgradeStats(statName);
+            _upgradeStat.Upgrade(statType);
         }
     }
 }

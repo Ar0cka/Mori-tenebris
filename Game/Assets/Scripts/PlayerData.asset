@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: PlayerData
   m_EditorClassIdentifier: 
   playerDataStats:
-  - nameState: HitPoint
-    currentStatLevel: 1
-    currentCountStats: 100
-    maxLevelStats: 99
-    countUpgradeStats: 10
+    strength: 5
+    agility: 5
+    vitality: 5
+    lucky: 5
+    startMaxHitPoint: 100
+    startMaxStamina: 100
+    countUpgradeFroLevel: 1
   playerDefaultStat:
     walkSpeed: 4

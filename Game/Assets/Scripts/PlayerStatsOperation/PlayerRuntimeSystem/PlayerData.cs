@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using DefaultNamespace.PlayerStatsOperation.IPlayerData;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -11,111 +12,88 @@ namespace DefaultNamespace.PlayerStatsOperation
     {
         [SerializeField] private PlayerScrObj _playerScrObj;
 
-        private List<PlayerDataStats> playerDataStats = new List<PlayerDataStats>();
+        private PlayerDataStats playerDataStats;
 
-        private Dictionary<string, PlayerDataStats> PlayerDataStatsList = new Dictionary<string, PlayerDataStats>();
-        
         private PlayerDataDontChangableStats playerDataDontChangableStats;
         
-        public PlayerDataDontChangableStats GetPlayerDataStaticStats() => playerDataDontChangableStats;
-
         private string filePath;
-        
+
+        private event Action send;
+
         public void Initialize()
         {
-            filePath = Path.Combine(Application.persistentDataPath, "playerStats.json");
+            filePath = Path.Combine(Application.persistentDataPath, "playerStat.json");
+
+            EventBus.Subscribe<SendSavePlayerDataEvent>(e => SaveData());
             
             playerDataDontChangableStats = _playerScrObj.StaticPlayerStats;
-            PlayerDataStatsList.Clear();
+            
+            playerDataStats = _playerScrObj.PlayerDataStats.Clone();
 
-            var statList = LoadStat();
+            //var loadData = LoadData();
 
-            if (statList != null && statList.Count != 0)
-            {
-                playerDataStats = statList;
-            }
-            else
-            {
-                foreach (var playerData in _playerScrObj.PlayerDataStats)
-                {
-                    playerDataStats.Add(playerData.Clone());
-                }
-            }
-
-            foreach (var stat in playerDataStats)
-            {
-                if (!PlayerDataStatsList.ContainsKey(stat.nameState))
-                {
-                    PlayerDataStatsList.Add(stat.nameState, stat);
-                }
-                else
-                {
-                    Debug.LogError("Duplicate stat");
-                }
+            //if (loadData != null )
+            //{
+             //   playerDataStats = loadData;
+           // }
+            //else
+           // {
                
-            }
+           // }
+            Debug.Log($"sila = {playerDataStats.strength}, max hit point = {playerDataStats.startMaxHitPoint}");
         }
 
-        public PlayerDataStats TryGetStat(string name)
+        #region SaveData
+
+        private void SaveData()
         {
-            if (PlayerDataStatsList.TryGetValue(name, out var stat))
+            Debug.Log("Save data");
+            
+            string data = JsonUtility.ToJson(playerDataStats);
+            
+            if (!string.IsNullOrEmpty(data) && !string.IsNullOrEmpty(filePath))
             {
-                return stat;
-            }
-
-            return null;
-        }
-
-        #region SaveRuntimeStatsSystem
-
-        public void SaveStat()
-        {
-            try
-            {
-                var listInSave = new ContainerInList<PlayerDataStats> { dataListInSave = playerDataStats };
-                string data = JsonUtility.ToJson(listInSave, true);
                 File.WriteAllText(filePath, data);
             }
-            catch (Exception e)
-            {
-                Debug.LogError(e);
-                throw;
-            }
         }
 
-        private List<PlayerDataStats> LoadStat()
+        private PlayerDataStats LoadData()
         {
             try
             {
-                if (!File.Exists(filePath))
+                if (!string.IsNullOrEmpty(filePath))
                 {
-                    Debug.LogError("Not fiend path");
-                    return null;
-                }
-                
-                string dataReadText = File.ReadAllText(filePath);
-                var loadDataContainer = JsonUtility.FromJson<ContainerInList<PlayerDataStats>>(dataReadText);
+                    string data = File.ReadAllText(filePath);
 
-                return loadDataContainer?.dataListInSave;
+                    if (!string.IsNullOrEmpty(data))
+                    {
+                        PlayerDataStats loadData = JsonUtility.FromJson<PlayerDataStats>(data);
+                        Debug.Log($"loadData = {loadData != null}");
+                        return loadData;
+                    }
+                }
             }
             catch (Exception e)
             {
-                Debug.LogError(e);
-                throw;
+                Console.WriteLine(e);
             }
+            
+            return null;
         }
 
         private void OnApplicationQuit()
         {
-            SaveStat();
+            EventBus.Unsubscribe<SendSavePlayerDataEvent>(e => SaveData());
         }
 
         #endregion
-    }
+        
+        #region Getters
 
-    [Serializable]
-    public class ContainerInList<T>
-    {
-        public List<T> dataListInSave;
+        public PlayerDataDontChangableStats GetPlayerDataStaticStats() => playerDataDontChangableStats;
+
+        public PlayerDataStats GetPlayerDataStats() => playerDataStats;
+
+        #endregion
     }
 }

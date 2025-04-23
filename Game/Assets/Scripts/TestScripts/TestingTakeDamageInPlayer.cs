@@ -1,6 +1,5 @@
 using System;
 using DefaultNamespace.Enums;
-using DefaultNamespace.Events;
 using DefaultNamespace.PlayerStatsOperation.StatSystem;
 using UnityEngine;
 using Zenject;
@@ -13,13 +12,11 @@ namespace DefaultNamespace.TestScripts
         [SerializeField] private float cooldownTakeDamage = 2;
         [SerializeField] private int damage = 1;
         private ITakeDamage _takeDamage;
-        private IGetSubscribeInDieEvent _subscribeInDieEvent;
 
         [Inject]
-        public void Constructor(ITakeDamage takeDamage, IGetSubscribeInDieEvent subscribeInDieEvent)
+        public void Constructor(ITakeDamage takeDamage)
         {
             _takeDamage = takeDamage;
-            _subscribeInDieEvent = subscribeInDieEvent;
         }
 
         private void Update()
@@ -39,13 +36,12 @@ namespace DefaultNamespace.TestScripts
 
         private void OnEnable()
         {
-            _subscribeInDieEvent.SubscribeInDieEvent(PlayerActivatedDie);
+            EventBus.Subscribe<SendDieEvent>(e => PlayerActivatedDie());
         }
 
         private void PlayerActivatedDie()
         {
             Destroy(objectPlayer);
-            _subscribeInDieEvent.UnsubscribeFromDieEvent(PlayerActivatedDie);
         }
     }
 }

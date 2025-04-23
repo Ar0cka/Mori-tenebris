@@ -1,5 +1,3 @@
-using DefaultNamespace.Events;
-using DefaultNamespace.Interface;
 using DefaultNamespace.PlayerStatsOperation;
 using DefaultNamespace.PlayerStatsOperation.IPlayerData;
 using DefaultNamespace.PlayerStatsOperation.StatSystem;
@@ -12,8 +10,6 @@ namespace DefaultNamespace.Zenject
 {
     public class InjectPlayerData : MonoInstaller
     {
-        [SerializeField] private string nameHitPointStat;
-        
         [SerializeField] private PlayerData playerData;
 
         public override void InstallBindings()
@@ -24,11 +20,10 @@ namespace DefaultNamespace.Zenject
             Container.Bind<Armour>().FromNew().AsSingle();
             Container.Bind<IEquipAndUnEquipItem>().To<Armour>().FromResolve();
 
-            Container.Bind<Health>().AsSingle().WithArguments(nameHitPointStat).NonLazy();
+            Container.Bind<Health>().AsSingle().NonLazy();
 
             Container.Bind<ITakeDamage>().To<Health>().FromResolve();
             Container.Bind<IRegeneration>().To<Health>().FromResolve();
-            Container.Bind<IGetSubscribeInDieEvent>().To<Health>().FromResolve();
         }
     }
 }

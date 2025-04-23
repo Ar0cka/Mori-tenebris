@@ -1,5 +1,4 @@
 using System;
-using DefaultNamespace.Events;
 using DefaultNamespace.PlayerStatsOperation;
 using DefaultNamespace.PlayerStatsOperation.StatSystem;
 using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
@@ -15,7 +14,7 @@ namespace DefaultNamespace
         
         private void Awake()
         {
-            playerData.Initialize();
+            playerData.Initialize(); 
             _health.Initialize();
         }
     }
