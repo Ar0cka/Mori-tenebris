@@ -19,6 +19,13 @@ MonoBehaviour:
     lucky: 5
     startMaxHitPoint: 100
     startMaxStamina: 100
-    countUpgradeFroLevel: 1
+    level: 1
+    currentExperience: 0
+    experienceForNextLevel: 500
+    maxLevel: 101
+    upgradeCount: 0
+    countUpgradeAdd: 3
   playerDefaultStat:
+    startMaxHitPoint: 100
+    startMaxStamina: 100
     walkSpeed: 4

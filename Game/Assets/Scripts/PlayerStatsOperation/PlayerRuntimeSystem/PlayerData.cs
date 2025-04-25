@@ -1,98 +1,69 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
-using DefaultNamespace.PlayerStatsOperation.IPlayerData;
-using Unity.VisualScripting;
+using DefaultNamespace.PlayerStatsOperation;
+using DefaultNamespace.PlayerStatsOperation.SaveSystem;
+using EventBusNamespace;
 using UnityEngine;
-using UnityEngine.Serialization;
+using Zenject;
 
-namespace DefaultNamespace.PlayerStatsOperation
+namespace PlayerNameSpace
 {
     public class PlayerData : MonoBehaviour, IGetPlayerStat
     {
-        [SerializeField] private PlayerScrObj _playerScrObj;
-
-        private PlayerDataStats playerDataStats;
-
-        private PlayerDataDontChangableStats playerDataDontChangableStats;
+        [SerializeField] private PlayerScrObj playerScrObj;
         
-        private string filePath;
+        [Inject] private ISaveAndLoad _saveSystem;
 
-        private event Action send;
+        private PlayerDataStats _playerDataStats;
+
+        private PlayerStaticData _playerDataDontChangableStats;
+        
+        private string _filePath;
 
         public void Initialize()
         {
-            filePath = Path.Combine(Application.persistentDataPath, "playerStat.json");
+            _filePath = Path.Combine(Application.persistentDataPath, "playerData.json");
 
-            EventBus.Subscribe<SendSavePlayerDataEvent>(e => SaveData());
+            EventBus.Subscribe<SendSavePlayerDataEvent>(e => SavePlayerData());
             
-            playerDataDontChangableStats = _playerScrObj.StaticPlayerStats;
-            
-            playerDataStats = _playerScrObj.PlayerDataStats.Clone();
+            _playerDataDontChangableStats = playerScrObj.StaticPlayerStats;
 
-            //var loadData = LoadData();
+            PlayerDataStats loadData = _saveSystem.LoadData<PlayerDataStats>(_filePath);
 
-            //if (loadData != null )
-            //{
-             //   playerDataStats = loadData;
-           // }
-            //else
-           // {
-               
-           // }
-            Debug.Log($"sila = {playerDataStats.strength}, max hit point = {playerDataStats.startMaxHitPoint}");
+            if (loadData != null)
+            {
+                _playerDataStats = loadData;
+            }
+            else
+            {
+                _playerDataStats = playerScrObj.PlayerDataStats.Clone();
+            }
+        }
+
+        public void ResetData()
+        {
+            _playerDataStats = playerScrObj.PlayerDataStats.Clone();
         }
 
         #region SaveData
 
-        private void SaveData()
+        private void SavePlayerData()
         {
-            Debug.Log("Save data");
-            
-            string data = JsonUtility.ToJson(playerDataStats);
-            
-            if (!string.IsNullOrEmpty(data) && !string.IsNullOrEmpty(filePath))
-            {
-                File.WriteAllText(filePath, data);
-            }
+            Debug.Log("SavePlayerData");
+            _saveSystem.SaveData(_playerDataStats, _filePath);
         }
-
-        private PlayerDataStats LoadData()
-        {
-            try
-            {
-                if (!string.IsNullOrEmpty(filePath))
-                {
-                    string data = File.ReadAllText(filePath);
-
-                    if (!string.IsNullOrEmpty(data))
-                    {
-                        PlayerDataStats loadData = JsonUtility.FromJson<PlayerDataStats>(data);
-                        Debug.Log($"loadData = {loadData != null}");
-                        return loadData;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-            
-            return null;
-        }
-
+        
         private void OnApplicationQuit()
         {
-            EventBus.Unsubscribe<SendSavePlayerDataEvent>(e => SaveData());
+            EventBus.Unsubscribe<SendSavePlayerDataEvent>(e => SavePlayerData());
         }
 
         #endregion
         
         #region Getters
 
-        public PlayerDataDontChangableStats GetPlayerDataStaticStats() => playerDataDontChangableStats;
+        public PlayerStaticData GetPlayerDataStaticStats() => _playerDataDontChangableStats;
 
-        public PlayerDataStats GetPlayerDataStats() => playerDataStats;
+        public PlayerDataStats GetPlayerDataStats() => _playerDataStats;
 
         #endregion
     }

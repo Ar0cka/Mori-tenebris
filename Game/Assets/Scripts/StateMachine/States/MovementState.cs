@@ -1,4 +1,5 @@
-﻿using StateMachin.States;
+﻿using PlayerNameSpace;
+using StateMachin.States;
 using UnityEngine;
 
 
@@ -38,7 +39,7 @@ public class MovementState : State
     public override void PhysicUpdate()
     {
         base.PhysicUpdate();
-        Move(_playerScr.StaticPlayerStats.walkSpeed);
+        Move(_playerScr.StaticPlayerStats.WalkSpeed);
     }
 
     public override void SetAnimation()

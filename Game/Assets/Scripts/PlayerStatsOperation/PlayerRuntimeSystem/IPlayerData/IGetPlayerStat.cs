@@ -1,8 +1,8 @@
-namespace DefaultNamespace.PlayerStatsOperation.IPlayerData
+namespace PlayerNameSpace
 {
     public interface IGetPlayerStat
     {
         public PlayerDataStats GetPlayerDataStats();
-        public PlayerDataDontChangableStats GetPlayerDataStaticStats();
+        public PlayerStaticData GetPlayerDataStaticStats();
     }
 }

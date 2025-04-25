@@ -1,6 +1,6 @@
 using DefaultNamespace.Enums;
 
-namespace DefaultNamespace.PlayerStatsOperation.StatSystem
+namespace PlayerNameSpace
 {
     public interface ITakeDamage
     {

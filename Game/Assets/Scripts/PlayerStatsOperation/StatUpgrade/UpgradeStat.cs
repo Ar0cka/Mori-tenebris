@@ -1,10 +1,8 @@
-using System;
+using EventBusNamespace;
 using DefaultNamespace.Enums;
-using DefaultNamespace.PlayerStatsOperation.IPlayerData;
-using UnityEngine;
 using Zenject;
 
-namespace DefaultNamespace.PlayerStatsOperation.StatUpgrade
+namespace PlayerNameSpace
 {
     public class UpgradeStat : IUpgradeStat
     {

@@ -1,4 +1,4 @@
-namespace DefaultNamespace.PlayerStatsOperation.StatSystem
+namespace PlayerNameSpace
 {
     public interface IRegeneration
     {

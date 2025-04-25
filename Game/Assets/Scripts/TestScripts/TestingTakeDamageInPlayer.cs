@@ -1,10 +1,11 @@
-using System;
 using DefaultNamespace.Enums;
 using DefaultNamespace.PlayerStatsOperation.StatSystem;
+using EventBusNamespace;
+using PlayerNameSpace;
 using UnityEngine;
 using Zenject;
 
-namespace DefaultNamespace.TestScripts
+namespace TestingNameSpace
 {
     public class TestingTakeDamageInPlayer : MonoBehaviour
     {

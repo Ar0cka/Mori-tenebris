@@ -1,8 +1,5 @@
-using DefaultNamespace.PlayerStatsOperation;
-using DefaultNamespace.PlayerStatsOperation.IPlayerData;
-using DefaultNamespace.PlayerStatsOperation.StatSystem;
+using PlayerNameSpace;
 using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
-using DefaultNamespace.PlayerStatsOperation.StatUpgrade;
 using UnityEngine;
 using Zenject;
 
@@ -14,7 +11,8 @@ namespace DefaultNamespace.Zenject
 
         public override void InstallBindings()
         {
-            Container.Bind<IGetPlayerStat>().FromInstance(playerData).AsSingle();
+            Container.Bind<IGetPlayerStat>().FromInstance(playerData).AsSingle().NonLazy();
+            
             Container.Bind<IUpgradeStat>().To<UpgradeStat>().AsSingle();
             
             Container.Bind<Armour>().FromNew().AsSingle();

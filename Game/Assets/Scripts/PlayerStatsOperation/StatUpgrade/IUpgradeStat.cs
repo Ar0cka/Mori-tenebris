@@ -1,7 +1,7 @@
 using System;
 using DefaultNamespace.Enums;
 
-namespace DefaultNamespace.PlayerStatsOperation.StatUpgrade
+namespace PlayerNameSpace
 {
     public interface IUpgradeStat
     {

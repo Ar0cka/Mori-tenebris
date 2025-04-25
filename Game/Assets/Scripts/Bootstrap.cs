@@ -1,7 +1,4 @@
-using System;
-using DefaultNamespace.PlayerStatsOperation;
-using DefaultNamespace.PlayerStatsOperation.StatSystem;
-using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
+using PlayerNameSpace;
 using UnityEngine;
 using Zenject;
 
@@ -10,11 +7,13 @@ namespace DefaultNamespace
     public class Bootstrap : MonoBehaviour
     {
         [SerializeField] private PlayerData playerData;
+        //[SerializeField] private PlayerUIManager playerUIManager;
         [Inject] private Health _health;
         
         private void Awake()
         {
-            playerData.Initialize(); 
+            playerData.Initialize();
+            //playerUIManager.Initialize();
             _health.Initialize();
         }
     }

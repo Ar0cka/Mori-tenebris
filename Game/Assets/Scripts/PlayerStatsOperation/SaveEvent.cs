@@ -1,7 +1,7 @@
-using System;
+using EventBusNamespace;
 using UnityEngine;
 
-namespace DefaultNamespace.PlayerStatsOperation
+namespace PlayerNameSpace
 {
     public class SaveAllPlayerData : MonoBehaviour
     {

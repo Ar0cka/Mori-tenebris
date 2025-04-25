@@ -1,12 +1,11 @@
 using System;
 using DefaultNamespace.Enums;
-using DefaultNamespace.PlayerStatsOperation.IPlayerData;
+using EventBusNamespace;
 using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
-using DefaultNamespace.PlayerStatsOperation.StatUpgrade;
 using UnityEngine;
 using Zenject;
 
-namespace DefaultNamespace.PlayerStatsOperation.StatSystem
+namespace PlayerNameSpace
 {
     public class Health : ITakeDamage, IRegeneration, IDisposable
     {
@@ -16,8 +15,6 @@ namespace DefaultNamespace.PlayerStatsOperation.StatSystem
         
         private int _maxHitPoint;
         public int CurrentHitPoint { get; private set; }
-
-        public event Action dieEvent;
 
         [Inject]
         public Health(IGetPlayerStat getPlayerStat, Armour armour, IUpgradeStat upgradeStat)
@@ -77,7 +74,7 @@ namespace DefaultNamespace.PlayerStatsOperation.StatSystem
         {
             PlayerDataStats loadData = _getPlayerStat.GetPlayerDataStats();
             
-            _maxHitPoint = loadData.startMaxHitPoint + loadData.strength * 5;
+            _maxHitPoint = _getPlayerStat.GetPlayerDataStaticStats().StartMaxHitPoint + loadData.Strength * 5;
             CurrentHitPoint = _maxHitPoint;
 
             Debug.Log($"Current hit point = {CurrentHitPoint}");
@@ -85,7 +82,7 @@ namespace DefaultNamespace.PlayerStatsOperation.StatSystem
 
         public void Dispose()
         {
-            EventBus.Unsubscribe<SendDieEvent>(e => UpdateStats());
+            EventBus.Unsubscribe<SendUpdateStatEvent>(e => UpdateStats());
         }
     }
 }

@@ -1,9 +1,8 @@
 using DefaultNamespace.Enums;
-using DefaultNamespace.PlayerStatsOperation.StatUpgrade;
 using UnityEngine;
 using Zenject;
 
-namespace DefaultNamespace.UI
+namespace PlayerNameSpace
 {
     public class UpgradeStatButton : MonoBehaviour
     {
