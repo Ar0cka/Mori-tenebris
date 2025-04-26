@@ -1,5 +1,6 @@
 using DefaultNamespace.Enums;
 using System;
+using EventBusNamespace;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -57,12 +58,13 @@ namespace PlayerNameSpace
                 upgradeCount += countUpgradeAdd;
                 level++;
                 UpdateExpForNextLevel();
+                EventBus.Publish(new SendUIUpdateExpSystem());
             }
         }
 
         public bool CheckInMaxLevel()
         {
-            return level < maxLevel;
+            return level > maxLevel;
         }
         
         private void UpdateExpForNextLevel()

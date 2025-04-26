@@ -6,11 +6,11 @@ namespace PlayerNameSpace
     public class PlayerLevelSystem : IAddExpInLevel
     {
         [Inject] private IGetPlayerStat _getPlayerStat;
-        private PlayerUIManager _playerUIManager;
+        private PlayerStatsUI _playerStatsUI;
 
-        public void Initialize(PlayerUIManager playerUIManager)
+        public void Initialize(PlayerStatsUI playerStatsUI)
         {
-            _playerUIManager = playerUIManager;
+            _playerStatsUI = playerStatsUI;
         }
 
         public void AddExpInLevel(int exp)

@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 1037
   m_ShowMode: 4
-  m_Title: Game
+  m_Title: Scene
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 321}
   m_MaxSize: {x: 10000, y: 10000}
@@ -145,7 +145,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 19
+  controlID: 42
   draggingID: 0
 --- !u!114 &7
 MonoBehaviour:
@@ -171,7 +171,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 20
+  controlID: 43
   draggingID: 0
 --- !u!114 &8
 MonoBehaviour:
@@ -246,8 +246,8 @@ MonoBehaviour:
     y: 641
     width: 1383
     height: 346
-  m_MinSize: {x: 101, y: 121}
-  m_MaxSize: {x: 4001, y: 4021}
+  m_MinSize: {x: 100, y: 100}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 12}
   m_Panes:
   - {fileID: 17}
@@ -352,9 +352,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 2cdfffff
-      m_LastClickedID: -8404
-      m_ExpandedIDs: f0f9ffffa4740000b0740000ce740000
+      m_SelectedIDs: 
+      m_LastClickedID: 0
+      m_ExpandedIDs: 8af4ffff04f9ffff16fbffff7874000090740000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -851,9 +851,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -1.576633, y: 0.53239477, z: 0.025761109}
+    m_Target: {x: -1.9230875, y: 0.79863864, z: 0.040746678}
     speed: 2
-    m_Value: {x: -1.576633, y: 0.53239477, z: 0.025761109}
+    m_Value: {x: -1.9230875, y: 0.79863864, z: 0.040746678}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -903,9 +903,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 8.9088335
+    m_Target: 7.410275
     speed: 2
-    m_Value: 8.9088335
+    m_Value: 7.410275
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -1144,7 +1144,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts
+    - Assets/Scripts/PlayerStatsOperation
     m_Globs: []
     m_OriginalText: 
     m_ImportLogFlags: 0
@@ -1152,16 +1152,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 69
   m_LastFolders:
-  - Assets/Scripts
+  - Assets/Scripts/PlayerStatsOperation
   m_LastFoldersGridSize: 69
   m_LastProjectPath: D:\Repositor\TopDownAdven\Game
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 10780000
-    m_LastClickedID: 30736
-    m_ExpandedIDs: 00000000e27700001078000000ca9a3bffffff7f
+    m_SelectedIDs: 54780000
+    m_LastClickedID: 30804
+    m_ExpandedIDs: 00000000be7700000e78000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1189,7 +1189,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000e2770000
+    m_ExpandedIDs: 00000000be770000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1214,8 +1214,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: ba740000
-    m_LastClickedInstanceID: 29882
+    m_SelectedInstanceIDs: 04f9ffff
+    m_LastClickedInstanceID: -1788
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c6230000eccc000000000000c6e60000b4e6000030480400c682070078b6010062af0100ceb0000094830000dc9e000050af020096d201006a1503006e1503004c150300721503005a15030056150300621503006615030002c500005e15030088ff010084ff010080ff010032bb00004ab50500fe430100e8e60000e2ea0000daea0000b8e50000c6e500001a0301002603010024020100fc7d0000047e0000f877000054770000167500006e7f00004a800000827100009672000034740000ee700000f4700000f870000040bc0000126f00001e6f0000246f0000c4790000
     m_RenameOverlay:
