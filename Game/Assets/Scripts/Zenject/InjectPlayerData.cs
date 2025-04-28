@@ -15,13 +15,19 @@ namespace DefaultNamespace.Zenject
             
             Container.Bind<IUpgradeStat>().To<UpgradeStat>().AsSingle();
             
-            Container.Bind<Armour>().FromNew().AsSingle();
+            Container.Bind<Armour>().AsSingle();
             Container.Bind<IEquipAndUnEquipItem>().To<Armour>().FromResolve();
 
             Container.Bind<Health>().AsSingle().NonLazy();
 
             Container.Bind<ITakeDamage>().To<Health>().FromResolve();
-            Container.Bind<IRegeneration>().To<Health>().FromResolve();
+            Container.Bind<IRegenerationHealth>().To<Health>().FromResolve();
+            
+            Container.Bind<Stamina>().AsSingle().NonLazy();
+            Container.Bind<ISubtractionStamina>().To<Stamina>().FromResolve();
+            Container.Bind<IRegenerationStamina>().To<Stamina>().FromResolve();
+            
+            Container.Bind<DamageSystem>().AsSingle().NonLazy();
         }
     }
 }

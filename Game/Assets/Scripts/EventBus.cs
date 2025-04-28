@@ -16,6 +16,22 @@ namespace EventBusNamespace
                 _events[type] = Delegate.Combine(_events[type], action);
             }
         }
+        
+        public static void Subscribe<T>(List<Action<T>> actions)
+        {
+            var type = typeof(T);
+            
+            foreach (var action in actions)
+            {
+                if (action == null) continue;
+                
+                if (!_events.ContainsKey(type))
+                {
+                    _events.Add(type, null);
+                    _events[type] = Delegate.Combine(_events[type], action);
+                }
+            }
+        }
 
         public static void Unsubscribe<T>(Action<T> action)
         {
@@ -23,6 +39,20 @@ namespace EventBusNamespace
             if (_events.TryGetValue(type, out var existing))
             {
                 _events[type] = Delegate.Remove(existing, action);
+            }
+        }
+        
+        public static void Unsubscribe<T>(List<Action<T>> actions)
+        {
+            var type = typeof(T);
+            foreach (var action in actions)
+            {
+                if (action == null) continue;
+                
+                if (_events.TryGetValue(type, out var existing))
+                {
+                    _events[type] = Delegate.Remove(existing, action);
+                }
             }
         }
 
@@ -34,5 +64,7 @@ namespace EventBusNamespace
                 (value as Action<T>)?.Invoke(eventData);
             }
         }
+
+        
     }
 }
