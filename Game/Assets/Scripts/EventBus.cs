@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace EventBusNamespace
 {
@@ -56,15 +57,24 @@ namespace EventBusNamespace
             }
         }
 
-        public static void Publish<T>(T eventData)
+        public static void Publish<T>(T eventData)                                                                                  
         {
-            var type = typeof(T);
-            if (_events.TryGetValue(type, out var value))
+            try
             {
-                (value as Action<T>)?.Invoke(eventData);
+                var type = typeof(T);
+                if (_events.TryGetValue(type, out var value))
+                {
+                    (value as Action<T>)?.Invoke(eventData);                
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
+            finally
+            {
+                eventData = default;
             }
         }
-
-        
     }
 }

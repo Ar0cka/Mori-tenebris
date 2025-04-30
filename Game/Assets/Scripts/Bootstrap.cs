@@ -1,4 +1,5 @@
 using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
+using Player.Inventory;
 using PlayerNameSpace;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -13,6 +14,7 @@ namespace DefaultNamespace
         [SerializeField] private PassiveRegenerationStats passiveRegenerationStats;
         [SerializeField] private InterfacePlayerManager playerInterface;
         [SerializeField] private StateMachineRealize stateMachineRealize;
+        [SerializeField] private Inventory inventory;
         
         [Inject] private Health _health;
         [Inject] private Armour _armour;
@@ -32,6 +34,8 @@ namespace DefaultNamespace
             
             passiveRegenerationStats.Initialize();
             stateMachineRealize.Initialize(_stamina);
+            
+            inventory.Initialize();
             
             #region UI
 

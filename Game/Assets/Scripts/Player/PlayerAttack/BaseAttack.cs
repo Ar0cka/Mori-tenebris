@@ -1,4 +1,5 @@
 using System;
+using EventBusNamespace;
 using UnityEngine;
 
 namespace Player.PlayerAttack
@@ -8,6 +9,11 @@ namespace Player.PlayerAttack
         private void Update()
         {
             UpdateLogic();
+        }
+
+        public override void SendEffectsEvent()
+        {
+            EventBus.Publish(new SendBaseAttackEvent(_currentCountAttack));
         }
     }
 }

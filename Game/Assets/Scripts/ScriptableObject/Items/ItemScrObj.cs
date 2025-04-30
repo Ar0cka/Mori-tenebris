@@ -15,4 +15,6 @@ public class ItemData
 {
     public string nameItem;
     public ItemTypes itemTypes;
+    public int maxStackInSlot;
+    public Sprite iconItem;
 }

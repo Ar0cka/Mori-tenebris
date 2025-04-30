@@ -4,7 +4,6 @@ namespace DefaultNamespace.Enums
     {
         Equip,
         Collectable,
-        Consumables,
         Other
     }
 }

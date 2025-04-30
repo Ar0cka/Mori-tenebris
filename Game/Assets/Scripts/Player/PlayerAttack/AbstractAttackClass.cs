@@ -17,7 +17,7 @@ using UnityEngine;
          
          private int _maxCountAttack;
          
-         [Min(1)] private int _currentCountAttack;
+         [Min(1)] protected int _currentCountAttack;
          private string _currentAnimation;
          private float _lastClicked;
          private Dictionary<int, AttackSetting> _attackData = new Dictionary<int, AttackSetting>();
@@ -45,7 +45,7 @@ using UnityEngine;
          {
              if (Time.time - _lastClicked > comboWindow)
              {
-                 EndCombo();
+                 StartCoroutine(EndCombo());
              }
              
              if (CanStartNextAttack())
@@ -70,6 +70,7 @@ using UnityEngine;
          protected void StartAnimation(string animationName)
          {
              animator.SetTrigger(animationName);
+             SendEffectsEvent();
          }
          
          protected bool CanStartNextAttack()
@@ -106,6 +107,11 @@ using UnityEngine;
              }
              
              _isEndCombo = false;
+         }
+
+         public virtual void SendEffectsEvent()
+         {
+             
          }
      }
 
