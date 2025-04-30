@@ -14,4 +14,4 @@ Player:
 Enemy: 
 1. Есть готовы наработки патчфаиндера и AI логики на основе прошлого заброшеного проекта https://github.com/Ar0cka/Prototype
 
-Используемые инструменты : Unity (Monobehavior), C#, Zenject, Dotween.
+Используемые инструменты : Unity 2022.3.59f1, C#, Zenject, Dotween.
