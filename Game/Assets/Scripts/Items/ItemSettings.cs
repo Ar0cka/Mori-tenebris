@@ -24,7 +24,7 @@ namespace Player.Inventory
 
         public void UseItem()
         {
-            
+            itemAction.ActionItem(itemScrObj);
         }
         public void UpdateUI(int countItemsInSlot)
         {
