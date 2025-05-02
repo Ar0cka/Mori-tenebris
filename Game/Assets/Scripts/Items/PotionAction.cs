@@ -10,15 +10,16 @@ namespace Player.Inventory
     public class PotionAction : ItemAction
     {
         [Inject] private IRegenerationHealth _regenerationHealth;
+        [Inject] private IInventoryRemove _inventoryRemove;
         
-        public override void ActionItem(ItemScrObj itemScr, SlotData slotData)
+        public override void ActionItem(ItemScrObj itemScr)
         {
-            base.ActionItem(itemScr, slotData);
+            base.ActionItem(itemScr);
 
             if (itemScr is PotionScr potion)  
             {
                 _regenerationHealth.Regeneration(potion.Potion.amount);
-                slotData.RemoveItemInSlot(itemScr.ItemData, 1);
+                _inventoryRemove.RemoveItem(itemScr.ItemData, 1);
             }
         }
     }

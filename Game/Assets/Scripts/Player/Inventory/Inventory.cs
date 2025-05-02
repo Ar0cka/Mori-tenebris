@@ -1,147 +1,121 @@
+using System;
 using System.Collections.Generic;
-using Player.Inventory.InventoryInterface;
-using UnityEngine;
-using UnityEngine.Serialization;
 using Data;
 using DefaultNamespace.Zenject;
+using Player.Inventory.InventoryInterface;
+using UnityEngine;
 using Zenject;
 
-namespace Player.Inventory
+namespace PlayerNameSpace.Inventory
 {
-    public class Inventory : MonoBehaviour, IAddNewItemOnInventory, IRemoveItemFromInventory, IFindItemInInventory
+    public class Inventory : MonoBehaviour, IInventoryAdder, IInventorySearch, IInventoryRemove
     {
-        [Inject] private IItemsFactory itemsFactory;
+        [Inject] private IItemsFactory _itemFactory;
         
         [SerializeField] private GameObject slotPrefab;
         [SerializeField] private Transform slotParent;
-
-        [FormerlySerializedAs("coutSlot")] [SerializeField]
-        private int countSlot;
-
-        private List<SlotData> _slots = new List<SlotData>();
-
+        [SerializeField] private int capacityInventory = 10;
+        
+        private List<SlotData> slots = new List<SlotData>();
+        
         public void Initialize()
         {
-            for (int i = 0; i < countSlot; i++)
+            Debug.Log("Inventory initialized = " + _itemFactory);
+            
+            for (int i = 0; i < capacityInventory; i++)
             {
-                var prefab = Instantiate(slotPrefab, slotParent, false);
-                prefab.name = "Slot" + i;
-                _slots.Add(new SlotData(prefab));
+                var prefabSlot = Instantiate(slotPrefab, slotParent);
+                slots.Add(new SlotData(prefabSlot, _itemFactory));
             }
         }
 
-        #region AddItem
-
-        public void AddItemInInventory(ItemData itemData, int count)
+        public void AddItemToInventory(ItemData itemData, int amount)
         {
-            if (itemData == null || string.IsNullOrEmpty(itemData.nameItem)) return;
+            if (amount <= 0 || itemData == null) return;
 
-            if (IsFullInventory())
+            int remainingAmount = amount;
+            
+            remainingAmount = AddItem(itemData, remainingAmount);
+            
+            if (remainingAmount > 0)
             {
-                Debug.Log("Inventory is full");
-                return;
+                remainingAmount = CreateNewStacks(itemData, remainingAmount);
             }
 
-            int remainingCount = count;
-
-            remainingCount = AddItem(itemData, remainingCount);
-
-            if (remainingCount != 0)
+            if (remainingAmount > 0)
             {
-                Debug.Log($"Инвентарь заполнен. Не поместилось {remainingCount} с именем {itemData.nameItem}");
+                Debug.Log($"Inventory full. Couldn't add {remainingAmount} of {itemData.nameItem}");
             }
         }
 
-        private int AddItem(ItemData itemData, int count)
+        private int AddItem(ItemData itemData, int amount)
         {
-            int remainingCount = count;
-
-            foreach (var slot in _slots)
+            int remaining = amount;
+            
+            foreach (var slot in slots)
             {
-                if (remainingCount <= 0) break;
-
-                if (slot.ItemDataInSlot() == itemData && !slot.IsFull)
-                {
-                    remainingCount = slot.AddItemInSlot(itemData, remainingCount);
-                }
-            }
-
-            if (remainingCount > 0)
-            {
-                foreach (var slot in _slots)
-                {
-                    if (remainingCount <= 0) break;
-
-                    if (!slot.IsOccupied)
-                    {
-                        #region InjectCreateItem
-
-                        itemsFactory.Create(itemData.prefabItem, slot.SlotPrefab.transform);
-
-                        #endregion
-                        
-                        remainingCount = slot.CreateObjectInSlot(itemData, remainingCount);
-                    }
-                }
-            }
-
-            return remainingCount;
-        }
-
-        #endregion
-
-        #region RemoveItem
-
-        public void RemoveItemFromInventory(ItemData itemData, int count)
-        {
-            if (itemData == null || string.IsNullOrEmpty(itemData.nameItem)) return;
-
-            int remainingCount = count;
-
-            foreach (var slot in _slots)
-            {
-                if (slot.ItemDataInSlot().nameItem == itemData.nameItem)
-                {
-                    remainingCount = slot.RemoveItemInSlot(itemData, remainingCount);
-                }
-
-                if (remainingCount == 0)
-                {
-                    break;
-                }
-            }
-
-            if (remainingCount != 0)
-            {
-                Debug.Log("Dont find object");
-            }
-        }
-
-        #endregion
-
-        public SlotData FindItemInInventory(string itemName)
-        {
-            foreach (var slot in _slots)
-            {
-                Debug.Log($"Item in slot name = {slot.ItemDataInSlot().nameItem} and find item name {itemName}");
+                if (remaining <= 0) break;
                 
-                if (slot.ItemDataInSlot().nameItem == itemName)
+                if (slot.CanAddItem(itemData))
+                {
+                    remaining = slot.AddItem(itemData, remaining);
+                }
+            }
+            
+            return remaining;
+        }
+
+        private int CreateNewStacks(ItemData itemData, int amount)
+        {
+            int remaining = amount;
+            
+            foreach (var slot in slots)
+            {
+                if (remaining <= 0) break;
+                
+                if (!slot.IsOccupied)
+                {
+                    slot.CreateNewItem(itemData);
+                    remaining = slot.AddItem(itemData, remaining);
+                }
+            }
+            
+            return remaining;
+        }
+
+        public void RemoveItem(ItemData itemData, int amount)
+        {
+            int remaining = amount;
+
+            foreach (var slot in slots)
+            {
+                if (remaining <= 0) break;
+
+                if (slot.CanRemoveItem(itemData))
+                {
+                    remaining = slot.RemoveItem(itemData, remaining);
+                }
+            }
+
+            if (remaining > 0)
+            {
+                Debug.Log($"Cant find item in inventory. Couldn't remove item {remaining}");
+            }
+        }
+        
+        public SlotData FindItemOnInventory(string nameItem)
+        {
+            List<SlotData> occupiedSlots = slots.FindAll(e => e.IsOccupied && !e.IsFull);
+
+            foreach (var slot in occupiedSlots)
+            {
+                if (slot.CurrentItemData.nameItem == nameItem)
                 {
                     return slot;
                 }
             }
-            
-            return null;
-        }
-        
-        private bool IsFullInventory()
-        {
-            foreach (var slot in _slots)
-            {
-                if (slot.IsFreeSlot()) return false;
-            }
 
-            return true;
+            return null;
         }
     }
 }

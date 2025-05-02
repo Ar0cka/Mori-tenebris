@@ -5,7 +5,7 @@ namespace Player.Inventory
 {
     public class ItemAction : MonoBehaviour
     {
-        public virtual void ActionItem(ItemScrObj itemScr, SlotData slotData)
+        public virtual void ActionItem(ItemScrObj itemScr)
         {
             
         }

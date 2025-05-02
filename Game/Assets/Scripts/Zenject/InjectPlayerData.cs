@@ -2,7 +2,9 @@ using PlayerNameSpace;
 using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
 using Player.Inventory;
 using Player.Inventory.InventoryInterface;
+using PlayerNameSpace.Inventory;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 namespace DefaultNamespace.Zenject
@@ -32,9 +34,9 @@ namespace DefaultNamespace.Zenject
             
             Container.Bind<DamageSystem>().AsSingle().NonLazy();
 
-            Container.Bind<IAddNewItemOnInventory>().FromInstance(inventory).NonLazy();
-            Container.Bind<IRemoveItemFromInventory>().FromInstance(inventory).NonLazy();
-            Container.Bind<IFindItemInInventory>().FromInstance(inventory).NonLazy();
+            Container.Bind<IInventoryAdder>().FromInstance(inventory);
+            Container.Bind<IInventoryRemove>().FromInstance(inventory);
+            Container.Bind<IInventorySearch>().FromInstance(inventory);
         }
     }
 }

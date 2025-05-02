@@ -1,116 +1,112 @@
-using UnityEngine;
+using System;
 using Data;
+using DefaultNamespace.Zenject;
+using Player.Inventory;
+using UnityEngine;
+using Zenject;
 
-namespace Player.Inventory
+namespace PlayerNameSpace.Inventory
 {
     public class SlotData
     {
-        private int _currentCountItemInSlot;
-
-        public bool IsOccupied { get; private set; }
+        private IItemsFactory _itemFactory;
         public bool IsFull { get; private set; }
-        public GameObject SlotPrefab { get; private set; }
-
-        private ItemData _currentItemInSlot;
+        public bool IsOccupied { get; private set; }
+        
+        public ItemData CurrentItemData { get; private set; }
+        
+        private int _currentItemCount;
+       
+        private GameObject _slotObject;
+        private GameObject _itemPrefab;
         private ItemSettings _itemSettings;
 
-        public SlotData(GameObject slotObject)
+        public SlotData(GameObject prefab, IItemsFactory itemFactory)
         {
-            IsOccupied = false;
+            _itemFactory = itemFactory;
             IsFull = false;
-            SlotPrefab = slotObject;
+            IsOccupied = false;
+            _currentItemCount = 0;
+            
+            _slotObject = prefab;
+            _itemPrefab = null;
+            _itemSettings = null;    
         }
 
-        #region CreateItem
-
-        public int CreateObjectInSlot(ItemData itemData, int countItemAdd)
+        public void CreateNewItem(ItemData itemData)
         {
-            if (IsFreeSlot())
+            if (IsOccupied || IsFull) return;
+
+            CurrentItemData = itemData;
+
+            Debug.Log("Creating new item " + itemData.prefabItem.name);
+            
+            Debug.Log(_itemFactory);
+            
+            _itemPrefab = _itemFactory.Create(itemData.prefabItem, _slotObject.transform);
+            _itemSettings = _itemPrefab.GetComponent<ItemSettings>();
+            
+            IsOccupied = true;
+        }
+        
+        public int AddItem(ItemData itemData, int amountItems)
+        {
+            if (!IsFull)
             {
-                _currentItemInSlot = itemData;
-                IsOccupied = true;
-
-                _itemSettings = SlotPrefab.GetComponentInChildren<ItemSettings>();
-
-                int result = AddItemInSlot(itemData, countItemAdd);
-
-                return result;
+                int space = itemData.maxStackInSlot - _currentItemCount;
+                int itemAddCount = Mathf.Min(amountItems, space);
+                
+                _currentItemCount += itemAddCount;
+                IsFull = CurrentItemData.maxStackInSlot == _currentItemCount;
+                
+                _itemSettings?.UpdateUI(_currentItemCount);
+                
+                return amountItems - itemAddCount;
             }
-
-            return countItemAdd;
+            
+            return amountItems;
         }
 
-        #endregion
-
-        #region AddItem
-
-        public int AddItemInSlot(ItemData itemData, int countAdd)
+        public int RemoveItem(ItemData itemData, int amountItems)
         {
-            if (itemData == null) return countAdd;
+            if (itemData == null) return amountItems;
 
-            if (_currentItemInSlot.nameItem == itemData.nameItem && !IsFull)
+            int itemRemove = Mathf.Min(amountItems, _currentItemCount);
+
+            _currentItemCount -= itemRemove;
+            
+            _itemSettings.UpdateUI(_currentItemCount);
+
+            if (_currentItemCount <= 0)
             {
-                int space = itemData.maxStackInSlot - _currentCountItemInSlot;
-                int addItemCount = Mathf.Min(countAdd, space);
-
-                _currentCountItemInSlot += addItemCount;
-
-                IsFull = _currentCountItemInSlot == itemData.maxStackInSlot;
-
-                _itemSettings.UpdateUI(_currentCountItemInSlot);
-
-                return countAdd - addItemCount;
+                ClearSlot();
             }
-
-            return countAdd;
+            
+            return amountItems - itemRemove;
         }
-
-        #endregion
-
-        #region RemoveItem
-
-        public int RemoveItemInSlot(ItemData itemData, int countRemove)
+        
+        public bool CanAddItem(ItemData itemData)
         {
-            if (itemData == null) return countRemove;
-
-            int itemRemove = Mathf.Min(countRemove, _currentCountItemInSlot);
-
-            _currentCountItemInSlot -= itemRemove;
-
-            _itemSettings.UpdateUI(_currentCountItemInSlot);
-
-            CheckStatesSlot(itemData);
-
-            if (!IsOccupied)
-            {
-                _itemSettings.DeleteObjectFromSlot();
-                _itemSettings = null;
-                _currentItemInSlot = null;
-            }
-
-            return itemRemove - _currentCountItemInSlot;
+            return IsOccupied && !IsFull && CurrentItemData.nameItem == itemData.nameItem && _currentItemCount < itemData.maxStackInSlot;
         }
 
-        private void CheckStatesSlot(ItemData itemData)
+        public bool CanRemoveItem(ItemData itemData)
         {
-            IsOccupied = _currentCountItemInSlot == 0;
-            IsFull = _currentCountItemInSlot != itemData.maxStackInSlot;
+            return CurrentItemData.nameItem == itemData.nameItem && _currentItemCount > 0;
         }
 
-        #endregion
-
-        #region Getters
-
-        public ItemData ItemDataInSlot()
+        private void ClearSlot()
         {
-            return _currentItemInSlot;
+            IsFull = false;
+            IsOccupied = false;
+        
+            _currentItemCount = 0;
+            
+            CurrentItemData = null;
+            _itemPrefab = null;
+            
+            _itemSettings.DeleteObjectFromSlot();
+            _itemSettings = null;
         }
-
-        public bool IsFreeSlot()
-        {
-            return !IsOccupied && !IsFull;
-        }
-
-        #endregion
     }
 }

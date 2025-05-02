@@ -1,6 +1,7 @@
 using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
 using Player.Inventory;
 using PlayerNameSpace;
+using PlayerNameSpace.Inventory;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Zenject;

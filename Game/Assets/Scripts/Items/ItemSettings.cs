@@ -14,9 +14,6 @@ namespace Player.Inventory
         [SerializeField] private TextMeshProUGUI countUI;
         [SerializeField] private ItemAction itemAction;
         
-        [Inject] private IFindItemInInventory _findItem;
-        [Inject] private IAddNewItemOnInventory _addNewItem;
-        
         private ItemData itemData;
         
         private void Awake()
@@ -27,20 +24,7 @@ namespace Player.Inventory
 
         public void UseItem()
         {
-            Debug.Log("Item name = " + itemData.nameItem);
-
-            if (_findItem == null)
-            {
-                Debug.LogError("No find item found");
-                return;
-            }
             
-            var slot = _findItem.FindItemInInventory(itemData.nameItem);
-
-            if (slot != null)
-            {
-                itemAction.ActionItem(itemScrObj, slot);
-            }
         }
         public void UpdateUI(int countItemsInSlot)
         {
