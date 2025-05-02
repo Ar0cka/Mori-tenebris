@@ -1,3 +1,5 @@
+using Data;
+
 namespace Player.Inventory.InventoryInterface
 {
     public interface IAddNewItemOnInventory

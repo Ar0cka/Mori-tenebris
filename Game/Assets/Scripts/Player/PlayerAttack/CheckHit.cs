@@ -10,13 +10,22 @@ namespace Player.PlayerAttack
     {
         [Inject] private DamageSystem damageSystem;
         
-        private bool hit;
+        
+        private bool _isHit;
         public void OnCollisionEnter2D(Collision2D other)
+        {
+            if (other.collider.CompareTag("Enemy") && !_isHit)
+            {
+                _isHit = true;
+                EventBus.Publish(new SendHitEnemyEvent(damageSystem.Damage));
+            }
+        }
+
+        public void OnCollisionExit2D(Collision2D other)
         {
             if (other.collider.CompareTag("Enemy"))
             {
-                hit = true;
-                EventBus.Publish(new SendHitEnemyEvent(damageSystem.Damage));
+                _isHit = false;
             }
         }
     }

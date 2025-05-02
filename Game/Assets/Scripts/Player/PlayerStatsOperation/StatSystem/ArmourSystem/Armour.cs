@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DefaultNamespace.Enums;
-using DefaultNamespace.ScriptableObject.Items;
+using Data;
 using EventBusNamespace;
 using PlayerNameSpace;
 using Zenject;

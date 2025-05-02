@@ -342,7 +342,7 @@ namespace ModestTree
         {
             if (!condition)
             {
-                throw CreateException("Assert hit! " + message.Fmt(p1));
+                    throw CreateException("Assert hit! " + message.Fmt(p1));
             }
         }
 

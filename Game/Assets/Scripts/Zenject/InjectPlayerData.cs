@@ -1,5 +1,7 @@
 using PlayerNameSpace;
 using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
+using Player.Inventory;
+using Player.Inventory.InventoryInterface;
 using UnityEngine;
 using Zenject;
 
@@ -8,6 +10,7 @@ namespace DefaultNamespace.Zenject
     public class InjectPlayerData : MonoInstaller
     {
         [SerializeField] private PlayerData playerData;
+        [SerializeField] private Inventory inventory;
 
         public override void InstallBindings()
         {
@@ -28,6 +31,10 @@ namespace DefaultNamespace.Zenject
             Container.Bind<IRegenerationStamina>().To<Stamina>().FromResolve();
             
             Container.Bind<DamageSystem>().AsSingle().NonLazy();
+
+            Container.Bind<IAddNewItemOnInventory>().FromInstance(inventory).NonLazy();
+            Container.Bind<IRemoveItemFromInventory>().FromInstance(inventory).NonLazy();
+            Container.Bind<IFindItemInInventory>().FromInstance(inventory).NonLazy();
         }
     }
 }

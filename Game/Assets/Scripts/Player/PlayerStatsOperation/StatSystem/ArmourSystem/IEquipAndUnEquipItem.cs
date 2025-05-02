@@ -1,4 +1,6 @@
-namespace DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem
+using Data;
+
+namespace PlayerNameSpace
 {
     public interface IEquipAndUnEquipItem
     {

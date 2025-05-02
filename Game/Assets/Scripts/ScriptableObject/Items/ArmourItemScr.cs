@@ -2,7 +2,7 @@ using System;
 using DefaultNamespace.Enums;
 using UnityEngine;
 
-namespace DefaultNamespace.ScriptableObject.Items
+namespace Data
 {
     public class ArmourItemScr : MonoBehaviour
     {

@@ -31,24 +31,35 @@ namespace PlayerNameSpace
 
         public void TakeDamage(int damage, DamageType damageType)
         {
-            float multiplyDamage = 0;
+            #region DamageSystemCom
 
-            switch (damageType)
-            {
-                case DamageType.Physic:
-                    multiplyDamage = damage / (damage + _armour.PhysicArmour);
-                    break;
-                case DamageType.Magic:
-                    multiplyDamage = damage / (damage + _armour.MagicArmour);
-                    break;
-                default:
-                    return;
-            }
+            //float multiplyDamage = 0;
 
-            int finallyDamage = Mathf.FloorToInt(damage * multiplyDamage);
+            //switch (damageType)
+            //{
+            //case DamageType.Physic:
+            // multiplyDamage = damage / (damage + _armour.PhysicArmour);
+            //break;
+            // case DamageType.Magic:
+            //  multiplyDamage = damage / (damage + _armour.MagicArmour);
+            //  break;
+            // default:
+            //  return;
+            //  }
 
+            // Debug.Log(multiplyDamage);
+            
+            //int finallyDamage = Mathf.FloorToInt(damage * multiplyDamage);
+            
+            //Debug.Log(finallyDamage);
+            
+            //CurrentHitPoint -= Mathf.Clamp(finallyDamage, 0, CurrentHitPoint);
 
-            CurrentHitPoint -= Mathf.Clamp(finallyDamage, 0, CurrentHitPoint);
+            #endregion
+            
+            CurrentHitPoint -= damage;
+            
+            Debug.Log($"Current hit point = {CurrentHitPoint}");
 
 
             if (CurrentHitPoint <= 0)
