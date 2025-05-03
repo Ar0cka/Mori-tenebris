@@ -9,6 +9,8 @@ public class StateMachineRealize : MonoBehaviour
     [SerializeField] private Rigidbody2D rb2D;
 
     private FStateMachine stateMachine;
+    
+    private bool initialized = false;
 
     public void Initialize(ISubtractionStamina subtractionStamina)
     {
@@ -19,15 +21,19 @@ public class StateMachineRealize : MonoBehaviour
         stateMachine.AddNewState(new SprintRun(stateMachine, this, playerScrObj, rb2D, subtractionStamina));
         
         stateMachine.ChangeState<IdleState>();
+        
+        initialized = true;
     }
 
     private void Update()
     {
+        if (initialized)
         stateMachine.Update();
     }
 
     private void FixedUpdate()
     {
+        if (initialized)
         stateMachine.FixedUpdate();
     }
 

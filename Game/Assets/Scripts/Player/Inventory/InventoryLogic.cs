@@ -1,30 +1,44 @@
-using System;
 using System.Collections.Generic;
 using Data;
 using DefaultNamespace.Zenject;
 using Player.Inventory.InventoryInterface;
+using PlayerNameSpace.InventorySystem;
 using UnityEngine;
 using Zenject;
 
 namespace PlayerNameSpace.Inventory
 {
-    public class Inventory : MonoBehaviour, IInventoryAdder, IInventorySearch, IInventoryRemove
+    public class InventoryLogic : IInventoryAdder, IInventorySearch, IInventoryRemove
     {
+        private const string INVENTORY_SCR_OBJ_NAME = "Inventory/InvetoryScrObject";
+        
         [Inject] private IItemsFactory _itemFactory;
         
-        [SerializeField] private GameObject slotPrefab;
-        [SerializeField] private Transform slotParent;
-        [SerializeField] private int capacityInventory = 10;
+        private InventoryScrObj inventoryScrObj;
+        
+        private GameObject _slotPrefab;
+        private Transform _slotParent;
+        private int _capacityInventory;
         
         private List<SlotData> slots = new List<SlotData>();
         
-        public void Initialize()
+        public void Initialize(Transform slotParent)
         {
-            Debug.Log("Inventory initialized = " + _itemFactory);
+            #region InitializeInventory
+
+            inventoryScrObj = Resources.Load<InventoryScrObj>(INVENTORY_SCR_OBJ_NAME);
+
+            var inventoryData = inventoryScrObj.InventoryData.Clone();
+
+            _slotPrefab = inventoryData.SlotPrefab;
+            _slotParent = slotParent;
+            _capacityInventory = inventoryData.CountSlots;
+
+            #endregion
             
-            for (int i = 0; i < capacityInventory; i++)
+            for (int i = 0; i < _capacityInventory; i++)
             {
-                var prefabSlot = Instantiate(slotPrefab, slotParent);
+                var prefabSlot = _itemFactory.Create(_slotPrefab, _slotParent);
                 slots.Add(new SlotData(prefabSlot, _itemFactory));
             }
         }

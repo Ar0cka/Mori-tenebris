@@ -10,20 +10,25 @@ namespace DefaultNamespace
 {
     public class Bootstrap : MonoBehaviour
     {
-        [SerializeField] private PlayerData playerData;
+        [Header("Player")]
         [SerializeField] private PlayerStatsUI playerUIManager;
         [SerializeField] private PassiveRegenerationStats passiveRegenerationStats;
         [SerializeField] private InterfacePlayerManager playerInterface;
         [SerializeField] private StateMachineRealize stateMachineRealize;
-        [SerializeField] private Inventory inventory;
         
+        
+        [Inject] private PlayerData _playerData;
+        [Inject] private InventoryLogic _inventoryLogic;
         [Inject] private Health _health;
         [Inject] private Armour _armour;
         [Inject] private Stamina _stamina;
         
+        [Header("Inventory")]
+        [SerializeField] private Transform slotContent;
+        
         private void Awake()
         {
-            playerData.Initialize();
+            _playerData.Initialize();
             
             #region Stats
 
@@ -36,7 +41,7 @@ namespace DefaultNamespace
             passiveRegenerationStats.Initialize();
             stateMachineRealize.Initialize(_stamina);
             
-            inventory.Initialize();
+            _inventoryLogic.Initialize(slotContent);
             
             #region UI
 

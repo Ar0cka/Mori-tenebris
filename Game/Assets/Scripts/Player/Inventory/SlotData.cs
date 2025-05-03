@@ -5,7 +5,7 @@ using Player.Inventory;
 using UnityEngine;
 using Zenject;
 
-namespace PlayerNameSpace.Inventory
+namespace PlayerNameSpace.InventorySystem
 {
     public class SlotData
     {

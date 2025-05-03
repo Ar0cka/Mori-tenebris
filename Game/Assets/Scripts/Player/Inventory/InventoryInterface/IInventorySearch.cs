@@ -1,4 +1,5 @@
 using PlayerNameSpace.Inventory;
+using PlayerNameSpace.InventorySystem;
 
 namespace Player.Inventory.InventoryInterface
 {

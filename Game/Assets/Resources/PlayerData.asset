@@ -28,6 +28,7 @@ MonoBehaviour:
     speedRegenerationHealth: 0.1
     speedRegenerationStamina: 0.2
   playerDefaultStat:
+    baseDamage: 3
     startMaxHitPoint: 100
     startMaxStamina: 100
     walkSpeed: 4

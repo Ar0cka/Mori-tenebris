@@ -7,25 +7,35 @@ using Zenject;
 
 namespace PlayerNameSpace
 {
-    public class PlayerData : MonoBehaviour, IGetPlayerStat
+    public class PlayerData : IGetPlayerStat
     {
-        [SerializeField] private PlayerScrObj playerScrObj;
+        private const string SCR_OBJ_PATH = "PlayerData";
         
-        [Inject] private ISaveAndLoad _saveSystem;
+        private PlayerScrObj _playerScrObj;
+        
+        private ISaveAndLoad _saveSystem;
 
         private PlayerDataStats _playerDataStats;
 
         private PlayerStaticData _playerDataDontChangableStats;
         
         private string _filePath;
-
+        
+        public PlayerData(ISaveAndLoad saveAndLoad)
+        {
+            _saveSystem = saveAndLoad;
+            _playerScrObj = Resources.Load<PlayerScrObj>(SCR_OBJ_PATH);
+            
+            if (_playerScrObj == null)
+                throw new FileNotFoundException($"PlayerScrObj not found at: {SCR_OBJ_PATH}");
+        }
+        
         public void Initialize()
         {
             _filePath = Path.Combine(Application.persistentDataPath, "playerData.json");
+            _playerDataDontChangableStats = _playerScrObj.StaticPlayerStats;
 
             EventBus.Subscribe<SendSavePlayerDataEvent>(e => SavePlayerData());
-            
-            _playerDataDontChangableStats = playerScrObj.StaticPlayerStats;
 
             PlayerDataStats loadData = _saveSystem.LoadData<PlayerDataStats>(_filePath);
 
@@ -35,15 +45,9 @@ namespace PlayerNameSpace
             }
             else
             {
-                _playerDataStats = playerScrObj.PlayerDataStats.Clone();
+                _playerDataStats = _playerScrObj.PlayerDataStats.Clone();
                 Debug.Log("Clone");
             }
-        }
-
-        public void ResetData()
-        {
-            _playerDataStats = playerScrObj.PlayerDataStats.Clone();
-            Debug.Log($"Reset player stats file path: {_playerDataStats.SpeedRegenerationHealth}");
         }
 
         #region SaveData
