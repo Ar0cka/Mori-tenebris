@@ -11,12 +11,12 @@ namespace DefaultNamespace.Zenject
 {
     public class InjectPlayerData : MonoInstaller
     {
-        [SerializeField] private PlayerData playerData;
-        [SerializeField] private Inventory inventory;
-
-        public override void InstallBindings()
+        [SerializeField] private PlayerData _playerData;
+        public void InstallPlayerData()
         {
-            Container.Bind<IGetPlayerStat>().FromInstance(playerData).AsSingle().NonLazy();
+            Container.Bind<PlayerData>().FromComponentInNewPrefabResource("Player").AsSingle().NonLazy();
+            
+            Container.Bind<IGetPlayerStat>().FromResolve().AsSingle().NonLazy();
             
             Container.Bind<IUpgradeStat>().To<UpgradeStat>().AsSingle();
             
@@ -33,10 +33,6 @@ namespace DefaultNamespace.Zenject
             Container.Bind<IRegenerationStamina>().To<Stamina>().FromResolve();
             
             Container.Bind<DamageSystem>().AsSingle().NonLazy();
-
-            Container.Bind<IInventoryAdder>().FromInstance(inventory);
-            Container.Bind<IInventoryRemove>().FromInstance(inventory);
-            Container.Bind<IInventorySearch>().FromInstance(inventory);
         }
     }
 }

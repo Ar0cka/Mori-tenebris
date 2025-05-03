@@ -7,7 +7,7 @@ namespace DefaultNamespace.Zenject
 {
     public class InjectSpawnObject : MonoInstaller
     {
-        public override void InstallBindings()
+        public void InstallFactorySpawnItems()
         {
             Container.Bind<IItemsFactory>().To<DynamicFactory>().AsSingle().NonLazy();
         }
