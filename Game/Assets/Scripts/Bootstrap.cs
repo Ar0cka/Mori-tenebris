@@ -1,8 +1,9 @@
-using System.Collections;
 using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
+using Player.Inventory;
 using PlayerNameSpace;
 using PlayerNameSpace.Inventory;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 namespace DefaultNamespace
@@ -20,8 +21,7 @@ namespace DefaultNamespace
         [Inject] private Armour _armour;
         [Inject] private Stamina _stamina;
         
-        
-        private void Start()
+        private void Awake()
         {
             playerData.Initialize();
             

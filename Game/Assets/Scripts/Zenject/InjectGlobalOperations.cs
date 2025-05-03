@@ -2,9 +2,9 @@ using DefaultNamespace.PlayerStatsOperation.SaveSystem;
 using Zenject;
 
 
-public class SaveSystemInstaller : MonoInstaller
+public class InjectGlobalOperations : MonoInstaller
 {
-    public void SaveOperationsInstall()
+    public override void InstallBindings()
     {
         Container.Bind<ISaveAndLoad>().To<SaveAndLoadSystem>().AsSingle().NonLazy();
     }

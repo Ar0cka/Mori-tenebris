@@ -32,7 +32,7 @@ namespace PlayerNameSpace.Inventory
             _itemPrefab = null;
             _itemSettings = null;    
         }
-    
+
         public void CreateNewItem(ItemData itemData)
         {
             if (IsOccupied || IsFull) return;
