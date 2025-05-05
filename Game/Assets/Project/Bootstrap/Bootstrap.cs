@@ -1,9 +1,10 @@
+using System;
+using System.Threading.Tasks;
 using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
-using Player.Inventory;
+using EventBusNamespace;
 using PlayerNameSpace;
 using PlayerNameSpace.Inventory;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Zenject;
 
 namespace DefaultNamespace
@@ -13,7 +14,7 @@ namespace DefaultNamespace
         [Header("Player")]
         [SerializeField] private PlayerStatsUI playerUIManager;
         [SerializeField] private PassiveRegenerationStats passiveRegenerationStats;
-        [FormerlySerializedAs("playerInterface")] [SerializeField] private PlayerUI player;
+        [SerializeField] private PlayerUI player;
         [SerializeField] private StateMachineRealize stateMachineRealize;
         
         
@@ -25,8 +26,15 @@ namespace DefaultNamespace
         
         [Header("Inventory")]
         [SerializeField] private Transform slotContent;
+        [SerializeField] private InventoryScrObj inventoryConfig;
         
         private void Awake()
+        {
+           Initialize();
+           EventBus.Publish(new GameInitialized());
+        }
+
+        private void Initialize()
         {
             _playerData.Initialize();
             
@@ -41,7 +49,7 @@ namespace DefaultNamespace
             passiveRegenerationStats.Initialize();
             stateMachineRealize.Initialize(_stamina);
             
-            _inventoryLogic.Initialize(slotContent);
+            _inventoryLogic.Initialize(slotContent, inventoryConfig);
             
             #region UI
 
@@ -50,5 +58,10 @@ namespace DefaultNamespace
 
             #endregion
         }
+    }
+
+    public class GameInitialized
+    {
+        
     }
 }

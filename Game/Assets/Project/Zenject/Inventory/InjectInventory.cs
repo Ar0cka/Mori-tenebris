@@ -12,7 +12,6 @@ namespace DefaultNamespace.Zenject.Inventory
             Container.Bind<InventoryLogic>().AsSingle().NonLazy();
             Container.Bind<IInventoryAdder>().To<InventoryLogic>().FromResolve();
             Container.Bind<IInventoryRemove>().To<InventoryLogic>().FromResolve();
-            Container.Bind<IInventorySearch>().To<InventoryLogic>().FromResolve();
         }
     }
 }

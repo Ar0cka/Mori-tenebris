@@ -3881,9 +3881,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerUIManager: {fileID: 940571145}
   passiveRegenerationStats: {fileID: 1615143364}
-  playerInterface: {fileID: 1195121438}
+  player: {fileID: 1195121438}
   stateMachineRealize: {fileID: 1907022999}
   slotContent: {fileID: 1187445518}
+  inventoryConfig: {fileID: 11400000, guid: 765f93f580a2c3449b636c8c0b2ea875, type: 2}
 --- !u!4 &1054508518
 Transform:
   m_ObjectHideFlags: 0

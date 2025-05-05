@@ -8,6 +8,7 @@ public class SaveAndLoadSystem : ISaveAndLoad
 {
     public void SaveData(object saveObject, string filePath)
     {
+        if (saveObject == null) return;
         try
         {
             string data = JsonUtility.ToJson(saveObject);
