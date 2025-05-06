@@ -10,8 +10,8 @@ namespace DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem
 {
     public class Armour : IEquipAndUnEquipItem, IDisposable
     {
-        public int PhysicArmour { get; private set; }
-        public int MagicArmour { get; private set; }
+        public float PhysicArmour { get; private set; }
+        public float MagicArmour { get; private set; }
         
         [Inject] private readonly IGetPlayerStat _getPlayerStat;
 
@@ -60,6 +60,19 @@ namespace DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem
                 }
                 _equipItems.Remove(name);
             }
+        }
+
+        public float GetArmour(DamageType damageType)
+        {
+            switch (damageType)
+            {
+                case DamageType.Physic:
+                    return PhysicArmour;
+                case DamageType.Magic:
+                    return MagicArmour;
+            }
+
+            return 0;
         }
 
         public void Dispose()

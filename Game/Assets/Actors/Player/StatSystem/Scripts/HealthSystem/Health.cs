@@ -2,6 +2,7 @@ using System;
 using DefaultNamespace.Enums;
 using EventBusNamespace;
 using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
+using Systems.CalculateDamageSystem;
 using UnityEngine;
 using Zenject;
 
@@ -31,41 +32,13 @@ namespace PlayerNameSpace
 
         public void TakeDamage(int damage, DamageType damageType)
         {
-            #region DamageSystemCom
-
-            //float multiplyDamage = 0;
-
-            //switch (damageType)
-            //{
-            //case DamageType.Physic:
-            // multiplyDamage = damage / (damage + _armour.PhysicArmour);
-            //break;
-            // case DamageType.Magic:
-            //  multiplyDamage = damage / (damage + _armour.MagicArmour);
-            //  break;
-            // default:
-            //  return;
-            //  }
-
-            // Debug.Log(multiplyDamage);
+            int finalDamage = CalculateDamage.CalculateFinalDamageWithResist(damage, _armour.GetArmour(damageType));
             
-            //int finallyDamage = Mathf.FloorToInt(damage * multiplyDamage);
-            
-            //Debug.Log(finallyDamage);
-            
-            //CurrentHitPoint -= Mathf.Clamp(finallyDamage, 0, CurrentHitPoint);
-
-            #endregion
-            
-            CurrentHitPoint -= damage;
+            CurrentHitPoint -= finalDamage;
             
             Debug.Log($"Current hit point = {CurrentHitPoint}");
-
-
-            if (CurrentHitPoint <= 0)
-            {
-                PlayerDead();
-            }
+            
+            CheckDead();
         }
 
         public void Regeneration(int countRegeneration)
@@ -76,6 +49,14 @@ namespace PlayerNameSpace
             }
         }
 
+        private void CheckDead()
+        {
+            if (CurrentHitPoint <= 0)
+            {
+                PlayerDead();
+            }
+        }
+        
         private void PlayerDead()
         {
             EventBus.Publish(new SendDieEvent());
