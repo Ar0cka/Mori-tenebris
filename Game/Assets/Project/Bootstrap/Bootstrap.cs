@@ -46,8 +46,9 @@ namespace DefaultNamespace
 
             #endregion
             
-            passiveRegenerationStats.Initialize();
             stateMachineRealize.Initialize(_stamina);
+            passiveRegenerationStats.Initialize();
+            
             
             _inventoryLogic.Initialize(slotContent, inventoryConfig);
             

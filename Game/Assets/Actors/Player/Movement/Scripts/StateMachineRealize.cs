@@ -14,6 +14,8 @@ public class StateMachineRealize : MonoBehaviour
 
     public void Initialize(ISubtractionStamina subtractionStamina)
     {
+        PlayerTransform.PlayerInitialize(transform);
+        
         stateMachine = new FStateMachine();
         
         stateMachine.AddNewState(new IdleState(stateMachine, this));

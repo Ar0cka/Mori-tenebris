@@ -1,4 +1,4 @@
-namespace Actors.Enemy.Stats.Events
+namespace Enemy.Events
 {
     public class HitEnemyEvent
     {

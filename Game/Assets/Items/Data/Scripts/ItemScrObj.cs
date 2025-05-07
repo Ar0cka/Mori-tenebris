@@ -1,6 +1,6 @@
 using System;
 using DefaultNamespace.Enums;
-using Data;
+using Enemy;
 using UnityEngine;
 
 

@@ -1,7 +1,7 @@
-using Actors.Enemy.EnemyData.Scripts;
+using Actors.Enemy.Data.Scripts;
 using DefaultNamespace.Enums;
 
-namespace Actors.Enemy.Stats.StatSystems.Armour
+namespace Enemy.StatSystems.Armour
 {
     public class EnemyArmour
     {

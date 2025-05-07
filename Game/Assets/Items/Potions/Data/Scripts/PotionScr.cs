@@ -1,4 +1,4 @@
-using Data.ItemTypeData;
+using Enemy.ItemTypeData;
 using UnityEngine;
 
 namespace Items

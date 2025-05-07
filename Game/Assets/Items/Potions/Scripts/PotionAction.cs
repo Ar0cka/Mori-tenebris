@@ -1,5 +1,5 @@
-using Data;
-using Data.ItemTypeData;
+using Enemy;
+using Enemy.ItemTypeData;
 using Items;
 using Player.Inventory.InventoryInterface;
 using PlayerNameSpace;

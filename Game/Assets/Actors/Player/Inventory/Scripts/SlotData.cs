@@ -1,5 +1,5 @@
 using System;
-using Data;
+using Enemy;
 using DefaultNamespace.Zenject;
 using Player.Inventory;
 using SlotSystem;

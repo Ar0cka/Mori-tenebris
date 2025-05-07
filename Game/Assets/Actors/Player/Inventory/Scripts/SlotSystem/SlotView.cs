@@ -1,4 +1,4 @@
-using Data;
+using Enemy;
 using DefaultNamespace.Zenject;
 using Player.Inventory;
 using UnityEngine;

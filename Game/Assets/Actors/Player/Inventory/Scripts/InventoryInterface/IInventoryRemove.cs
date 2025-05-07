@@ -1,4 +1,4 @@
-using Data;
+using Enemy;
 
 namespace Player.Inventory.InventoryInterface
 {

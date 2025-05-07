@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Data;
+using Enemy;
 using DefaultNamespace.Zenject;
 using Player.Inventory.InventoryInterface;
 using PlayerNameSpace.InventorySystem;

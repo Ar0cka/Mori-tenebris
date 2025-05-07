@@ -2,7 +2,7 @@ using System;
 using DefaultNamespace.Enums;
 using UnityEngine;
 
-namespace Data
+namespace Enemy
 {
     [Serializable]
     public class ItemData

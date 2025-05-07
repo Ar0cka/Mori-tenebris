@@ -1,6 +1,6 @@
 using System;
 
-namespace Data.ItemTypeData
+namespace Enemy.ItemTypeData
 {
     [Serializable]
     public class Potion

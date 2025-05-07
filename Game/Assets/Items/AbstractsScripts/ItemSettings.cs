@@ -1,4 +1,4 @@
-using Data;
+using Enemy;
 using Player.Inventory.InventoryInterface;
 using TMPro;
 using UnityEngine;

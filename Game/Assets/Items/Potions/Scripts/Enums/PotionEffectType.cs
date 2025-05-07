@@ -1,4 +1,4 @@
-namespace Data.ItemTypeData
+namespace Enemy.ItemTypeData
 {
     public enum PotionEffectType
     {

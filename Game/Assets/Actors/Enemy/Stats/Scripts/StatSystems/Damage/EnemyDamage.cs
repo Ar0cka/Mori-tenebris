@@ -1,4 +1,4 @@
-namespace Actors.Enemy.Stats.StatSystems.DamageSystem
+namespace Enemy.StatSystems.DamageSystem
 {
     public class EnemyDamage
     {

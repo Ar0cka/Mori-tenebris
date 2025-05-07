@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DefaultNamespace.Enums;
-using Data;
+using Enemy;
 using EventBusNamespace;
 using PlayerNameSpace;
 using Zenject;

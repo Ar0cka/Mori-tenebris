@@ -1,14 +1,14 @@
 using System;
-using Actors.Enemy.EnemyData.Scripts;
-using Actors.Enemy.Stats.Events;
-using Actors.Enemy.Stats.StatSystems.Armour;
-using Actors.Enemy.Stats.StatSystems.DamageSystem;
+using Actors.Enemy.Data.Scripts;
 using DefaultNamespace.Enums;
+using Enemy.Events;
+using Enemy.StatSystems.Armour;
+using Enemy.StatSystems.DamageSystem;
 using EventBusNamespace;
 using Systems.CalculateDamageSystem;
 using UnityEngine;
 
-namespace Actors.Enemy.Stats
+namespace Actors.Enemy.Stats.Scripts
 {
     public class EnemyData : MonoBehaviour
     {
@@ -51,6 +51,8 @@ namespace Actors.Enemy.Stats
         #region Getters
 
         public EnemyDamage GetEnemyDamage() => _enemyDamage;
+
+        public EnemyScrObj GetEnemyScrObj() => enemyScrObj;
 
         #endregion
     }
