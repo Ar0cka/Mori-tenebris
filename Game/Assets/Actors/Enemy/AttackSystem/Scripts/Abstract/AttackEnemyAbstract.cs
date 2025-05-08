@@ -12,8 +12,9 @@ namespace Actors.Enemy.AttackSystem.Scripts
         [SerializeField] private EnemyData enemyData;
         [SerializeField] protected List<string> baseAnimationList;
         [SerializeField] protected Animator animator;
-       
-        
+        [SerializeField] protected Transform playerTransform;
+
+
         private float _cooldownAttack;
 
         private void Awake()
@@ -24,18 +25,19 @@ namespace Actors.Enemy.AttackSystem.Scripts
             if (animator == null || enemyData == null || baseAnimationList == null)
             {
 #if UNITY_EDITOR
-                Debug.LogError($"EnemyData: {enemyData} / animator: {animator} / baseAnimationList: {baseAnimationList}");
+                Debug.LogError(
+                    $"EnemyData: {enemyData} / animator: {animator} / baseAnimationList: {baseAnimationList}");
 #endif
                 enabled = false;
             }
-            
+
             ResetCooldownAttack();
         }
 
         /// <summary>
         /// Базовая updateLogic состоит из проверки на cooldown и вызова метода атаки.
         /// </summary>
-        protected void Update()
+        private void Update()
         {
             if (_cooldownAttack >= 0)
             {
@@ -63,20 +65,17 @@ namespace Actors.Enemy.AttackSystem.Scripts
         /// </summary>
         protected virtual void Attack(List<string> animationList)
         {
-            int i = 0;
-            while (animationList.Count > 0 && CheckAttackDistance())
+            for (int i = 0; i < baseAnimationList.Count; i++)
             {
                 var currentAnimationPlaying = animator.GetCurrentAnimatorStateInfo(0).IsName(animationList[i]);
-                
+
+                Debug.Log(currentAnimationPlaying);
+
                 if (!currentAnimationPlaying)
                 {
                     animator.SetTrigger(animationList[i]);
                 }
-
-                if (currentAnimationPlaying && AnimationPlayChecker())
-                {
-                    i++;
-                }
+                
             }
         }
 
@@ -94,9 +93,10 @@ namespace Actors.Enemy.AttackSystem.Scripts
         /// <returns></returns>
         protected bool CheckAttackDistance()
         {
-            if (PlayerTransform.PlayerPosition == null) return false;
-            
-            return Vector2.Distance(PlayerTransform.PlayerPosition.position, transform.position) >= enemyData.GetEnemyScrObj().AgreDistance;
+            if (playerTransform == null) return false;
+
+            return Vector2.Distance(playerTransform.position, transform.position) >=
+                   enemyData.GetEnemyScrObj().AttackDistance;
         }
 
         /// <summary>

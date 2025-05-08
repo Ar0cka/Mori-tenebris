@@ -1,6 +1,7 @@
 using System;
 using DefaultNamespace.Enums;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Actors.Enemy.Data.Scripts
 {
@@ -10,11 +11,12 @@ namespace Actors.Enemy.Data.Scripts
         [Header("Info")]
         [SerializeField] private string enemyName;
         [SerializeField] private string description;
-        [SerializeField] private float agreDistance;
+        [SerializeField] private float attackDistance;
+        [SerializeField] private float agressionDistance;
+        
         
         [Header("Stats")]
         [SerializeField] private int hitPoints;
-        [SerializeField] private float armour;
         
         [Header("Attack")]
         [SerializeField] private int damage;
@@ -30,10 +32,10 @@ namespace Actors.Enemy.Data.Scripts
 
         public string EnemyName => enemyName;
         public string Description => description;
-        public float AgreDistance => agreDistance;
+        public float AttackDistance => attackDistance;
+        public float AgressionDistance => agressionDistance;
         
         public int HitPoints => hitPoints;
-        public float Armour => armour;
         
         public int Damage => damage;
         public DamageType DamageType => damageType;
