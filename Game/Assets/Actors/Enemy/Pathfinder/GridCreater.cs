@@ -11,41 +11,46 @@ namespace Actors.Enemy.Pathfinder
         [SerializeField] private LayerMask unwalkableMask;
         [SerializeField] private float nodeRadius;
         [SerializeField] private float overlapRadius;
-        
+
         private float nodeDiameter;
-        
+
         private int gridWidth;
         private int gridHeight;
-        
+
         private Node[,] grid;
+
         private void Start()
         {
             nodeDiameter = nodeRadius * 2;
             gridWidth = Mathf.FloorToInt(gridWorldSize.x / nodeDiameter);
             gridHeight = Mathf.FloorToInt(gridWorldSize.y / nodeDiameter);
-            
+
             InitializeGrid();
         }
 
         private void InitializeGrid()
         {
             grid = new Node[gridWidth, gridHeight];
-            Vector2 bottomLeft = (Vector2)transform.position - Vector2.right * gridWorldSize.x / 2 - Vector2.up * gridWorldSize.y / 2;
-            
+            Vector2 bottomLeft = (Vector2)transform.position - Vector2.right * gridWorldSize.x / 2 -
+                                 Vector2.up * gridWorldSize.y / 2;
+
             for (int x = 0; x < gridWidth; x++)
             {
                 for (int y = 0; y < gridHeight; y++)
                 {
-                    Vector2 waypoint = bottomLeft + Vector2.right * (x * nodeDiameter + nodeRadius) + Vector2.up * (y * nodeDiameter + nodeRadius);
-                    
+                    Vector2 waypoint = bottomLeft + Vector2.right * (x * nodeDiameter + nodeRadius) +
+                                       Vector2.up * (y * nodeDiameter + nodeRadius);
+
                     bool isWalkable = !Physics2D.OverlapCircle(waypoint, overlapRadius, unwalkableMask);
+#if UNITY_EDITOR
                     Debug.Log(isWalkable + " InitializeGrid");
+#endif
                     grid[x, y] = new Node(x, y, isWalkable, waypoint);
                 }
             }
         }
-        
-         public Node NodeFromWorldPosition(Vector2 currentPosition)
+
+        public Node NodeFromWorldPosition(Vector2 currentPosition)
         {
             float perX = (currentPosition.x + gridWorldSize.x / 2) / gridWorldSize.x;
             float perY = (currentPosition.y + gridWorldSize.y / 2) / gridWorldSize.y;
@@ -55,29 +60,16 @@ namespace Actors.Enemy.Pathfinder
 
             int x = Mathf.RoundToInt((gridWidth - 1) * perX);
             int y = Mathf.RoundToInt((gridHeight - 1) * perY);
-            
+
             return grid[x, y];
         }
 
-        public Vector2 WorldPositionFromNode(int x, int y)
-        {
-            float cellSizeX = gridWorldSize.x / gridWidth;
-            float cellSizeY = gridWorldSize.y / gridHeight;
-
-            Vector2 worldBottomLeft = (Vector2)transform.position - Vector2.right+ gridWorldSize / 2 - Vector2.up * gridWorldSize.y / 2;
-
-            float worldX = worldBottomLeft.x + (x + 0.5f) * cellSizeX;
-            float worldY = worldBottomLeft.y + (y + 0.5f) * cellSizeY;
-
-            return new Vector2(worldX, worldY);
-        }
-        
         public List<Node> GetNeighbour(Node node)
         {
             List<Node> neighbours = new List<Node>();
 
-            int[] dx = { 1, -1, 0, 0, -1, -1, 1, 1};
-            int[] dy = { 0, 0, -1, 1, 1, -1, -1, 1};
+            int[] dx = { 1, -1, 0, 0, -1, -1, 1, 1 };
+            int[] dy = { 0, 0, -1, 1, 1, -1, -1, 1 };
 
             for (int i = 0; i < dx.Length; i++)
             {
@@ -89,7 +81,7 @@ namespace Actors.Enemy.Pathfinder
                     neighbours.Add(grid[checkX, checkY]);
                 }
             }
-            
+
             return neighbours;
         }
     }

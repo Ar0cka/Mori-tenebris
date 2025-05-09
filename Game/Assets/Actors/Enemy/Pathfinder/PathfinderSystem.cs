@@ -20,7 +20,7 @@ namespace Actors.Enemy.Pathfinder
                 FindPath(currentPos.position, seeker.position);
         }
 
-        private void FindPath(Vector2 startPos, Vector2 goalPos)
+        public void FindPath(Vector2 startPos, Vector2 goalPos)
         {
             Node startNode = gridInitialize.NodeFromWorldPosition(startPos);
             Node goalNode = gridInitialize.NodeFromWorldPosition(goalPos);

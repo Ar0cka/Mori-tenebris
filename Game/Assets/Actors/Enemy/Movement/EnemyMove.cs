@@ -5,7 +5,9 @@ using Actors.Enemy.Data.Scripts;
 using Actors.Enemy.Pathfinder;
 using Actors.Enemy.Stats.Scripts;
 using PlayerNameSpace;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 namespace Actors.Enemy.Movement
@@ -26,10 +28,10 @@ namespace Actors.Enemy.Movement
 
         private List<Node> _path = new List<Node>();
 
-        private bool _canMove;
+        [SerializeField] private bool canMove; //=> Vector2.Distance(transform.position, GetPlayerPosition.PlayerPosition().position) <= enemyScrObj.AgressionDistance;
         private bool _canRequestPath;
 
-        private int _nodeCounter = 0;
+        private int _nodeCounter;
 
         private void Awake()
         {
@@ -40,13 +42,18 @@ namespace Actors.Enemy.Movement
             }
 
             enemyScrObj = enemyData.GetEnemyScrObj();
+            _canRequestPath = true;
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
-            if (pathfinder.CheckPathCount())
+            if (canMove)
             {
-                _path = pathfinder.GetPath();
+                if (_canRequestPath)
+                {
+                    _canRequestPath = false;
+                    StartCoroutine(UpdatePath());
+                }
 
                 if (_path.Count > 0)
                 {
@@ -58,7 +65,7 @@ namespace Actors.Enemy.Movement
         private IEnumerator UpdatePath()
         {
             yield return new WaitForSeconds(delayForRequestPath);
-            //pathfinder.FindPath(transform.position, GetPlayerPosition.PlayerPosition().position);
+            pathfinder.FindPath(transform.position, GetPlayerPosition.PlayerPosition().position);
             _path = pathfinder.GetPath();
             _nodeCounter = 0;
             _canRequestPath = true;
@@ -67,14 +74,15 @@ namespace Actors.Enemy.Movement
         private void Move()
         {
             Debug.Log("path count = " + _path.Count);
-            
-            Vector2 moveDirection = (_path[0].Waypoint  - rb2D.position).normalized;
-            
-            rb2D.MovePosition(rb2D.position + moveDirection * enemyScrObj.Speed * Time.deltaTime);
 
-            if (CanSwitchMoveNode(_path[0].Waypoint))
+            Vector2 targetPosition = _path[_nodeCounter].Waypoint;
+            Vector2 moveDirection = (_path[_nodeCounter].Waypoint - rb2D.position).normalized;
+
+            rb2D.MovePosition(rb2D.position + moveDirection * enemyScrObj.Speed * Time.fixedDeltaTime);
+
+            if (CanSwitchMoveNode(targetPosition))
             {
-                _path.RemoveAt(0);
+                _nodeCounter++;
             }
         }
 

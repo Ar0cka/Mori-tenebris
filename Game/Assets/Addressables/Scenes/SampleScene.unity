@@ -412,6 +412,7 @@ GameObject:
   m_Component:
   - component: {fileID: 257182653}
   - component: {fileID: 257182652}
+  - component: {fileID: 257182654}
   m_Layer: 0
   m_Name: SceneContext
   m_TagString: Untagged
@@ -432,7 +433,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scriptableObjectInstallers: []
-  _monoInstallers: []
+  _monoInstallers:
+  - {fileID: 257182654}
   _installerPrefabs: []
   _autoRun: 1
   OnPreInstall:
@@ -465,6 +467,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &257182654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 257182650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43cc9f345ba7498cb6f64e05a26d2023, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  girdCreater: {fileID: 399751062}
 --- !u!1 &381643672
 GameObject:
   m_ObjectHideFlags: 0
@@ -5062,7 +5077,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridInitialize: {fileID: 399751062}
-  currentPos: {fileID: 1392060213}
+  currentPos: {fileID: 4944777077368423881}
   seeker: {fileID: 1907023002}
 --- !u!4 &1392060213
 Transform:
@@ -6857,6 +6872,11 @@ MonoBehaviour:
   rb2D: {fileID: 4944777077368423876}
   switchNodeDistance: 0.5
   delayForRequestPath: 0
+--- !u!4 &4944777077368423881 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6469656373597238468, guid: ccb838575e77e8348968fb042a9c67f2, type: 3}
+  m_PrefabInstance: {fileID: 4944777077368423873}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
