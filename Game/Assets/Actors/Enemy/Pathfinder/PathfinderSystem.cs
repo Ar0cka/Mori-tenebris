@@ -5,7 +5,7 @@ using UnityEngine.Serialization;
 
 namespace Actors.Enemy.Pathfinder
 {
-    public class Pathfinder : MonoBehaviour
+    public class PathfinderSystem : MonoBehaviour
     {
         [SerializeField] private GridCreater gridInitialize;
 
@@ -107,6 +107,8 @@ namespace Actors.Enemy.Pathfinder
             return 14 * distX + 10 * (distY - distX);  
         }
 
+        public List<Node> GetPath() => _path;
+        
         private void OnDrawGizmos()
         {
             if (_path != null)

@@ -13,7 +13,8 @@ namespace Actors.Enemy.Data.Scripts
         [SerializeField] private string description;
         [SerializeField] private float attackDistance;
         [SerializeField] private float agressionDistance;
-        
+
+        [Header("Movement")] private float speed = 1f;
         
         [Header("Stats")]
         [SerializeField] private int hitPoints;
@@ -34,6 +35,8 @@ namespace Actors.Enemy.Data.Scripts
         public string Description => description;
         public float AttackDistance => attackDistance;
         public float AgressionDistance => agressionDistance;
+        
+        public float Speed => speed;
         
         public int HitPoints => hitPoints;
         
