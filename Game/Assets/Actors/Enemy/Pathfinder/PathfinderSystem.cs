@@ -89,6 +89,7 @@ namespace Actors.Enemy.Pathfinder
                 currentNode = currentNode.ParentNode;
             }
             
+            currentPath.Reverse();
             _path = currentPath;
 
             foreach (var pathNode in _path)
@@ -108,6 +109,8 @@ namespace Actors.Enemy.Pathfinder
         }
 
         public List<Node> GetPath() => _path;
+        
+        public bool CheckPathCount() => _path?.Count > 0;
         
         private void OnDrawGizmos()
         {

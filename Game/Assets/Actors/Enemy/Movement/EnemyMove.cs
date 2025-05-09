@@ -6,6 +6,7 @@ using Actors.Enemy.Pathfinder;
 using Actors.Enemy.Stats.Scripts;
 using PlayerNameSpace;
 using UnityEngine;
+using Zenject;
 
 namespace Actors.Enemy.Movement
 {
@@ -18,6 +19,8 @@ namespace Actors.Enemy.Movement
 
         [SerializeField] private float switchNodeDistance;
         [SerializeField] private float delayForRequestPath;
+
+        [Inject] private GridCreater gridCreater;
 
         private EnemyScrObj enemyScrObj;
 
@@ -41,11 +44,14 @@ namespace Actors.Enemy.Movement
 
         private void Update()
         {
-            var path = pathfinder.GetPath();
-
-            if (path?.Count > 0)
+            if (pathfinder.CheckPathCount())
             {
-                Move();
+                _path = pathfinder.GetPath();
+
+                if (_path.Count > 0)
+                {
+                    Move();
+                }
             }
         }
 
@@ -60,7 +66,11 @@ namespace Actors.Enemy.Movement
 
         private void Move()
         {
-            rb2D.MovePosition(rb2D.position + _path[0].Waypoint * enemyScrObj.Speed * Time.deltaTime);
+            Debug.Log("path count = " + _path.Count);
+            
+            Vector2 moveDirection = (_path[0].Waypoint  - rb2D.position).normalized;
+            
+            rb2D.MovePosition(rb2D.position + moveDirection * enemyScrObj.Speed * Time.deltaTime);
 
             if (CanSwitchMoveNode(_path[0].Waypoint))
             {
@@ -69,6 +79,6 @@ namespace Actors.Enemy.Movement
         }
 
         private bool CanSwitchMoveNode(Vector2 nextPoint) =>
-            Vector2.Distance(nextPoint, transform.position) <= switchNodeDistance;
+            Vector2.Distance(nextPoint, rb2D.position) <= switchNodeDistance;
     }
 }
