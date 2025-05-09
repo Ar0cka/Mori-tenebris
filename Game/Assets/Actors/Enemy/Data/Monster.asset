@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyName: Warrion
   description: "\u0431\u0438\u0442\u044C"
-  attackDistance: 0
-  agressionDistance: 0
+  attackDistance: 2
+  agressionDistance: 10
   hitPoints: 100
   damage: 10
   damageType: 0

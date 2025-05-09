@@ -7,31 +7,28 @@ using UnityEngine;
 
 namespace Actors.Enemy.AttackSystem.Scripts
 {
-    public abstract class AttackEnemyAbstract : MonoBehaviour
+    public class AttackEnemyAbstract : MonoBehaviour
     {
         [SerializeField] private EnemyData enemyData;
-        [SerializeField] protected List<string> baseAnimationList;
         [SerializeField] protected Animator animator;
         [SerializeField] protected Transform playerTransform;
 
 
-        private float _cooldownAttack;
+        private float _cooldownAttack = 0;
 
         private void Awake()
         {
             if (enemyData == null) enemyData = GetComponent<EnemyData>();
             if (animator == null) animator = GetComponent<Animator>();
 
-            if (animator == null || enemyData == null || baseAnimationList == null)
+            if (animator == null || enemyData == null)
             {
 #if UNITY_EDITOR
                 Debug.LogError(
-                    $"EnemyData: {enemyData} / animator: {animator} / baseAnimationList: {baseAnimationList}");
+                    $"EnemyData: {enemyData} / animator: {animator}");
 #endif
                 enabled = false;
             }
-
-            ResetCooldownAttack();
         }
 
         /// <summary>
@@ -53,36 +50,39 @@ namespace Actors.Enemy.AttackSystem.Scripts
         }
 
         /// <summary>
-        /// Базово вызывает стандартную атаку.
+        /// Обработка атак
         /// </summary>
-        protected virtual void AssingAttack()
+        public virtual void AssingAttack()
         {
-            Attack(baseAnimationList);
+            
         }
 
         /// <summary>
         /// Логика назначения атак, с помощью этого скрипта выстраивается очередь и условия атак.
         /// </summary>
-        protected virtual void Attack(List<string> animationList)
+        protected void Attack(List<string> animationList)
         {
-            for (int i = 0; i < baseAnimationList.Count; i++)
+            for (int i = 0; i < animationList.Count; i++)
             {
+                if (!CheckAttackDistance())
+                {
+                    foreach (var animation in animationList)
+                    {
+                        animator.ResetTrigger(animation);
+                    }
+                    break;
+                }
+                
                 var currentAnimationPlaying = animator.GetCurrentAnimatorStateInfo(0).IsName(animationList[i]);
-
-                Debug.Log(currentAnimationPlaying);
 
                 if (!currentAnimationPlaying)
                 {
                     animator.SetTrigger(animationList[i]);
                 }
-                
             }
         }
-
-        /// <summary>
-        /// Сброс кулдауна после атаки до первоначального состояния
-        /// </summary>
-        protected void ResetCooldownAttack()
+        
+        private void ResetCooldownAttack()
         {
             _cooldownAttack = enemyData.GetEnemyScrObj().CooldownAttack;
         }
@@ -95,7 +95,7 @@ namespace Actors.Enemy.AttackSystem.Scripts
         {
             if (playerTransform == null) return false;
 
-            return Vector2.Distance(playerTransform.position, transform.position) >=
+            return Vector2.Distance(playerTransform.position, transform.position) <=
                    enemyData.GetEnemyScrObj().AttackDistance;
         }
 
