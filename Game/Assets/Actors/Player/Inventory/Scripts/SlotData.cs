@@ -13,10 +13,10 @@ namespace PlayerNameSpace.InventorySystem
     {
         private Slot _slot;
         private SlotView _slotView;
-        public SlotData(GameObject slotPrefab, IItemsFactory itemsFactory)
+        public SlotData(GameObject slotPrefab, ISpawnProjectObject spawnProjectObject)
         {
             _slot = new Slot();
-            _slotView = new SlotView(slotPrefab, itemsFactory);
+            _slotView = new SlotView(slotPrefab, spawnProjectObject);
         }
 
         public void CreateNewItem(ItemData itemData)

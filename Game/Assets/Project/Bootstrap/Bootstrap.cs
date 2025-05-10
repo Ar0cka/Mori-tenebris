@@ -3,6 +3,7 @@ using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
 using EventBusNamespace;
 using PlayerNameSpace;
 using PlayerNameSpace.Inventory;
+using Systems.SpawnMonsterSystem;
 using UnityEngine;
 using Zenject;
 
@@ -23,6 +24,7 @@ namespace DefaultNamespace
 
         [Header("Spawn")] 
         [SerializeField] private SpawnPlayer spawnPlayer;
+        [SerializeField] private SpawnMonster spawnMonster;
         
         [Inject] private PlayerData _playerData;
         [Inject] private InventoryLogic _inventoryLogic;
@@ -40,6 +42,7 @@ namespace DefaultNamespace
         private void Initialize()
         {
             SpawnPlayer();  
+            SpawnMonster();
             
             #region UI
 
@@ -68,6 +71,11 @@ namespace DefaultNamespace
             
             
             _inventoryLogic.Initialize(slotContent, inventoryConfig);
+        }
+
+        private void SpawnMonster()
+        {
+            spawnMonster.Initialize();
         }
     }
 

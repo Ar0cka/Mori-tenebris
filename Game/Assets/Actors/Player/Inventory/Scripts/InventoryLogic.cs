@@ -14,7 +14,7 @@ namespace PlayerNameSpace.Inventory
 {
     public class InventoryLogic : IInventoryAdder, IInventoryRemove
     {
-        [Inject] private IItemsFactory _itemFactory;
+        [Inject] private ISpawnProjectObject _itemFactory;
 
         private InventoryScrObj _inventoryScrObj;
 

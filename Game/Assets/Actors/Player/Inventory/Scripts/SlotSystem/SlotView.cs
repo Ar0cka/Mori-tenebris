@@ -8,13 +8,13 @@ namespace SlotSystem
 {
     public class SlotView
     {
-        private IItemsFactory _itemFactory;
+        private ISpawnProjectObject _itemFactory;
         
         private GameObject _slotObject;
         private GameObject _itemPrefab;
         private ItemSettings _itemSettings;
 
-        public SlotView(GameObject slotPrefab, IItemsFactory itemFactory)
+        public SlotView(GameObject slotPrefab, ISpawnProjectObject itemFactory)
         {
             _slotObject = slotPrefab;
             _itemFactory = itemFactory;

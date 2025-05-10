@@ -5,20 +5,20 @@ using Zenject;
 
 namespace DefaultNamespace.Zenject
 {
-    public class InjectSpawnObject : MonoInstaller
+    public class InjectProjectSpawnObject : MonoInstaller
     {
         public override void InstallBindings()
         {
-            Container.Bind<IItemsFactory>().To<DynamicFactory>().AsSingle().NonLazy();
+            Container.Bind<ISpawnProjectObject>().To<DynamicFactory>().AsSingle().NonLazy();
         }
     }
 
-    public interface IItemsFactory
+    public interface ISpawnProjectObject
     {
         GameObject Create(GameObject gameObject, Transform parent);
     }
 
-    public class DynamicFactory : IItemsFactory
+    public class DynamicFactory : ISpawnProjectObject
     {
         private readonly DiContainer _diContainer;
 

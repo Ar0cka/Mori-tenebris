@@ -16,7 +16,7 @@ MonoBehaviour:
   description: "\u0431\u0438\u0442\u044C"
   attackDistance: 2
   agressionDistance: 10
-  speed: 4
+  speed: 2
   hitPoints: 100
   damage: 10
   damageType: 0

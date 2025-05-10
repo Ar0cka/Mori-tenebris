@@ -1,27 +1,21 @@
 using System.Collections.Generic;
 using System.Linq;
+using Actors.Enemy.Pathfinder.Interface;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace Actors.Enemy.Pathfinder
 {
-    public class PathfinderSystem : MonoBehaviour
+    public class PathfinderSystem : MonoBehaviour, IPathFind
     {
         [SerializeField] private GridCreater gridInitialize;
 
-        [SerializeField] private Transform currentPos;
-        [SerializeField] private Transform seeker;
-
         private List<Node> _path;
-
-        private void Update()
-        {
-            if(Input.GetButtonDown("Jump"))
-                FindPath(currentPos.position, seeker.position);
-        }
 
         public void FindPath(Vector2 startPos, Vector2 goalPos)
         {
+            if (startPos == goalPos || startPos == Vector2.zero || goalPos == Vector2.zero) return;
+            
             Node startNode = gridInitialize.NodeFromWorldPosition(startPos);
             Node goalNode = gridInitialize.NodeFromWorldPosition(goalPos);
             

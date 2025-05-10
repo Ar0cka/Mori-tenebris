@@ -11,7 +11,6 @@ namespace Actors.Enemy.AttackSystem.Scripts
     {
         [SerializeField] private EnemyData enemyData;
         [SerializeField] protected Animator animator;
-        [SerializeField] protected Transform playerTransform;
 
 
         private float _cooldownAttack = 0;
@@ -93,9 +92,9 @@ namespace Actors.Enemy.AttackSystem.Scripts
         /// <returns></returns>
         protected bool CheckAttackDistance()
         {
-            if (playerTransform == null) return false;
+            var playerTransform = GetPlayerPosition.PlayerPosition().position;
 
-            return Vector2.Distance(playerTransform.position, transform.position) <=
+            return Vector2.Distance(playerTransform, transform.position) <=
                    enemyData.GetEnemyScrObj().AttackDistance;
         }
 
