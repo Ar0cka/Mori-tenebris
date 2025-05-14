@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Project.Bootstrap;
 using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
 using EventBusNamespace;
@@ -21,6 +22,7 @@ namespace DefaultNamespace
         [Header("Inventory")]
         [SerializeField] private Transform slotContent;
         [SerializeField] private InventoryScrObj inventoryConfig;
+        [SerializeField] private List<GameObject> equipSlots;
 
         [Header("Spawn")] 
         [SerializeField] private SpawnPlayer spawnPlayer;
@@ -70,7 +72,7 @@ namespace DefaultNamespace
             passiveRegenerationStats.Initialize();
             
             
-            _inventoryLogic.Initialize(slotContent, inventoryConfig);
+            _inventoryLogic.Initialize(slotContent, inventoryConfig, equipSlots);
         }
 
         private void SpawnMonster()

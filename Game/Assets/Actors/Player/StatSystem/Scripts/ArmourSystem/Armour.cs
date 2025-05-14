@@ -15,7 +15,7 @@ namespace DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem
         
         [Inject] private readonly IGetPlayerStat _getPlayerStat;
 
-        private Dictionary<string, EquipItem> _equipItems = new Dictionary<string, EquipItem>();
+        private Dictionary<string, ArmourData> _equipItems = new Dictionary<string, ArmourData>();
 
         private int _armourFromAgility;
 
@@ -39,7 +39,7 @@ namespace DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem
         
         public void EquipArmourItem(ItemData itemData)
         {
-            if (itemData is EquipItem equipItem)
+            if (itemData is ArmourData equipItem)
             {
                 _equipItems.Add(itemData.nameItem, equipItem);
 
@@ -53,7 +53,7 @@ namespace DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem
         {
             if (!string.IsNullOrEmpty(name))
             {
-                if (_equipItems.TryGetValue(name, out EquipItem item))
+                if (_equipItems.TryGetValue(name, out ArmourData item))
                 {
                     PhysicArmour -= item.physicArmour;
                     MagicArmour -= item.magicArmour;

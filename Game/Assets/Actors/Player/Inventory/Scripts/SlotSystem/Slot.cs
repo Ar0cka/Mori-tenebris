@@ -56,13 +56,18 @@ namespace SlotSystem
         public int CurrentItemCount() => _currentCountItem;
         
         public bool CheckItemInSlot(string nameItem) => _currentItem != null && _currentItem.nameItem == nameItem;
+
+        public ItemData UnEquipData()
+        {
+            var item = _currentItem;
+            _currentItem = null;
+            return item;
+        }
         
         private void ClearSlot()
         {
             _currentCountItem = 0;
             _currentItem = null;
         }
-
-       
     }
 }

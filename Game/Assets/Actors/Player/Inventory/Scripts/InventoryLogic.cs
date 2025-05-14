@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Actors.Player.Inventory.Enums;
+using Actors.Player.Inventory.Scripts.EquipSlots;
 using Enemy;
 using DefaultNamespace.Zenject;
 using Player.Inventory.InventoryInterface;
@@ -23,8 +26,9 @@ namespace PlayerNameSpace.Inventory
         private int _capacityInventory;
 
         private List<SlotData> slots = new List<SlotData>();
+        private Dictionary<EquipSlotType, EquipSlotData> _equipSlot = new Dictionary<EquipSlotType, EquipSlotData>();
 
-        public void Initialize(Transform slotParent, InventoryScrObj inventoryScrObj)
+        public void Initialize(Transform slotParent, InventoryScrObj inventoryScrObj, List<GameObject> equipSlots)
         {
             #region InitializeInventory
 
@@ -43,6 +47,26 @@ namespace PlayerNameSpace.Inventory
                 var prefabSlot = _itemFactory.Create(_slotPrefab, _slotParent);
                 slots.Add(new SlotData(prefabSlot, _itemFactory));
             }
+
+            #region CreateEquipSlots
+
+            var equipSlotType = Enum.GetValues(typeof(EquipSlotType));
+            
+            for (int i = 0; i < equipSlots.Count; i++)
+            {
+                if (equipSlotType.Length <= i) break;
+                
+                EquipSlotType slotType =(EquipSlotType)equipSlotType.GetValue(i);
+                
+                _equipSlot.Add(slotType, null);
+            }
+
+            foreach (var slotKey in _equipSlot.Keys)
+            {
+                _equipSlot[slotKey] = new EquipSlotData(slotKey);
+            }
+
+            #endregion
         }
 
         public void AddItemToInventory(ItemData itemData, int amount)
@@ -112,6 +136,43 @@ namespace PlayerNameSpace.Inventory
             {
                 Debug.Log($"Cant find item in inventory. Couldn't remove item {remaining}");
             }
+        }
+
+        public void SelectEquipAction(EquipSlotType equipSlotType, ItemData itemData)
+        {
+            if (_equipSlot.TryGetValue(equipSlotType, out EquipSlotData equipSlotData))
+            {
+                if (equipSlotData.IsEquipped())
+                {
+                    ChangeItemInSlot(equipSlotType, itemData);
+                }
+                else
+                {
+                    EquipItem(equipSlotType, itemData);
+                }
+            }
+        }
+        
+        private void EquipItem(EquipSlotType equipSlotType, ItemData itemData)
+        {
+            foreach (var slot in slots) //Заменить на другой алгоритм поиска
+            {
+                if (slot.CheckItemInSlot(itemData.nameItem))
+                {
+                    var currentItemData = slot.UnEquipItemData();
+                    var currentItemObject = slot.UnEquipGameObject();
+                    
+                    if (_equipSlot.TryGetValue(equipSlotType, out EquipSlotData equipSlotData))
+                    {
+                        equipSlotData.EquipItem(currentItemObject, currentItemData);
+                    }
+                }
+            }
+        }
+
+        private void ChangeItemInSlot(EquipSlotType equipSlotType, ItemData itemData)
+        {
+            
         }
     }
 }

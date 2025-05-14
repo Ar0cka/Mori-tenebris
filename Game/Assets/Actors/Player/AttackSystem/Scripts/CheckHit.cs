@@ -1,5 +1,4 @@
-using System;
-using EventBusNamespace;
+using Actors.Enemy.Stats.Scripts;
 using PlayerNameSpace;
 using UnityEngine;
 using Zenject;
@@ -17,10 +16,27 @@ namespace Player.PlayerAttack
             if (other.collider.CompareTag("Enemy") && !_isHit)
             {
                 _isHit = true;
-                EventBus.Publish(new SendHitEnemyEvent(damageSystem.Damage));
+
+                EnemyData enemyData = TakEnemyData(other.gameObject);
+
+                if (enemyData != null)
+                {
+                    enemyData.TakeDamage(damageSystem.Damage, damageSystem.DamageType);
+                }
+
             }
         }
 
+        private EnemyData TakEnemyData(GameObject enemy)
+        {
+            if (enemy != null)
+            {
+                return enemy.GetComponent<EnemyData>();
+            }
+
+            return null;
+        }
+        
         public void OnCollisionExit2D(Collision2D other)
         {
             if (other.collider.CompareTag("Enemy"))

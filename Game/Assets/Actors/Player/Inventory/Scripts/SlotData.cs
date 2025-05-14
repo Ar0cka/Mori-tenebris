@@ -69,5 +69,27 @@ namespace PlayerNameSpace.InventorySystem
 
             return result;
         }
+
+        public void ChangeItemInSlot()
+        {
+            
+        }
+
+        public void EquipItem()
+        {
+            
+        }
+
+        public bool CheckItemInSlot(string nameItem) => _slot.CheckItemInSlot(nameItem);
+
+        public ItemData UnEquipItemData()
+        {
+            return _slot.UnEquipData();
+        }
+
+        public GameObject UnEquipGameObject()
+        {
+            return _slotView.UnEquipItemObject();
+        }
     }
 }

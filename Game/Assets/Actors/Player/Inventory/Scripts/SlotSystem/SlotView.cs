@@ -26,12 +26,28 @@ namespace SlotSystem
             _itemSettings = _itemPrefab.GetComponent<ItemSettings>();
             Debug.Log(_itemSettings);
         }
-
+        
         public void UpdateUI(int currentItemAmount)
         {
             _itemSettings.UpdateUI(currentItemAmount);
         }
 
+        public void ChangeItem(GameObject itemPrefab, ItemSettings itemSettings, Transform slotTransform)
+        {
+            _itemPrefab = itemPrefab;
+            _itemSettings = itemSettings;
+            
+            _itemPrefab.transform.SetParent(slotTransform);
+        }
+        
+        public GameObject UnEquipItemObject()
+        {
+            var equipItem = _itemPrefab;
+            _itemPrefab = null;
+            _itemSettings = null;
+            return equipItem;
+        }
+        
         public void ClearSlotView()
         {
             _itemPrefab = null;
