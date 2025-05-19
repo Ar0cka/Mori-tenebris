@@ -55,7 +55,7 @@ namespace PlayerNameSpace.InventorySystem
 
             if (_slot.CheckItemInSlot(itemData.nameItem))
             {
-                _slot.RemoveItem(itemData, result);
+                result = _slot.RemoveItem(itemData, result);
                 
                 if (_slot.CurrentItemCount() <= 0)
                 {

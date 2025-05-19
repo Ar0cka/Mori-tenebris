@@ -3,8 +3,10 @@ namespace Actors.Player.Inventory.Enums
     public enum EquipSlotType
     {
         Weapon,
-        BodyArmor,
+        SecondWeapon,
         HeadArmour,
+        Plash,
+        BodyArmor,
         FootArmour,
     }
 }

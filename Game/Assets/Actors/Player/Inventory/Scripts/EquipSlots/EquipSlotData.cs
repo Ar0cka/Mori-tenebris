@@ -12,11 +12,13 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
         private EquipSlot _equipSlot;
         private ItemSettings _itemSettings;
         private EquipSlotType _equipSlotType;
+        private GameObject _equipSlotGameObject;
 
-        public EquipSlotData(EquipSlotType equipSlotType)
+        public EquipSlotData(EquipSlotType equipSlotType, GameObject slotObject)
         {
             _equipSlotType = equipSlotType;
             _equipSlot = new EquipSlot(_equipSlotType);
+            _equipSlotGameObject = slotObject;
         }
         
         private void SetupItemSettings(GameObject itemObject)

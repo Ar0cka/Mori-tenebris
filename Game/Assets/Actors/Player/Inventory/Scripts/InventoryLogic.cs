@@ -58,12 +58,7 @@ namespace PlayerNameSpace.Inventory
                 
                 EquipSlotType slotType =(EquipSlotType)equipSlotType.GetValue(i);
                 
-                _equipSlot.Add(slotType, null);
-            }
-
-            foreach (var slotKey in _equipSlot.Keys)
-            {
-                _equipSlot[slotKey] = new EquipSlotData(slotKey);
+                _equipSlot.Add(slotType, new EquipSlotData(slotType, equipSlots[i]));
             }
 
             #endregion
@@ -127,7 +122,11 @@ namespace PlayerNameSpace.Inventory
 
             foreach (var slot in slots)
             {
-                if (remaining <= 0) break;
+                if (remaining <= 0)
+                {
+                    Debug.Log("Break");
+                    break;
+                }
 
                 remaining = slot.RemoveItem(itemData, remaining);
             }
@@ -155,7 +154,7 @@ namespace PlayerNameSpace.Inventory
         
         private void EquipItem(EquipSlotType equipSlotType, ItemData itemData)
         {
-            foreach (var slot in slots) //Заменить на другой алгоритм поиска
+            foreach (var slot in slots)
             {
                 if (slot.CheckItemInSlot(itemData.nameItem))
                 {

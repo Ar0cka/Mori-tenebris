@@ -3,6 +3,7 @@ using Enemy.ItemTypeData;
 using Items;
 using Player.Inventory.InventoryInterface;
 using PlayerNameSpace;
+using UnityEngine;
 using Zenject;
 
 namespace Player.Inventory
@@ -16,6 +17,8 @@ namespace Player.Inventory
         {
             base.ActionItem(itemScr);
 
+            Debug.Log("Potion Action");
+            
             if (itemScr is PotionScr potion)  
             {
                 _regenerationHealth.Regeneration(potion.Potion.amount);

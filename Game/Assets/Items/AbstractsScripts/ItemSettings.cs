@@ -1,9 +1,11 @@
+using Actors.Player.Inventory.Scripts.ItemPanel;
 using Enemy;
 using Player.Inventory.InventoryInterface;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
 using Zenject;
+using Image = UnityEngine.UI.Image;
 
 namespace Player.Inventory
 {
@@ -22,10 +24,13 @@ namespace Player.Inventory
             image.sprite = itemData.iconItem;
         }
 
-        public void UseItem()
+        public void ActiveItem()
         {
-            itemAction.ActionItem(itemScrObj);
+            if (itemAction == null || itemScrObj == null) return; 
+            
+            ItemPanelInstance.OpenPanel(itemScrObj, itemAction);
         }
+        
         public void UpdateUI(int countItemsInSlot)
         {
             countUI.text = countItemsInSlot.ToString();
