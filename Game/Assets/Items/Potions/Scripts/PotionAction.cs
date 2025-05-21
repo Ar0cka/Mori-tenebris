@@ -22,7 +22,7 @@ namespace Player.Inventory
             if (itemScr is PotionScr potion)  
             {
                 _regenerationHealth.Regeneration(potion.Potion.amount);
-                _inventoryRemove.RemoveItem(itemScr.ItemData, 1);
+                _inventoryRemove.RemoveItem(potion.Potion, 1);
             }
         }
     }

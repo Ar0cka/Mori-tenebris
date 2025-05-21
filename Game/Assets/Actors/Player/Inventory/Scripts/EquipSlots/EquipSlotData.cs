@@ -1,3 +1,4 @@
+using System;
 using Actors.Player.Inventory.Enums;
 using Enemy;
 using EventBusNamespace;
@@ -11,13 +12,13 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
     {
         private EquipSlot _equipSlot;
         private ItemSettings _itemSettings;
-        private EquipSlotType _equipSlotType;
+        private EquipItemType _equipItemType;
         private GameObject _equipSlotGameObject;
 
-        public EquipSlotData(EquipSlotType equipSlotType, GameObject slotObject)
+        public EquipSlotData(EquipItemType equipItemType, GameObject slotObject)
         {
-            _equipSlotType = equipSlotType;
-            _equipSlot = new EquipSlot(_equipSlotType);
+            _equipItemType = equipItemType;
+            _equipSlot = new EquipSlot(_equipItemType);
             _equipSlotGameObject = slotObject;
         }
         
@@ -26,13 +27,24 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
             if (itemObject != null)
             {
                 _itemSettings = itemObject.GetComponent<ItemSettings>();
+                itemObject.transform.SetParent(_equipSlotGameObject.transform);
+                itemObject.transform.position = _equipSlotGameObject.transform.position;
             }
         }
 
-        public void EquipItem(GameObject itemObject, ItemData itemData)
+        public bool EquipItem(GameObject itemObject, ItemData itemData)
         {
-            _equipSlot.EquipItem(itemData);
-            SetupItemSettings(itemObject);
+            try
+            {
+                _equipSlot.EquipItem(itemData);
+                SetupItemSettings(itemObject);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.Message);
+                return false;
+            }
         }
         
         public bool IsEquipped() => _equipSlot.IsEquipped;

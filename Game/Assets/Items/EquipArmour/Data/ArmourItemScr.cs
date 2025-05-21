@@ -1,18 +1,31 @@
 using System;
 using DefaultNamespace.Enums;
+using Items.EquipArmour.Data;
+using PlayerNameSpace.Inventory;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace Enemy
 {
-    public class ArmourItemScr : MonoBehaviour
+    [CreateAssetMenu(fileName = "Armour", menuName = "EquipItem/Armour")]
+    public class ArmourItemScr : ItemScrObj
     {
         [SerializeField] private ArmourData armourData;
         public ArmourData ArmourData => armourData;
+        
+        public override void OnEquip(InventoryLogic inventoryLogic)
+        {
+            inventoryLogic.SelectEquipAction(armourData.equipItemType, armourData);
+        }
+        
+        public override ItemData GetItemData()
+        {
+            return armourData;
+        }
     }
 
     [Serializable]
-    public class ArmourData : ItemData
+    public class ArmourData : EquipData
     {
         public int physicArmour;
         public int magicArmour;

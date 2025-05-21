@@ -16,11 +16,11 @@ public class AddItemInSlot : MonoBehaviour
     public void ClickAndAdd()
     {
         _takeDamage.TakeDamage(25, DamageType.Physic);
-        _addItemOnInventoryAdder.AddItemToInventory(itemScrObj.ItemData, amount);
+        _addItemOnInventoryAdder.AddItemToInventory(itemScrObj.GetItemData(), amount);
     }
 
     public void RemoveItemFromSlot()
     {
-        _inventoryRemove.RemoveItem(itemScrObj.ItemData, amount);
+        _inventoryRemove.RemoveItem(itemScrObj.GetItemData(), amount);
     }
 }

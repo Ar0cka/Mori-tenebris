@@ -1,6 +1,6 @@
 namespace Actors.Player.Inventory.Enums
 {
-    public enum EquipSlotType
+    public enum EquipItemType
     {
         Weapon,
         SecondWeapon,

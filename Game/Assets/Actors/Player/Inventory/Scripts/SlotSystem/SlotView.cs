@@ -51,7 +51,6 @@ namespace SlotSystem
         public void ClearSlotView()
         {
             _itemPrefab = null;
-            
             _itemSettings.DeleteObjectFromSlot();
             _itemSettings = null;
         }

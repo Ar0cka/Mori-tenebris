@@ -20,7 +20,14 @@ namespace Player.Inventory
         
         private void Awake()
         {
-            itemData = itemScrObj.ItemData;
+            itemData = itemScrObj.GetItemData();
+
+            if (itemData == null)
+            {
+                DeleteObjectFromSlot();
+                return;
+            }
+            
             image.sprite = itemData.iconItem;
         }
 

@@ -60,7 +60,7 @@ namespace SlotSystem
         public ItemData UnEquipData()
         {
             var item = _currentItem;
-            _currentItem = null;
+            ClearSlot();
             return item;
         }
         

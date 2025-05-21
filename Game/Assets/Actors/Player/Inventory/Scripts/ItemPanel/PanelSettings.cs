@@ -34,7 +34,7 @@ namespace Actors.Player.Inventory.Scripts.ItemPanel
             
             _currentScriptableObject = itemScrObj;
             _currentAction = itemAction;
-            UpdateItemData(_currentScriptableObject.ItemData);
+            UpdateItemData(_currentScriptableObject.GetItemData());
         }
 
         private void UpdateItemData(ItemData itemData)

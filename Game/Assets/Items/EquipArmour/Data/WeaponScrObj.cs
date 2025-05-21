@@ -1,18 +1,35 @@
 using System;
 using DefaultNamespace.Enums;
 using Enemy;
+using PlayerNameSpace.Inventory;
 using UnityEngine;
 
 namespace Items.EquipArmour.Data
 {
-    public class WeaponScrObj : ScriptableObject
+    [CreateAssetMenu(fileName = "Weapon", menuName = "EquipItem/Weapon")]
+    public class WeaponScrObj : ItemScrObj
     {
         [SerializeField] private WeaponData weaponData;
         public WeaponData WeaponData => weaponData;
+
+        public override void OnEquip(InventoryLogic inventoryLogic)
+        {
+            inventoryLogic.SelectEquipAction(weaponData.equipItemType, weaponData);
+        }
+
+        public override void OnUnequip(InventoryLogic inventoryLogic)
+        {
+            
+        }
+
+        public override ItemData GetItemData()
+        {
+            return weaponData;
+        }
     }
 
     [Serializable]
-    public class WeaponData : ItemData
+    public class WeaponData : EquipData
     {
         public int damage;
         public DamageType damageType;

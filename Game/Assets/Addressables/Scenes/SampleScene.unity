@@ -5590,8 +5590,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb560d7a8d5eac24d9109c602cf3f063, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemScrObj: {fileID: 11400000, guid: 86407cde20d6e894c8fc28bd186b345c, type: 2}
-  amount: 2
+  itemScrObj: {fileID: 11400000, guid: 5931c437fb8b9134d8e1b56717c7f5ef, type: 2}
+  amount: 1
 --- !u!1 &1118228646
 GameObject:
   m_ObjectHideFlags: 0
@@ -5968,8 +5968,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb560d7a8d5eac24d9109c602cf3f063, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemScrObj: {fileID: 11400000, guid: 86407cde20d6e894c8fc28bd186b345c, type: 2}
-  amount: 2
+  itemScrObj: {fileID: 11400000, guid: 5931c437fb8b9134d8e1b56717c7f5ef, type: 2}
+  amount: 1
 --- !u!114 &1241392437
 MonoBehaviour:
   m_ObjectHideFlags: 0

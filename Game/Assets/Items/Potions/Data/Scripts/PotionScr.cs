@@ -1,3 +1,4 @@
+using Enemy;
 using Enemy.ItemTypeData;
 using UnityEngine;
 
@@ -8,5 +9,10 @@ namespace Items
     {
         [SerializeField] private Potion potion;
         public Potion Potion => potion;
+        
+        public override ItemData GetItemData()
+        {
+            return potion;
+        }
     }
 }

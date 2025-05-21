@@ -11,14 +11,14 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
     public class EquipSlot
     {
         public bool IsEquipped { get; private set;}
-        public EquipSlotType TypeSlot { get; private set;}
+        public EquipItemType TypeItem { get; private set;}
         
         public ItemData ItemData { get; private set; }
         
-        public EquipSlot(EquipSlotType typeSlot)
+        public EquipSlot(EquipItemType typeItem)
         {
             IsEquipped = false;
-            TypeSlot = typeSlot;
+            TypeItem = typeItem;
         }
         
         public ItemData EquipItem(ItemData itemData)
@@ -57,7 +57,7 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
 
         private void EquipArmour(ArmourData armourData)
         {
-            EventBus.Publish(new SendEquipArmourEvent());
+            EventBus.Publish(new SendEquipArmourEvent(armourData.physicArmour, armourData.magicArmour));
         }
         
         public ItemData UnEquipItem(ItemData itemData)

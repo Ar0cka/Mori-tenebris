@@ -39,13 +39,13 @@ namespace DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem
         
         public void EquipArmourItem(ItemData itemData)
         {
-            if (itemData is ArmourData equipItem)
-            {
-                _equipItems.Add(itemData.nameItem, equipItem);
+            //if (itemData is ArmourData equipItem)
+           // {
+               // _equipItems.Add(itemData.nameItem, equipItem);
 
-                PhysicArmour += equipItem.physicArmour;
-                MagicArmour += equipItem.magicArmour;
-            }
+               // PhysicArmour += equipItem.physicArmour;
+               // MagicArmour += equipItem.magicArmour;
+           // }
             
         }
 

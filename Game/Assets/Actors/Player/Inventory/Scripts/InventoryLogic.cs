@@ -26,7 +26,7 @@ namespace PlayerNameSpace.Inventory
         private int _capacityInventory;
 
         private List<SlotData> slots = new List<SlotData>();
-        private Dictionary<EquipSlotType, EquipSlotData> _equipSlot = new Dictionary<EquipSlotType, EquipSlotData>();
+        private Dictionary<EquipItemType, EquipSlotData> _equipSlot = new Dictionary<EquipItemType, EquipSlotData>();
 
         public void Initialize(Transform slotParent, InventoryScrObj inventoryScrObj, List<GameObject> equipSlots)
         {
@@ -50,15 +50,15 @@ namespace PlayerNameSpace.Inventory
 
             #region CreateEquipSlots
 
-            var equipSlotType = Enum.GetValues(typeof(EquipSlotType));
+            var equipSlotType = Enum.GetValues(typeof(EquipItemType));
             
             for (int i = 0; i < equipSlots.Count; i++)
             {
                 if (equipSlotType.Length <= i) break;
                 
-                EquipSlotType slotType =(EquipSlotType)equipSlotType.GetValue(i);
+                EquipItemType itemType =(EquipItemType)equipSlotType.GetValue(i);
                 
-                _equipSlot.Add(slotType, new EquipSlotData(slotType, equipSlots[i]));
+                _equipSlot.Add(itemType, new EquipSlotData(itemType, equipSlots[i]));
             }
 
             #endregion
@@ -137,22 +137,22 @@ namespace PlayerNameSpace.Inventory
             }
         }
 
-        public void SelectEquipAction(EquipSlotType equipSlotType, ItemData itemData)
+        public void SelectEquipAction(EquipItemType equipItemType, ItemData itemData)
         {
-            if (_equipSlot.TryGetValue(equipSlotType, out EquipSlotData equipSlotData))
+            if (_equipSlot.TryGetValue(equipItemType, out EquipSlotData equipSlotData))
             {
                 if (equipSlotData.IsEquipped())
                 {
-                    ChangeItemInSlot(equipSlotType, itemData);
+                    ChangeItemInSlot(equipItemType, itemData);
                 }
                 else
                 {
-                    EquipItem(equipSlotType, itemData);
+                    EquipItem(equipItemType, itemData);
                 }
             }
         }
         
-        private void EquipItem(EquipSlotType equipSlotType, ItemData itemData)
+        private void EquipItem(EquipItemType equipItemType, ItemData itemData)
         {
             foreach (var slot in slots)
             {
@@ -161,15 +161,20 @@ namespace PlayerNameSpace.Inventory
                     var currentItemData = slot.UnEquipItemData();
                     var currentItemObject = slot.UnEquipGameObject();
                     
-                    if (_equipSlot.TryGetValue(equipSlotType, out EquipSlotData equipSlotData))
+                    if (_equipSlot.TryGetValue(equipItemType, out EquipSlotData equipSlotData))
                     {
-                        equipSlotData.EquipItem(currentItemObject, currentItemData);
+                        bool itemEquip = equipSlotData.EquipItem(currentItemObject, currentItemData);
+
+                        if (itemEquip)
+                        {
+                            break;
+                        }
                     }
                 }
             }
         }
 
-        private void ChangeItemInSlot(EquipSlotType equipSlotType, ItemData itemData)
+        private void ChangeItemInSlot(EquipItemType equipItemType, ItemData itemData)
         {
             
         }
