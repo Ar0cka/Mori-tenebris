@@ -101,11 +101,6 @@ namespace PlayerNameSpace.Inventory
 
             return remaining;
         }
-
-        private void ReturnItemInInventory()
-        {
-            
-        }
         
         private int CreateNewStacks(ItemData itemData, int amount)
         {
@@ -160,14 +155,14 @@ namespace PlayerNameSpace.Inventory
                     var currentItemData = slot.TakeItemDataFromSlot();
                     var currentItemObject = slot.TakePrefabFromSlot();
                     
-                    var item = equipSlotData.EquipItem(currentItemObject, currentItemData);
+                    var item = equipSlotData.EquipItem(currentItemData);
+                    var prefab = equipSlotData.EquipItemPrefab(currentItemObject);
 
                     if (item == null)
                     {
                         break;
                     }
-
-                    var prefab = equipSlotData.UnEquipItemObject();
+                    
                     ChangeItemInSlot(slot, item, prefab);
                     break;
                 }
@@ -176,12 +171,15 @@ namespace PlayerNameSpace.Inventory
 
         private void ChangeItemInSlot(SlotData slotData, ItemData itemData, GameObject itemPrefab)
         {
-            AddItemToInventory(itemData, 1);
+            slotData.RegistrateData(itemData);
             slotData.ChangeItemSettings(itemPrefab);
+            slotData.AddItem(itemData, 1);
         }
 
         public void UnEquipItem(EquipItemType equipItemType, ItemData itemData)
         {
+            if (!HaveSlot()) return;
+            
             if (_equipSlot.TryGetValue(equipItemType, out EquipSlotData equipSlotData))
             {
                 var item = equipSlotData.UnEquipItem(itemData);
@@ -199,6 +197,19 @@ namespace PlayerNameSpace.Inventory
                     }
                 }
             }
+        }
+
+        private bool HaveSlot()
+        {
+            foreach (var slot in slots)
+            {
+                if (slot.IsEmpty())
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

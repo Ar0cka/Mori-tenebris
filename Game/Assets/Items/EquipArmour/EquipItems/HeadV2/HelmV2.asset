@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: HelmV2
   m_EditorClassIdentifier: 
   armourData:
-    nameItem: Ice Helm
+    nameItem: HelmV2
     maxStackInSlot: 1
     itemTypes: 0
     iconItem: {fileID: 1616552967, guid: 3d3f190d4f38e824385e51c008d7e6bd, type: 3}

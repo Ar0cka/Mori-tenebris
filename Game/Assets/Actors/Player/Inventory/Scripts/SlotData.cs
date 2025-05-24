@@ -29,6 +29,16 @@ namespace PlayerNameSpace.InventorySystem
                 _slot.CreateNewItem(itemData);
             }
         }
+
+        public void RegistrateData(ItemData itemData)
+        {
+            if (itemData == null) return;
+
+            if (_slot.CanCreate())
+            {
+                _slot.CreateNewItem(itemData);
+            }
+        }
         
         public int AddItem(ItemData itemData, int amountItems)
         {

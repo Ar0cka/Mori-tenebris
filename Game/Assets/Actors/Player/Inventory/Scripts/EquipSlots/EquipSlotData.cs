@@ -39,13 +39,37 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
             }
         }
 
-        public ItemData EquipItem(GameObject itemObject, ItemData itemData)
+        public ItemData EquipItem(ItemData itemData)
         {
             try
             {
                 var item = _equipSlot.EquipItem(itemData);
-                SetupItemSettings(itemObject);
                 return item;
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.Message);
+                return null;
+            }
+        }
+
+        public GameObject EquipItemPrefab(GameObject itemPrefab)
+        {
+            try
+            {
+                if (_itemPrefab != null)
+                {
+                    var prefab = UnEquipItemObject();
+                    _itemPrefab = prefab;
+                    SetupItemSettings(itemPrefab);
+                    return prefab;
+                }
+                else
+                {
+                    _itemPrefab = itemPrefab;
+                    SetupItemSettings(itemPrefab);
+                    return null;
+                }
             }
             catch (Exception e)
             {
