@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c8d652ca8394e3ba877b230807eed9a, type: 3}
+  m_Name: HelmV2
+  m_EditorClassIdentifier: 
+  armourData:
+    nameItem: Ice Helm
+    maxStackInSlot: 1
+    itemTypes: 0
+    iconItem: {fileID: 1616552967, guid: 3d3f190d4f38e824385e51c008d7e6bd, type: 3}
+    prefabItem: {fileID: 6593871118970111117, guid: 7e68440505f07614180e56961d6abee8, type: 3}
+    equipItemType: 2
+    physicArmour: 3
+    magicArmour: 2

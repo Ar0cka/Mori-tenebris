@@ -70,26 +70,37 @@ namespace PlayerNameSpace.InventorySystem
             return result;
         }
 
-        public void ChangeItemInSlot()
-        {
-            
-        }
-
-        public void EquipItem()
-        {
-            
-        }
-
         public bool CheckItemInSlot(string nameItem) => _slot.CheckItemInSlot(nameItem);
 
-        public ItemData UnEquipItemData()
+        public void ChangeItemSettings(GameObject itemPrefab)
+        {
+            if (itemPrefab == null) return;
+            
+            var itemSetting = itemPrefab.GetComponent<ItemSettings>();
+            
+            if (itemSetting == null) return;
+            
+            _slotView.ChangeItem(itemPrefab, itemSetting);
+        }
+
+        public ItemData TakeItemDataFromSlot()
         {
             return _slot.UnEquipData();
         }
 
-        public GameObject UnEquipGameObject()
+        public GameObject TakePrefabFromSlot()
         {
             return _slotView.UnEquipItemObject();
+        }
+
+        public bool IsEmpty()
+        {
+            if (!_slot.IsOccupied && !_slotView.HaveItem())
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

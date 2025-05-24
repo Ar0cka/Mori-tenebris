@@ -17,6 +17,7 @@ namespace Player.Inventory
         [SerializeField] private ItemAction itemAction;
         
         private ItemData itemData;
+        public bool IsEquiped;
         
         private void Awake()
         {
@@ -35,7 +36,7 @@ namespace Player.Inventory
         {
             if (itemAction == null || itemScrObj == null) return; 
             
-            ItemPanelInstance.OpenPanel(itemScrObj, itemAction);
+            ItemPanelInstance.OpenPanel(itemScrObj, itemAction, IsEquiped);
         }
         
         public void UpdateUI(int countItemsInSlot)

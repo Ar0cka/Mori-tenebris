@@ -4,6 +4,7 @@ using Enemy;
 using EventBusNamespace;
 using Items.EquipArmour.Data;
 using Player.Inventory;
+using SlotSystem;
 using UnityEngine;
 
 namespace Actors.Player.Inventory.Scripts.EquipSlots
@@ -14,6 +15,10 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
         private ItemSettings _itemSettings;
         private EquipItemType _equipItemType;
         private GameObject _equipSlotGameObject;
+        private SlotView _slotView;
+
+        private GameObject _itemPrefab;
+
 
         public EquipSlotData(EquipItemType equipItemType, GameObject slotObject)
         {
@@ -26,25 +31,53 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
         {
             if (itemObject != null)
             {
+                _itemPrefab = itemObject;
                 _itemSettings = itemObject.GetComponent<ItemSettings>();
                 itemObject.transform.SetParent(_equipSlotGameObject.transform);
                 itemObject.transform.position = _equipSlotGameObject.transform.position;
+                _itemSettings.IsEquiped = true;
             }
         }
 
-        public bool EquipItem(GameObject itemObject, ItemData itemData)
+        public ItemData EquipItem(GameObject itemObject, ItemData itemData)
         {
             try
             {
-                _equipSlot.EquipItem(itemData);
+                var item = _equipSlot.EquipItem(itemData);
                 SetupItemSettings(itemObject);
-                return true;
+                return item;
             }
             catch (Exception e)
             {
                 Debug.Log(e.Message);
-                return false;
+                return null;
             }
+        }
+
+        public ItemData UnEquipItem(ItemData itemData)
+        {
+            var data = _equipSlot.UnEquipItem(itemData);
+
+            if (data != null)
+            {
+                return data;
+            }
+
+            return null;
+        }
+
+        public GameObject UnEquipItemObject()
+        {
+            if (_itemPrefab != null)
+            {
+                var item = _itemPrefab;
+                _itemSettings.IsEquiped = false;
+                _itemPrefab = null;
+                return item;
+            }
+            
+            Debug.LogError("Dont find item prefab");
+            return null;
         }
         
         public bool IsEquipped() => _equipSlot.IsEquipped;

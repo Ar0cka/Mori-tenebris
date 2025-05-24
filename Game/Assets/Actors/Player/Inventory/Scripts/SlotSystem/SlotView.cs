@@ -32,12 +32,13 @@ namespace SlotSystem
             _itemSettings.UpdateUI(currentItemAmount);
         }
 
-        public void ChangeItem(GameObject itemPrefab, ItemSettings itemSettings, Transform slotTransform)
+        public void ChangeItem(GameObject itemPrefab, ItemSettings itemSettings)
         {
             _itemPrefab = itemPrefab;
             _itemSettings = itemSettings;
             
-            _itemPrefab.transform.SetParent(slotTransform);
+            _itemPrefab.transform.SetParent(_slotObject.transform);
+            _itemPrefab.transform.position = _slotObject.transform.position;
         }
         
         public GameObject UnEquipItemObject()
@@ -53,6 +54,11 @@ namespace SlotSystem
             _itemPrefab = null;
             _itemSettings.DeleteObjectFromSlot();
             _itemSettings = null;
+        }
+
+        public bool HaveItem()
+        {
+            return _itemPrefab != null;
         }
     }
 }

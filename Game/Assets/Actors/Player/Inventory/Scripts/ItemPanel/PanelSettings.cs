@@ -1,4 +1,5 @@
 using System;
+using DefaultNamespace.Enums;
 using Enemy;
 using Player.Inventory;
 using UnityEngine;
@@ -17,6 +18,8 @@ namespace Actors.Player.Inventory.Scripts.ItemPanel
         
         private ItemScrObj _currentScriptableObject;
         private ItemAction _currentAction;
+        
+        private bool _isEquiped;
         private void Awake()
         {
             ItemPanelInstance.Initialize(this);
@@ -25,7 +28,7 @@ namespace Actors.Player.Inventory.Scripts.ItemPanel
             useButton.onClick.AddListener(UseItem);
         }
 
-        public void OpenPanel(ItemScrObj itemScrObj, ItemAction itemAction)
+        public void OpenPanel(ItemScrObj itemScrObj, ItemAction itemAction, bool isEquiped)
         {
             if (!itemPanel.activeInHierarchy)
             {
@@ -35,6 +38,7 @@ namespace Actors.Player.Inventory.Scripts.ItemPanel
             _currentScriptableObject = itemScrObj;
             _currentAction = itemAction;
             UpdateItemData(_currentScriptableObject.GetItemData());
+            _isEquiped = isEquiped;
         }
 
         private void UpdateItemData(ItemData itemData)
@@ -46,13 +50,22 @@ namespace Actors.Player.Inventory.Scripts.ItemPanel
         {
             if (_currentAction != null && _currentScriptableObject != null)
             {
-                _currentAction.ActionItem(_currentScriptableObject);
+                if (_currentScriptableObject.GetItemData().itemTypes == ItemTypes.Equip)
+                {
+                    _currentAction.EquipItem(_currentScriptableObject, _isEquiped);
+                    ClosePanel();
+                }
+                else
+                {
+                    _currentAction.ActionItem(_currentScriptableObject);
+                }
             }
         }
         
         private void ClosePanel()
         {
             _currentScriptableObject = null;
+            _currentAction = null;
             itemPanel.SetActive(false);
         }
     }
@@ -66,9 +79,9 @@ namespace Actors.Player.Inventory.Scripts.ItemPanel
             _itemPanelOpen = panelSettings;
         }
 
-        public static void OpenPanel(ItemScrObj itemScrObj, ItemAction itemAction)
+        public static void OpenPanel(ItemScrObj itemScrObj, ItemAction itemAction, bool isEquiped)
         {
-            _itemPanelOpen.OpenPanel(itemScrObj, itemAction);
+            _itemPanelOpen.OpenPanel(itemScrObj, itemAction, isEquiped);
         }
     }
 }

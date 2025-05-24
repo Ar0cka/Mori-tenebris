@@ -19,7 +19,7 @@ namespace Items.EquipArmour.Data
 
         public override void OnUnequip(InventoryLogic inventoryLogic)
         {
-            
+            inventoryLogic.UnEquipItem(weaponData.equipItemType, weaponData);
         }
 
         public override ItemData GetItemData()

@@ -17,6 +17,11 @@ namespace Enemy
         {
             inventoryLogic.SelectEquipAction(armourData.equipItemType, armourData);
         }
+
+        public override void OnUnequip(InventoryLogic inventoryLogic)
+        {
+            inventoryLogic.UnEquipItem(armourData.equipItemType, armourData);
+        }
         
         public override ItemData GetItemData()
         {

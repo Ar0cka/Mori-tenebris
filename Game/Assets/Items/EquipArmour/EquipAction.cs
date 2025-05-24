@@ -1,3 +1,4 @@
+using Enemy;
 using Player.Inventory;
 using PlayerNameSpace.Inventory;
 using UnityEngine;
@@ -9,9 +10,16 @@ namespace Items.EquipArmour
     {
         [Inject] private InventoryLogic _inventoryLogic;
 
-        public override void ActionItem(ItemScrObj itemScr)
+        public override void EquipItem(ItemScrObj itemScr, bool isEquip)
         {
-            itemScr.OnEquip(_inventoryLogic);
+            if (isEquip)
+            {
+                itemScr.OnUnequip(_inventoryLogic);
+            }
+            else
+            {
+                itemScr.OnEquip(_inventoryLogic);
+            }
         }
     }
 }

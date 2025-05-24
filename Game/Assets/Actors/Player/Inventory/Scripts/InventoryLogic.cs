@@ -7,6 +7,7 @@ using Enemy;
 using DefaultNamespace.Zenject;
 using Player.Inventory.InventoryInterface;
 using PlayerNameSpace.InventorySystem;
+using SlotSystem;
 using Systems.DataLoader.Scripts;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -51,13 +52,13 @@ namespace PlayerNameSpace.Inventory
             #region CreateEquipSlots
 
             var equipSlotType = Enum.GetValues(typeof(EquipItemType));
-            
+
             for (int i = 0; i < equipSlots.Count; i++)
             {
                 if (equipSlotType.Length <= i) break;
-                
-                EquipItemType itemType =(EquipItemType)equipSlotType.GetValue(i);
-                
+
+                EquipItemType itemType = (EquipItemType)equipSlotType.GetValue(i);
+
                 _equipSlot.Add(itemType, new EquipSlotData(itemType, equipSlots[i]));
             }
 
@@ -94,13 +95,18 @@ namespace PlayerNameSpace.Inventory
             foreach (var slot in slots)
             {
                 if (remaining <= 0) break;
-                
+
                 remaining = slot.AddItem(itemData, remaining);
             }
 
             return remaining;
         }
 
+        private void ReturnItemInInventory()
+        {
+            
+        }
+        
         private int CreateNewStacks(ItemData itemData, int amount)
         {
             int remaining = amount;
@@ -141,42 +147,58 @@ namespace PlayerNameSpace.Inventory
         {
             if (_equipSlot.TryGetValue(equipItemType, out EquipSlotData equipSlotData))
             {
-                if (equipSlotData.IsEquipped())
-                {
-                    ChangeItemInSlot(equipItemType, itemData);
-                }
-                else
-                {
-                    EquipItem(equipItemType, itemData);
-                }
+                EquipItem(itemData, equipSlotData);
             }
         }
-        
-        private void EquipItem(EquipItemType equipItemType, ItemData itemData)
+
+        private void EquipItem(ItemData itemData, EquipSlotData equipSlotData)
         {
             foreach (var slot in slots)
             {
                 if (slot.CheckItemInSlot(itemData.nameItem))
                 {
-                    var currentItemData = slot.UnEquipItemData();
-                    var currentItemObject = slot.UnEquipGameObject();
+                    var currentItemData = slot.TakeItemDataFromSlot();
+                    var currentItemObject = slot.TakePrefabFromSlot();
                     
-                    if (_equipSlot.TryGetValue(equipItemType, out EquipSlotData equipSlotData))
-                    {
-                        bool itemEquip = equipSlotData.EquipItem(currentItemObject, currentItemData);
+                    var item = equipSlotData.EquipItem(currentItemObject, currentItemData);
 
-                        if (itemEquip)
+                    if (item == null)
+                    {
+                        break;
+                    }
+
+                    var prefab = equipSlotData.UnEquipItemObject();
+                    ChangeItemInSlot(slot, item, prefab);
+                    break;
+                }
+            }
+        }
+
+        private void ChangeItemInSlot(SlotData slotData, ItemData itemData, GameObject itemPrefab)
+        {
+            AddItemToInventory(itemData, 1);
+            slotData.ChangeItemSettings(itemPrefab);
+        }
+
+        public void UnEquipItem(EquipItemType equipItemType, ItemData itemData)
+        {
+            if (_equipSlot.TryGetValue(equipItemType, out EquipSlotData equipSlotData))
+            {
+                var item = equipSlotData.UnEquipItem(itemData);
+                var prefab = equipSlotData.UnEquipItemObject();
+
+                if (item != null && prefab != null)
+                {
+                    foreach (var slot in slots)
+                    {
+                        if (slot.IsEmpty())
                         {
+                            ChangeItemInSlot(slot, item, prefab);
                             break;
                         }
                     }
                 }
             }
-        }
-
-        private void ChangeItemInSlot(EquipItemType equipItemType, ItemData itemData)
-        {
-            
         }
     }
 }

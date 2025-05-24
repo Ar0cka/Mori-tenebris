@@ -9,5 +9,10 @@ namespace Player.Inventory
         {
             
         }
+
+        public virtual void EquipItem(ItemScrObj itemScr, bool isEquip)
+        {
+            
+        }
     }
 }
