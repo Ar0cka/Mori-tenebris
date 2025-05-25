@@ -11,6 +11,7 @@ namespace Player.Inventory
         public string itemID;
         public ItemData itemData;
         public int maxStack = 0;
+        public int amount = 0;
 
         public ItemInstance(ItemData itemData)
         {

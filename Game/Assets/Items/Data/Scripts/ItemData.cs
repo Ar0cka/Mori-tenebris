@@ -8,6 +8,8 @@ namespace Enemy
     public class ItemData
     {
         public string nameItem;
+        public string description;
+        
         public int maxStackInSlot;
         public ItemTypes itemTypes;
         

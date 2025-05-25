@@ -32,6 +32,7 @@ namespace SlotSystem
             int itemAddCount = Mathf.Min(amountItems, space);
 
             _currentCountItem += itemAddCount;
+            _currentItem.amount = _currentCountItem;
 
             return amountItems - itemAddCount;
         }
@@ -44,12 +45,12 @@ namespace SlotSystem
 
             int itemRemove = Mathf.Min(amountItems, _currentCountItem);
             _currentCountItem -= itemRemove;
-
+            _currentItem.amount = _currentCountItem;
             if (_currentCountItem == 0)
             {
                 ClearSlot();
             }
-
+            
             return amountItems - itemRemove;
         }
 
