@@ -20,10 +20,11 @@ namespace SlotSystem
             _itemFactory = itemFactory;
         }
         
-        public void CreateNewItem(ItemData itemData)
+        public void CreateNewItem(ItemInstance itemInstance)
         {
-            _itemPrefab = _itemFactory.Create(itemData.prefabItem, _slotObject.transform);
+            _itemPrefab = _itemFactory.Create(itemInstance.itemData.prefabItem, _slotObject.transform);
             _itemSettings = _itemPrefab.GetComponent<ItemSettings>();
+            _itemSettings.InitializeItemSettings(itemInstance);
             Debug.Log(_itemSettings);
         }
         

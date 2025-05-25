@@ -16,7 +16,7 @@ namespace Actors.Player.Inventory.Scripts.ItemPanel
         [SerializeField] private Button useButton;
         [SerializeField] private Button removeButton;
         
-        private ItemScrObj _currentScriptableObject;
+        private ItemInstance _currentItemInstance;
         private ItemAction _currentAction;
         
         private bool _isEquiped;
@@ -28,16 +28,16 @@ namespace Actors.Player.Inventory.Scripts.ItemPanel
             useButton.onClick.AddListener(UseItem);
         }
 
-        public void OpenPanel(ItemScrObj itemScrObj, ItemAction itemAction, bool isEquiped)
+        public void OpenPanel(ItemInstance itemInstance, ItemAction itemAction, bool isEquiped)
         {
             if (!itemPanel.activeInHierarchy)
             {
                 itemPanel.SetActive(true);
             }
             
-            _currentScriptableObject = itemScrObj;
+            _currentItemInstance = itemInstance;
             _currentAction = itemAction;
-            UpdateItemData(_currentScriptableObject.GetItemData());
+            UpdateItemData(_currentItemInstance.itemData);
             _isEquiped = isEquiped;
         }
 
@@ -48,23 +48,23 @@ namespace Actors.Player.Inventory.Scripts.ItemPanel
         
         private void UseItem()
         {
-            if (_currentAction != null && _currentScriptableObject != null)
+            if (_currentAction != null && _currentItemInstance != null)
             {
-                if (_currentScriptableObject.GetItemData().itemTypes == ItemTypes.Equip)
+                if (_currentItemInstance.itemData.itemTypes == ItemTypes.Equip)
                 {
-                    _currentAction.EquipItem(_currentScriptableObject, _isEquiped);
+                    _currentAction.EquipItem(_currentItemInstance, _isEquiped);
                     ClosePanel();
                 }
                 else
                 {
-                    _currentAction.ActionItem(_currentScriptableObject);
+                    _currentAction.ActionItem(_currentItemInstance);
                 }
             }
         }
         
         private void ClosePanel()
         {
-            _currentScriptableObject = null;
+            _currentItemInstance = null;
             _currentAction = null;
             itemPanel.SetActive(false);
         }
@@ -79,9 +79,9 @@ namespace Actors.Player.Inventory.Scripts.ItemPanel
             _itemPanelOpen = panelSettings;
         }
 
-        public static void OpenPanel(ItemScrObj itemScrObj, ItemAction itemAction, bool isEquiped)
+        public static void OpenPanel(ItemInstance itemInstance, ItemAction itemAction, bool isEquiped)
         {
-            _itemPanelOpen.OpenPanel(itemScrObj, itemAction, isEquiped);
+            _itemPanelOpen.OpenPanel(itemInstance, itemAction, isEquiped);
         }
     }
 }

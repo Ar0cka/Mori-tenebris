@@ -13,7 +13,7 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
         public bool IsEquipped { get; private set;}
         public EquipItemType TypeItem { get; private set;}
         
-        public ItemData ItemData { get; private set; }
+        public ItemInstance ItemData { get; private set; }
         
         public EquipSlot(EquipItemType typeItem)
         {
@@ -21,16 +21,16 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
             TypeItem = typeItem;
         }
         
-        public ItemData EquipItem(ItemData itemData)
+        public ItemInstance EquipItem(ItemInstance itemInstance)
         {
             #region SendUpdateEvents
 
-            if (itemData is WeaponData weaponData)
+            if (itemInstance.itemData is WeaponData weaponData)
             {
                 EquipWeapon(weaponData);
             }
 
-            if (itemData is ArmourData armourData)
+            if (itemInstance.itemData is ArmourData armourData)
             {
                 EquipArmour(armourData);
             }
@@ -40,11 +40,11 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
             if (ItemData == null)
             {
                 IsEquipped = true;
-                ItemData = itemData;
+                ItemData = itemInstance;
             }
             else
             {
-                return ChangeItemInSlot(itemData);
+                return ChangeItemInSlot(itemInstance);
             }
             
             return null;
@@ -60,13 +60,13 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
             EventBus.Publish(new SendEquipArmourEvent(armourData.physicArmour, armourData.magicArmour));
         }
         
-        public ItemData UnEquipItem(ItemData itemData)
+        public ItemInstance UnEquipItem(ItemInstance itemInstance)
         {
-            if (ItemData == null || itemData == null) return null;
+            if (ItemData == null || itemInstance == null) return null;
             
             var currentItem = ItemData;
             
-            if (ItemData.nameItem == itemData.nameItem)
+            if (ItemData.itemID == itemInstance.itemID)
             {
                 IsEquipped = false;
                 ItemData = null;
@@ -75,7 +75,7 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
             return currentItem;
         }
 
-        public ItemData ChangeItemInSlot(ItemData itemData)
+        public ItemInstance ChangeItemInSlot(ItemInstance itemData)
         {
             var returnItem = ItemData;
             

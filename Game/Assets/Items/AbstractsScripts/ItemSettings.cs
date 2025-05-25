@@ -12,31 +12,30 @@ namespace Player.Inventory
     public class ItemSettings : MonoBehaviour
     {
         [SerializeField] private Image image;
-        [SerializeField] private ItemScrObj itemScrObj;
         [SerializeField] private TextMeshProUGUI countUI;
         [SerializeField] private ItemAction itemAction;
         
-        private ItemData itemData;
+        private ItemInstance _itemInstance;
         public bool IsEquiped;
         
-        private void Awake()
+        public void InitializeItemSettings(ItemInstance itemInstance)
         {
-            itemData = itemScrObj.GetItemData();
-
-            if (itemData == null)
+            if (itemInstance == null)
             {
                 DeleteObjectFromSlot();
                 return;
             }
             
-            image.sprite = itemData.iconItem;
-        }
+            _itemInstance = itemInstance;
 
+            image.sprite = _itemInstance.itemData.iconItem;
+        }
+        
         public void ActiveItem()
         {
-            if (itemAction == null || itemScrObj == null) return; 
+            if (itemAction == null || _itemInstance == null) return; 
             
-            ItemPanelInstance.OpenPanel(itemScrObj, itemAction, IsEquiped);
+            ItemPanelInstance.OpenPanel(_itemInstance, itemAction, IsEquiped);
         }
         
         public void UpdateUI(int countItemsInSlot)

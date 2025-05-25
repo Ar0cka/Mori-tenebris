@@ -13,16 +13,14 @@ namespace Player.Inventory
         [Inject] private IRegenerationHealth _regenerationHealth;
         [Inject] private IInventoryRemove _inventoryRemove;
         
-        public override void ActionItem(ItemScrObj itemScr)
+        public override void ActionItem(ItemInstance itemInstance)
         {
-            base.ActionItem(itemScr);
-
             Debug.Log("Potion Action");
             
-            if (itemScr is PotionScr potion)  
+            if (itemInstance.itemData is Potion potion)  
             {
-                _regenerationHealth.Regeneration(potion.Potion.amount);
-                _inventoryRemove.RemoveItem(potion.Potion, 1);
+                _regenerationHealth.Regeneration(potion.amount);
+                _inventoryRemove.RemoveItem(itemInstance, 1);
             }
         }
     }

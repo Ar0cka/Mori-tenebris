@@ -1,21 +1,23 @@
 using Enemy;
+using Player.Inventory;
 using UnityEngine;
 
 namespace SlotSystem
 {
     public class Slot
     {
-        private ItemData _currentItem;
+        private ItemInstance _currentItem;
         private int _currentCountItem;
-        public bool IsFull => _currentItem != null && _currentCountItem == _currentItem.maxStackInSlot;
+
+        public bool IsFull => _currentItem != null && _currentCountItem == _currentItem.maxStack;
         public bool IsOccupied => _currentItem != null;
 
-        public void CreateNewItem(ItemData itemData)
+        public void CreateNewItem(ItemInstance itemInstance)
         {
-            _currentItem = itemData;
+            _currentItem = itemInstance;
         }
 
-        public int AddNewItem(ItemData itemData, int amountItems)
+        public int AddNewItem(ItemInstance itemInstance, int amountItems)
         {
             if (_currentItem == null || amountItems <= 0)
             {
@@ -23,24 +25,24 @@ namespace SlotSystem
                 return amountItems;
             }
 
+            if (_currentItem.itemID != itemInstance.itemID) return amountItems; // сравнение по ID
             if (IsFull) return amountItems;
-            
-            int space = itemData.maxStackInSlot - _currentCountItem;
+
+            int space = _currentItem.maxStack - _currentCountItem;
             int itemAddCount = Mathf.Min(amountItems, space);
-                
+
             _currentCountItem += itemAddCount;
 
             return amountItems - itemAddCount;
         }
 
-        public int RemoveItem(ItemData itemData, int amountItems)   
+        public int RemoveItem(ItemInstance itemInstance, int amountItems)
         {
-            if (itemData == null && amountItems <= 0) return amountItems;
+            if (itemInstance == null || amountItems <= 0) return amountItems;
 
-            if (!CheckItemInSlot(itemData?.nameItem)) return amountItems;
-            
+            if (!CheckItemInSlot(itemInstance.itemID)) return amountItems;
+
             int itemRemove = Mathf.Min(amountItems, _currentCountItem);
-
             _currentCountItem -= itemRemove;
 
             if (_currentCountItem == 0)
@@ -50,20 +52,18 @@ namespace SlotSystem
 
             return amountItems - itemRemove;
         }
-        
+
         public bool CanCreate() => !IsOccupied && _currentItem == null;
-
         public int CurrentItemCount() => _currentCountItem;
-        
-        public bool CheckItemInSlot(string nameItem) => _currentItem != null && _currentItem.nameItem == nameItem;
+        public bool CheckItemInSlot(string id) => _currentItem != null && _currentItem.itemID == id;
 
-        public ItemData UnEquipData()
+        public ItemInstance UnEquipData()
         {
             var item = _currentItem;
             ClearSlot();
             return item;
         }
-        
+
         private void ClearSlot()
         {
             _currentCountItem = 0;

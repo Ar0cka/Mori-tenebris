@@ -19,7 +19,7 @@ namespace PlayerNameSpace.InventorySystem
             _slotView = new SlotView(slotPrefab, spawnProjectObject);
         }
 
-        public void CreateNewItem(ItemData itemData)
+        public void CreateNewItem(ItemInstance itemData)
         {
             if (itemData == null) return;
 
@@ -30,7 +30,7 @@ namespace PlayerNameSpace.InventorySystem
             }
         }
 
-        public void RegistrateData(ItemData itemData)
+        public void RegistrateData(ItemInstance itemData)
         {
             if (itemData == null) return;
 
@@ -40,13 +40,13 @@ namespace PlayerNameSpace.InventorySystem
             }
         }
         
-        public int AddItem(ItemData itemData, int amountItems)
+        public int AddItem(ItemInstance itemData, int amountItems)
         {
             if (itemData == null || amountItems <= 0) return amountItems;
 
             int result = amountItems;
             
-            if (_slot.CheckItemInSlot(itemData.nameItem))
+            if (_slot.CheckItemInSlot(itemData.itemID))
             {
                 result = _slot.AddNewItem(itemData, result);
                 
@@ -57,13 +57,13 @@ namespace PlayerNameSpace.InventorySystem
             return result;
         }
 
-        public int RemoveItem(ItemData itemData, int amountItems)
+        public int RemoveItem(ItemInstance itemData, int amountItems)
         {
             if (itemData == null || amountItems <= 0) return amountItems;
 
             int result = amountItems;
 
-            if (_slot.CheckItemInSlot(itemData.nameItem))
+            if (_slot.CheckItemInSlot(itemData.itemID))
             {
                 result = _slot.RemoveItem(itemData, result);
                 
@@ -93,7 +93,7 @@ namespace PlayerNameSpace.InventorySystem
             _slotView.ChangeItem(itemPrefab, itemSetting);
         }
 
-        public ItemData TakeItemDataFromSlot()
+        public ItemInstance TakeItemDataFromSlot()
         {
             return _slot.UnEquipData();
         }

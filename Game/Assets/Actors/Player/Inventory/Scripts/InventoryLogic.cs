@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Actors.Player.Inventory.Enums;
 using Actors.Player.Inventory.Scripts.EquipSlots;
+using DefaultNamespace.Enums;
 using Enemy;
 using DefaultNamespace.Zenject;
+using Player.Inventory;
 using Player.Inventory.InventoryInterface;
 using PlayerNameSpace.InventorySystem;
 using SlotSystem;
@@ -65,30 +67,30 @@ namespace PlayerNameSpace.Inventory
             #endregion
         }
 
-        public void AddItemToInventory(ItemData itemData, int amount)
+        public void AddItemToInventory(ItemInstance itemInstance, int amount)
         {
-            if (amount <= 0 || itemData == null)
+            if (amount <= 0 || itemInstance == null)
             {
-                Debug.LogError("item data = " + itemData + " amount add " + amount);
+                Debug.LogError("item data = " + itemInstance + " amount add " + amount);
                 return;
             }
 
             int remainingAmount = amount;
 
-            remainingAmount = AddItem(itemData, remainingAmount);
+            remainingAmount = AddItem(itemInstance, remainingAmount);
 
             if (remainingAmount > 0)
             {
-                remainingAmount = CreateNewStacks(itemData, remainingAmount);
+                remainingAmount = CreateNewStacks(itemInstance, remainingAmount);
             }
 
             if (remainingAmount > 0)
             {
-                Debug.Log($"Inventory full. Couldn't add {remainingAmount} of {itemData.nameItem}");
+                Debug.Log($"Inventory full. Couldn't add {remainingAmount} of {itemInstance.itemData.nameItem}");
             }
         }
 
-        private int AddItem(ItemData itemData, int amount)
+        private int AddItem(ItemInstance itemInstance, int amount)
         {
             int remaining = amount;
 
@@ -96,13 +98,13 @@ namespace PlayerNameSpace.Inventory
             {
                 if (remaining <= 0) break;
 
-                remaining = slot.AddItem(itemData, remaining);
+                remaining = slot.AddItem(itemInstance, remaining);
             }
 
             return remaining;
         }
         
-        private int CreateNewStacks(ItemData itemData, int amount)
+        private int CreateNewStacks(ItemInstance itemInstance, int amount)
         {
             int remaining = amount;
 
@@ -110,14 +112,14 @@ namespace PlayerNameSpace.Inventory
             {
                 if (remaining <= 0) break;
 
-                slot.CreateNewItem(itemData);
-                remaining = slot.AddItem(itemData, remaining);
+                slot.CreateNewItem(itemInstance);
+                remaining = slot.AddItem(itemInstance, remaining);
             }
 
             return remaining;
         }
 
-        public void RemoveItem(ItemData itemData, int amount)
+        public void RemoveItem(ItemInstance itemInstance, int amount)
         {
             int remaining = amount;
 
@@ -129,7 +131,7 @@ namespace PlayerNameSpace.Inventory
                     break;
                 }
 
-                remaining = slot.RemoveItem(itemData, remaining);
+                remaining = slot.RemoveItem(itemInstance, remaining);
             }
 
             if (remaining > 0)
@@ -138,19 +140,19 @@ namespace PlayerNameSpace.Inventory
             }
         }
 
-        public void SelectEquipAction(EquipItemType equipItemType, ItemData itemData)
+        public void SelectEquipAction(EquipItemType equipItemType, ItemInstance itemInstance)
         {
             if (_equipSlot.TryGetValue(equipItemType, out EquipSlotData equipSlotData))
             {
-                EquipItem(itemData, equipSlotData);
+                EquipItem(itemInstance, equipSlotData);
             }
         }
 
-        private void EquipItem(ItemData itemData, EquipSlotData equipSlotData)
+        private void EquipItem(ItemInstance itemInstance, EquipSlotData equipSlotData)
         {
             foreach (var slot in slots)
             {
-                if (slot.CheckItemInSlot(itemData.nameItem))
+                if (slot.CheckItemInSlot(itemInstance.itemID))
                 {
                     var currentItemData = slot.TakeItemDataFromSlot();
                     var currentItemObject = slot.TakePrefabFromSlot();
@@ -169,14 +171,14 @@ namespace PlayerNameSpace.Inventory
             }
         }
 
-        private void ChangeItemInSlot(SlotData slotData, ItemData itemData, GameObject itemPrefab)
+        private void ChangeItemInSlot(SlotData slotData, ItemInstance itemInstance, GameObject itemPrefab)
         {
-            slotData.RegistrateData(itemData);
+            slotData.RegistrateData(itemInstance);
             slotData.ChangeItemSettings(itemPrefab);
-            slotData.AddItem(itemData, 1);
+            slotData.AddItem(itemInstance, 1);
         }
 
-        public void UnEquipItem(EquipItemType equipItemType, ItemData itemData)
+        public void UnEquipItem(EquipItemType equipItemType, ItemInstance itemData)
         {
             if (!HaveSlot()) return;
             

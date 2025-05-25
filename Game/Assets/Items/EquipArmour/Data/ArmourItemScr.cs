@@ -13,16 +13,6 @@ namespace Enemy
         [SerializeField] private ArmourData armourData;
         public ArmourData ArmourData => armourData;
         
-        public override void OnEquip(InventoryLogic inventoryLogic)
-        {
-            inventoryLogic.SelectEquipAction(armourData.equipItemType, armourData);
-        }
-
-        public override void OnUnequip(InventoryLogic inventoryLogic)
-        {
-            inventoryLogic.UnEquipItem(armourData.equipItemType, armourData);
-        }
-        
         public override ItemData GetItemData()
         {
             return armourData;

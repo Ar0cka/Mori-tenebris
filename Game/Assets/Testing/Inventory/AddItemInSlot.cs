@@ -1,4 +1,5 @@
 using DefaultNamespace.Enums;
+using Player.Inventory;
 using Player.Inventory.InventoryInterface;
 using PlayerNameSpace;
 using UnityEngine;
@@ -15,12 +16,7 @@ public class AddItemInSlot : MonoBehaviour
 
     public void ClickAndAdd()
     {
-        _takeDamage.TakeDamage(25, DamageType.Physic);
-        _addItemOnInventoryAdder.AddItemToInventory(itemScrObj.GetItemData(), amount);
-    }
-
-    public void RemoveItemFromSlot()
-    {
-        _inventoryRemove.RemoveItem(itemScrObj.GetItemData(), amount);
+        ItemInstance itemInstance = new ItemInstance(itemScrObj.GetItemData());
+        _addItemOnInventoryAdder.AddItemToInventory(itemInstance, amount);
     }
 }

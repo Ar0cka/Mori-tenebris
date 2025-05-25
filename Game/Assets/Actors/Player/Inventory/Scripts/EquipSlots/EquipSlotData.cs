@@ -39,7 +39,7 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
             }
         }
 
-        public ItemData EquipItem(ItemData itemData)
+        public ItemInstance EquipItem(ItemInstance itemData)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
             }
         }
 
-        public ItemData UnEquipItem(ItemData itemData)
+        public ItemInstance UnEquipItem(ItemInstance itemData)
         {
             var data = _equipSlot.UnEquipItem(itemData);
 

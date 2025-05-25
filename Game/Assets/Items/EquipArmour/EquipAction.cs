@@ -1,4 +1,5 @@
 using Enemy;
+using Items.EquipArmour.Data;
 using Player.Inventory;
 using PlayerNameSpace.Inventory;
 using UnityEngine;
@@ -10,15 +11,18 @@ namespace Items.EquipArmour
     {
         [Inject] private InventoryLogic _inventoryLogic;
 
-        public override void EquipItem(ItemScrObj itemScr, bool isEquip)
+        public override void EquipItem(ItemInstance itemInstance, bool isEquip)
         {
-            if (isEquip)
+            if (itemInstance.itemData is EquipData equipData)
             {
-                itemScr.OnUnequip(_inventoryLogic);
-            }
-            else
-            {
-                itemScr.OnEquip(_inventoryLogic);
+                if (isEquip)
+                {
+                    _inventoryLogic.UnEquipItem(equipData.equipItemType, itemInstance);
+                }
+                else
+                {
+                    _inventoryLogic.SelectEquipAction(equipData.equipItemType, itemInstance);
+                }
             }
         }
     }

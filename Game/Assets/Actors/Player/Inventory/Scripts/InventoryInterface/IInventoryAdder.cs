@@ -4,6 +4,6 @@ namespace Player.Inventory.InventoryInterface
 {
     public interface IInventoryAdder
     {
-        void AddItemToInventory(ItemData itemData, int amount);
+        void AddItemToInventory(ItemInstance itemInstance, int amount);
     }
 }
