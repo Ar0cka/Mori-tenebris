@@ -1,12 +1,23 @@
+using DG.Tweening;
 using UnityEngine;
 
 namespace Player.Inventory
 {
     public class SpawnAnimation : MonoBehaviour
     {
-        public void SpawnAnimationStarted(GameObject obj)
+        [SerializeField] private float jumpHeight;
+        [SerializeField] private float jumpDuration;
+        [SerializeField] private float rotateDuration;
+        
+        public void SpawnAnimationStarted()
         {
-            //Анимация подброса + ротейта на 360 по Y в дотвеин
+            var anim = DOTween.Sequence();
+            
+            anim.Append(transform.DOJump(transform.position, 
+                jumpHeight, 1, 
+                jumpDuration).SetEase(Ease.OutBounce));
+
+            anim.Join(transform.DORotate(new Vector2(0, 360), rotateDuration, RotateMode.FastBeyond360));
         }
     }
 }

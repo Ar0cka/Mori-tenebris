@@ -57,7 +57,7 @@ namespace Actors.Enemy.DropItem.Scripts
 
                 if (spawnAnimation != null)
                 {
-                    spawnAnimation.SpawnAnimationStarted(itemPrefab);
+                    spawnAnimation.SpawnAnimationStarted();
                 }
             }
         }
