@@ -24,8 +24,6 @@ namespace SlotSystem
         {
             _itemPrefab = _itemFactory.Create(itemInstance.itemData.prefabItem, _slotObject.transform);
             _itemSettings = _itemPrefab.GetComponent<ItemSettings>();
-            _itemSettings.InitializeItemSettings(itemInstance);
-            Debug.Log(_itemSettings);
         }
         
         public void UpdateUI(int currentItemAmount)

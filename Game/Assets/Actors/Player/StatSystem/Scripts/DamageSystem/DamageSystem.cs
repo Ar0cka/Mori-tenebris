@@ -24,7 +24,6 @@ namespace PlayerNameSpace
             EventBus.Subscribe<SendEquipWeaponEvent>(e => CalculateDamageWithWeapon(e.WeaponDamage));
             
             CalculateDamage();
-            
         }
 
         private void CalculateDamage()

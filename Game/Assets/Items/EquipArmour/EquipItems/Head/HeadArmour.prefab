@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2177604652066885071}
   - component: {fileID: 3387809182930147286}
   - component: {fileID: -517437595121594631}
+  - component: {fileID: -7106658039932452914}
   m_Layer: 5
   m_Name: HeadArmour
   m_TagString: Untagged
@@ -148,9 +149,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 2014082810334073215}
-  itemScrObj: {fileID: 11400000, guid: 5931c437fb8b9134d8e1b56717c7f5ef, type: 2}
   countUI: {fileID: 481585354586047673}
   itemAction: {fileID: -517437595121594631}
+  itemScrObj: {fileID: 11400000, guid: 5931c437fb8b9134d8e1b56717c7f5ef, type: 2}
+  _IsEquiped: 0
 --- !u!114 &-517437595121594631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161,6 +163,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 881f9f5b39d9441cbc2906a9018bfe3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-7106658039932452914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6593871118970111117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 142edd9940a14d1a857d3f486974210d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &7514175892418942570

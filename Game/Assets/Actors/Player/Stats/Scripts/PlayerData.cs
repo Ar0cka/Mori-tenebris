@@ -12,11 +12,8 @@ namespace PlayerNameSpace
         private const string SCR_OBJ_PATH = "PlayerData";
         
         private PlayerScrObj _playerScrObj;
-        
         private ISaveAndLoad _saveSystem;
-
         private PlayerDataStats _playerDataStats;
-
         private PlayerStaticData _playerDataDontChangableStats;
         
         private string _filePath;
@@ -49,7 +46,7 @@ namespace PlayerNameSpace
                 Debug.Log("Clone");
             }
         }
-
+        
         #region SaveData
 
         private void SavePlayerData()

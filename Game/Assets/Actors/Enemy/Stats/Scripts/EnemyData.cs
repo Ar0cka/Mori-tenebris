@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Actors.Enemy.Data.Scripts;
 using DefaultNamespace.Enums;
 using Enemy.Events;
@@ -13,6 +14,8 @@ namespace Actors.Enemy.Stats.Scripts
     public class EnemyData : MonoBehaviour
     {
         [SerializeField] private EnemyScrObj enemyScrObj;
+        [SerializeField] private Animator animator;
+        [SerializeField] private float delayForDestroy = 2f;
 
         private int _currentHitPoints;
         private EnemyArmour _enemyArmour;
@@ -33,6 +36,8 @@ namespace Actors.Enemy.Stats.Scripts
             
             _currentHitPoints -= finalDamage;
             
+            Debug.Log(_currentHitPoints);
+            
             EventBus.Publish(new HitEnemyEvent());
             
             CheckDie();
@@ -42,7 +47,10 @@ namespace Actors.Enemy.Stats.Scripts
         {
             if (_currentHitPoints <= 0)
             {
+                animator.SetTrigger("Dead");
                 EventBus.Publish(new SendDieEventEnemy());
+                
+                Destroy(gameObject, delayForDestroy);
             }
         }
 

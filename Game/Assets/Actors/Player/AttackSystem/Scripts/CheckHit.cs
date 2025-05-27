@@ -1,3 +1,4 @@
+using System;
 using Actors.Enemy.Stats.Scripts;
 using PlayerNameSpace;
 using UnityEngine;
@@ -11,16 +12,18 @@ namespace Player.PlayerAttack
         
         
         private bool _isHit;
-        public void OnCollisionEnter2D(Collision2D other)
+
+        private void OnTriggerExit2D(Collider2D other)
         {
-            if (other.collider.CompareTag("Enemy") && !_isHit)
+            if (other.CompareTag("Enemy") && !_isHit)
             {
                 _isHit = true;
-
+                
                 EnemyData enemyData = TakEnemyData(other.gameObject);
 
                 if (enemyData != null)
                 {
+                    Debug.Log("Hit enemy " + damageSystem.Damage);
                     enemyData.TakeDamage(damageSystem.Damage, damageSystem.DamageType);
                 }
 
@@ -37,9 +40,9 @@ namespace Player.PlayerAttack
             return null;
         }
         
-        public void OnCollisionExit2D(Collision2D other)
+        private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.collider.CompareTag("Enemy"))
+            if (other.CompareTag("Enemy"))
             {
                 _isHit = false;
             }

@@ -50,7 +50,7 @@ using UnityEngine;
              
              if (CanStartNextAttack())
              {
-                 if (_attackData.TryGetValue(_currentCountAttack, out var value) && Input.GetKeyDown(value.comboKey))
+                 if (_attackData.TryGetValue(_currentCountAttack, out var value) && (Input.GetKeyDown(value.comboKey) || Input.GetMouseButtonDown(0)))
                  {
                      _lastClicked = Time.time;
                      _currentAnimation = value.nameTrigger;

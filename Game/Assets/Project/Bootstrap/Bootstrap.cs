@@ -33,6 +33,7 @@ namespace DefaultNamespace
         [Inject] private Health _health;
         [Inject] private Armour _armour;
         [Inject] private Stamina _stamina;
+        [Inject] private DamageSystem _damageSystem;
 
         
         private void Awake()
@@ -44,7 +45,7 @@ namespace DefaultNamespace
         private void Initialize()
         {
             SpawnPlayer();  
-            SpawnMonster();
+           // SpawnMonster();
             
             #region UI
 
@@ -65,7 +66,8 @@ namespace DefaultNamespace
             _armour.Initialize();
             _health.Initialize();
             _stamina.Initialize();
-
+            _damageSystem.Initialize();
+            
             #endregion
             
             stateMachineRealize.Initialize(_stamina);
