@@ -7,25 +7,53 @@ namespace Player.Inventory
 {
     public class TakeItems : MonoBehaviour
     {
-        [Inject] private IInventoryAdder inventoryAdder;
+        [SerializeField] private GameObject putText;
+        [SerializeField] private ItemScrObj itemScrObj;
 
         private ItemInstance _itemInstance;
         private int _countAdd;
 
-        public void Initialize(int countItem, ItemScrObj itemScr)
+        private bool _initialized;
+
+        public void Initialize(int countItem)
         {
-            _itemInstance = new ItemInstance(itemScr.GetItemData());
+            _itemInstance = new ItemInstance(itemScrObj.GetItemData());
             _countAdd = countItem;
+            _initialized = true;
+        }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (other.CompareTag("Player"))
+            {
+                putText.SetActive(true);
+            }
         }
 
         private void OnTriggerStay2D(Collider2D other)
         {
+            if (!_initialized) return;
+            
+            Debug.Log("OnTriggerStay2D");
+            
             if (other.CompareTag("Player"))
             {
-                if (Input.GetKeyDown(KeyCode.E))
+                Debug.Log("See player");
+                
+                if (Input.GetKey(KeyCode.E))
                 {
-                    inventoryAdder.AddItemToInventory(_itemInstance, _countAdd);
+                    Debug.Log("Put E");
+                    other.gameObject.GetComponent<TakeItemInInventory>().TakeItem(_itemInstance, _countAdd);
+                    gameObject.SetActive(false);
                 }
+            }
+        }
+
+        private void OnTriggerExit2D(Collider2D other)
+        {
+            if (other.CompareTag("Player"))
+            {
+                putText.SetActive(false);
             }
         }
     }

@@ -16,6 +16,7 @@ namespace DefaultNamespace.Zenject
     public interface ISpawnProjectObject
     {
         GameObject Create(GameObject gameObject, Transform parent);
+        GameObject Create(GameObject gameObject);
     }
 
     public class DynamicFactory : ISpawnProjectObject
@@ -30,6 +31,11 @@ namespace DefaultNamespace.Zenject
         public GameObject Create(GameObject prefab, Transform parent)
         {
             return _diContainer.InstantiatePrefab(prefab, parent);
+        }
+
+        public GameObject Create(GameObject prefab)
+        {
+            return _diContainer.InstantiatePrefab(prefab);
         }
     }
 }

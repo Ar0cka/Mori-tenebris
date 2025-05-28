@@ -7,7 +7,7 @@ namespace DefaultNamespace.Zenject
     {
         public override void InstallBindings()
         {
-            Container.Bind<ISpawnSceneObject>().To<SceneSyDynamicSpawn>().AsSingle();
+            Container.Bind<ISpawnSceneObject>().To<SceneDynamicSpawn>().AsSingle();
         }
     }
 
@@ -16,11 +16,11 @@ namespace DefaultNamespace.Zenject
         GameObject Create(GameObject gameObject);
     }
 
-    public class SceneSyDynamicSpawn : ISpawnSceneObject
+    public class SceneDynamicSpawn : ISpawnSceneObject
     {
         private readonly DiContainer _diContainer;
 
-        public SceneSyDynamicSpawn(DiContainer diContainer)
+        public SceneDynamicSpawn(DiContainer diContainer)
         {
             _diContainer = diContainer;
         }

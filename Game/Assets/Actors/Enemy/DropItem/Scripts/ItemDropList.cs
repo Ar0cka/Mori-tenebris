@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using DefaultNamespace.Zenject;
 using Enemy.Events;
 using EventBusNamespace;
 using Player.Inventory;
 using UnityEngine;
+using Zenject;
 using Random = UnityEngine.Random;
 
 namespace Actors.Enemy.DropItem.Scripts
@@ -14,6 +16,8 @@ namespace Actors.Enemy.DropItem.Scripts
         [SerializeField] private Transform spawnItemPosition;
         [SerializeField] private int maxDrop;
 
+        [Inject] private ISpawnProjectObject _spawnProjectObject;
+        
         private int _randomCountItemDrop;
 
         private void Awake()
@@ -23,12 +27,8 @@ namespace Actors.Enemy.DropItem.Scripts
 
         private void DropItem()
         {
-            Debug.Log("DropItem");
-            
             _randomCountItemDrop = Random.Range(0, maxDrop);
             
-            Debug.Log($"random count {_randomCountItemDrop}");
-
             if (_randomCountItemDrop == 0) return;
             
             List<GameObject> itemsForSpawn = new List<GameObject>();
@@ -49,15 +49,17 @@ namespace Actors.Enemy.DropItem.Scripts
         {
             foreach (var drop in dropList)
             {
-                float offset = Random.Range(1, -1);
+                float offset = Random.Range(-2f, 2f);
                 
-                GameObject itemPrefab = Instantiate(drop);
+                GameObject itemPrefab = _spawnProjectObject.Create(drop);
                 itemPrefab.transform.position = (Vector2)spawnItemPosition.position + new Vector2(0, offset);
                 SpawnAnimation spawnAnimation = itemPrefab?.GetComponent<SpawnAnimation>();
+                TakeItems takeItems = itemPrefab?.GetComponent<TakeItems>();
 
                 if (spawnAnimation != null)
                 {
-                    spawnAnimation.SpawnAnimationStarted();
+                    takeItems.Initialize(1);
+                    spawnAnimation.PlaySpawnAnimation();
                 }
             }
         }

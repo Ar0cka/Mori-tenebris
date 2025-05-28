@@ -15,29 +15,14 @@ namespace Player.Inventory
         [SerializeField] private Image image;
         [SerializeField] private TextMeshProUGUI countUI;
         [SerializeField] private ItemAction itemAction;
-        [SerializeField] private ItemScrObj itemScrObj;
 
         private ItemInstance _itemInstance;
         public bool _IsEquiped;
         
-        public void InitializeItemSettings()
+        public void InitializeItemSettings(ItemInstance itemInstance)
         {
-            if (itemScrObj == null)
-            {
-                DeleteObjectFromSlot();
-                return;
-            }
-            
-            _itemInstance = new ItemInstance(itemScrObj.GetItemData());
-
+            _itemInstance = itemInstance;
             image.sprite = _itemInstance.itemData.iconItem;
-        }
-
-        public ItemInstance PutItem()
-        {
-            if (_itemInstance == null) return null;
-
-            return _itemInstance;
         }
         
         public void ActiveItem()
