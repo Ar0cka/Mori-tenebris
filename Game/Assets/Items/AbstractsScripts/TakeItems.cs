@@ -22,39 +22,44 @@ namespace Player.Inventory
             _initialized = true;
         }
 
+        public PutItem TakeItem()
+        {
+            if (!_initialized) return null;
+            
+            Destroy(this.gameObject);
+            
+            return new PutItem(_itemInstance, 1);
+        }
+
         private void OnTriggerEnter2D(Collider2D other)
         {
+            if (!_initialized) return;
+
             if (other.CompareTag("Player"))
             {
                 putText.SetActive(true);
             }
         }
 
-        private void OnTriggerStay2D(Collider2D other)
-        {
-            if (!_initialized) return;
-            
-            Debug.Log("OnTriggerStay2D");
-            
-            if (other.CompareTag("Player"))
-            {
-                Debug.Log("See player");
-                
-                if (Input.GetKey(KeyCode.E))
-                {
-                    Debug.Log("Put E");
-                    other.gameObject.GetComponent<TakeItemInInventory>().TakeItem(_itemInstance, _countAdd);
-                    gameObject.SetActive(false);
-                }
-            }
-        }
-
         private void OnTriggerExit2D(Collider2D other)
         {
+            if (!_initialized) return;
+
             if (other.CompareTag("Player"))
             {
                 putText.SetActive(false);
             }
+        }
+    }
+
+    public class PutItem
+    {
+        public ItemInstance ItemInstance;
+        public int Count;
+        public PutItem(ItemInstance itemInstance, int count)
+        {
+            ItemInstance = itemInstance;
+            Count = count;
         }
     }
 }

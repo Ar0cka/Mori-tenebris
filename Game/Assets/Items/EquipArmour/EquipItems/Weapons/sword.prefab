@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1588573657615690123}
   - component: {fileID: 8435004884455423355}
   - component: {fileID: 3719027829474063954}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -114,7 +114,7 @@ GameObject:
   - component: {fileID: 6600797580610780392}
   - component: {fileID: 6627440305489211174}
   - component: {fileID: 1454051094677801685}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: PutELable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -265,9 +265,9 @@ GameObject:
   - component: {fileID: 677761763842385545}
   - component: {fileID: 1313305403984632102}
   - component: {fileID: 6793758003213825164}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: sword
-  m_TagString: Untagged
+  m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -356,8 +356,8 @@ MonoBehaviour:
   jumpDuration: 1.5
   rotateDuration: 2
   minScale: 0.9
-  maxScale: 1.1
-  scalePulseDuration: 2
+  maxScale: 1.3
+  scalePulseDuration: 1.3
 --- !u!114 &677761763842385545
 MonoBehaviour:
   m_ObjectHideFlags: 0

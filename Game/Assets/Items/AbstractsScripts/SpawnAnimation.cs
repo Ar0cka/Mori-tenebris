@@ -9,11 +9,7 @@ namespace Player.Inventory
         [SerializeField] private float jumpHeight = 1f;
         [SerializeField] private float jumpDuration = 0.5f;
         [Header("Rotate")]
-        [SerializeField] private float rotateDuration = 0.7f;
-        [Header("Scale")]
-        [SerializeField] private float minScale = 0.9f;
-        [SerializeField] private float maxScale = 1.1f;
-        [SerializeField] private float scalePulseDuration = 0.5f;
+        [SerializeField] private float rotateDuration = 0.5f;
 
         private Sequence _mainAnimation;
         private Sequence _pulseSequence;
@@ -25,24 +21,14 @@ namespace Player.Inventory
             
             transform.localScale = Vector3.one;
             transform.rotation = Quaternion.identity;
-            
+
             _mainAnimation = DOTween.Sequence()
                 .Append(transform.DOJump(transform.position, jumpHeight, 1, jumpDuration)
-                    .SetEase(Ease.OutQuad))
+                    .SetEase(Ease.OutBounce))
                 .Join(transform.DORotate(new Vector3(0, 360, 0), rotateDuration, RotateMode.FastBeyond360)
-                    .SetEase(Ease.Linear))
-                .OnComplete(StartPulseAnimation); 
+                    .SetEase(Ease.Linear));
         }
-
-        private void StartPulseAnimation()
-        {
-            _pulseSequence = DOTween.Sequence()
-                .Append(transform.DOScale(maxScale, scalePulseDuration)
-                    .SetEase(Ease.InOutSine))
-                .Append(transform.DOScale(minScale, scalePulseDuration)
-                    .SetEase(Ease.InOutSine))
-                .SetLoops(-1, LoopType.Yoyo);
-        }
+        
 
         private void OnDestroy()
         {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using DefaultNamespace.Zenject;
 using Enemy.Events;
 using EventBusNamespace;
@@ -15,8 +16,7 @@ namespace Actors.Enemy.DropItem.Scripts
         [SerializeField] private List<GameObject> itemsReference;
         [SerializeField] private Transform spawnItemPosition;
         [SerializeField] private int maxDrop;
-
-        [Inject] private ISpawnProjectObject _spawnProjectObject;
+        [SerializeField] private int minDrop;
         
         private int _randomCountItemDrop;
 
@@ -27,7 +27,7 @@ namespace Actors.Enemy.DropItem.Scripts
 
         private void DropItem()
         {
-            _randomCountItemDrop = Random.Range(0, maxDrop);
+            _randomCountItemDrop = Random.Range(minDrop, maxDrop);
             
             if (_randomCountItemDrop == 0) return;
             
@@ -51,7 +51,8 @@ namespace Actors.Enemy.DropItem.Scripts
             {
                 float offset = Random.Range(-2f, 2f);
                 
-                GameObject itemPrefab = _spawnProjectObject.Create(drop);
+                GameObject itemPrefab = Instantiate(drop.gameObject);
+                itemPrefab.name = Guid.NewGuid().ToString("N");
                 itemPrefab.transform.position = (Vector2)spawnItemPosition.position + new Vector2(0, offset);
                 SpawnAnimation spawnAnimation = itemPrefab?.GetComponent<SpawnAnimation>();
                 TakeItems takeItems = itemPrefab?.GetComponent<TakeItems>();
