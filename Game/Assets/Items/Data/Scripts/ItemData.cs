@@ -1,6 +1,7 @@
 using System;
 using DefaultNamespace.Enums;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Enemy
 {
@@ -14,6 +15,6 @@ namespace Enemy
         public ItemTypes itemTypes;
         
         public Sprite iconItem;
-        public GameObject prefabItem;
+        public GameObject prefabItemUI;
     }
 }

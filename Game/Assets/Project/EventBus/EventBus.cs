@@ -6,32 +6,15 @@ namespace EventBusNamespace
 {
     public class EventBus
     {
-        private static Dictionary<Type, Delegate> _events = new Dictionary<Type, Delegate>();
+        private static readonly Dictionary<Type, Delegate> _events = new();
 
         public static void Subscribe<T>(Action<T> action)
         {
             var type = typeof(T);
-            if (!_events.ContainsKey(type))
-            {
-                _events.Add(type, null);
-                _events[type] = Delegate.Combine(_events[type], action);
-            }
-        }
-        
-        public static void Subscribe<T>(List<Action<T>> actions)
-        {
-            var type = typeof(T);
-            
-            foreach (var action in actions)
-            {
-                if (action == null) continue;
-                
-                if (!_events.ContainsKey(type))
-                {
-                    _events.Add(type, null);
-                    _events[type] = Delegate.Combine(_events[type], action);
-                }
-            }
+            if (_events.TryGetValue(type, out var existing))
+                _events[type] = Delegate.Combine(existing, action);
+            else
+                _events[type] = action;
         }
 
         public static void Unsubscribe<T>(Action<T> action)
@@ -39,42 +22,21 @@ namespace EventBusNamespace
             var type = typeof(T);
             if (_events.TryGetValue(type, out var existing))
             {
-                _events[type] = Delegate.Remove(existing, action);
-            }
-        }
-        
-        public static void Unsubscribe<T>(List<Action<T>> actions)
-        {
-            var type = typeof(T);
-            foreach (var action in actions)
-            {
-                if (action == null) continue;
-                
-                if (_events.TryGetValue(type, out var existing))
-                {
-                    _events[type] = Delegate.Remove(existing, action);
-                }
+                var current = Delegate.Remove(existing, action);
+                if (current == null) _events.Remove(type);
+                else _events[type] = current;
             }
         }
 
-        public static void Publish<T>(T eventData)                                                                                  
+        public static void Publish<T>(T eventData)
         {
-            try
+            if (_events.TryGetValue(typeof(T), out var del))
             {
-                var type = typeof(T);
-                if (_events.TryGetValue(type, out var value))
-                {
-                    (value as Action<T>)?.Invoke(eventData);                
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e);
-            }
-            finally
-            {
-                eventData = default;
+                if (del is Action<T> action)
+                    action.Invoke(eventData);
             }
         }
+
+        public static void ClearAll() => _events.Clear();
     }
 }

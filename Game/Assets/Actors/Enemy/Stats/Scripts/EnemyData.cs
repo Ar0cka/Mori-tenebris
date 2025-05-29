@@ -21,6 +21,8 @@ namespace Actors.Enemy.Stats.Scripts
         private EnemyArmour _enemyArmour;
         private EnemyDamage _enemyDamage;
 
+        private bool _isDie;
+
         private void Start()
         {
             _currentHitPoints = enemyScrObj.HitPoints;
@@ -32,6 +34,8 @@ namespace Actors.Enemy.Stats.Scripts
 
         public void TakeDamage(int damage, DamageType damageType)
         {
+            if (_isDie) return;
+            
             int finalDamage = CalculateDamage.CalculateFinalDamageWithResist(damage, _enemyArmour.GetArmour(damageType));
             
             _currentHitPoints -= finalDamage;
@@ -47,6 +51,7 @@ namespace Actors.Enemy.Stats.Scripts
         {
             if (_currentHitPoints <= 0)
             {
+                _isDie = true;
                 animator.SetTrigger("Dead");
                 EventBus.Publish(new SendDieEventEnemy());
                 

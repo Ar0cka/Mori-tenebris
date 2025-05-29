@@ -148,9 +148,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 2014082810334073215}
-  itemScrObj: {fileID: 11400000, guid: 86407cde20d6e894c8fc28bd186b345c, type: 2}
   countUI: {fileID: 481585354586047673}
   itemAction: {fileID: 417103151862974807}
+  _IsEquiped: 0
 --- !u!114 &417103151862974807
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,4 +1,5 @@
 using System;
+using Enemy;
 using Player.Inventory.InventoryInterface;
 using UnityEngine;
 using Zenject;
@@ -8,16 +9,15 @@ namespace Player.Inventory
     public class TakeItems : MonoBehaviour
     {
         [SerializeField] private GameObject putText;
-        [SerializeField] private ItemScrObj itemScrObj;
 
         private ItemInstance _itemInstance;
         private int _countAdd;
 
         private bool _initialized;
 
-        public void Initialize(int countItem)
+        public void Initialize(ItemData itemData, int countItem)
         {
-            _itemInstance = new ItemInstance(itemScrObj.GetItemData());
+            _itemInstance = new ItemInstance(itemData);
             _countAdd = countItem;
             _initialized = true;
         }
@@ -28,7 +28,7 @@ namespace Player.Inventory
             
             Destroy(this.gameObject);
             
-            return new PutItem(_itemInstance, 1);
+            return new PutItem(_itemInstance, _countAdd);
         }
 
         private void OnTriggerEnter2D(Collider2D other)

@@ -1,4 +1,5 @@
 using System;
+using UnityEngine.Serialization;
 
 namespace Enemy.ItemTypeData
 {
@@ -6,6 +7,6 @@ namespace Enemy.ItemTypeData
     public class Potion : ItemData
     {
         public PotionEffectType PotionEffectType;
-        public int amount;
+        public int healthAmount;
     }
 }

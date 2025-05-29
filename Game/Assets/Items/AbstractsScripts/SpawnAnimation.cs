@@ -12,12 +12,10 @@ namespace Player.Inventory
         [SerializeField] private float rotateDuration = 0.5f;
 
         private Sequence _mainAnimation;
-        private Sequence _pulseSequence;
 
         public void PlaySpawnAnimation()
         {
             _mainAnimation?.Kill();
-            _pulseSequence?.Kill();
             
             transform.localScale = Vector3.one;
             transform.rotation = Quaternion.identity;
@@ -33,7 +31,6 @@ namespace Player.Inventory
         private void OnDestroy()
         {
             _mainAnimation?.Kill();
-            _pulseSequence?.Kill();
         }
     }
 }

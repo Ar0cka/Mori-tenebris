@@ -19,7 +19,7 @@ namespace Player.Inventory
             
             if (itemInstance.itemData is Potion potion)  
             {
-                _regenerationHealth.Regeneration(potion.amount);
+                _regenerationHealth.Regeneration(potion.healthAmount);
                 _inventoryRemove.RemoveItem(itemInstance, 1);
             }
         }
