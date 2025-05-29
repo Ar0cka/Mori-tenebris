@@ -12,13 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adf0e7e1b5894ddc9ee85fafbcfebc89, type: 3}
   m_Name: sword
   m_EditorClassIdentifier: 
+  spawnPrefab: {fileID: 8596181059298199730, guid: 759e80397696bc94188f50b3a2109ebc, type: 3}
   weaponData:
     nameItem: Sword
     description: nice
     maxStackInSlot: 1
     itemTypes: 0
     iconItem: {fileID: 1802275875, guid: 3d3f190d4f38e824385e51c008d7e6bd, type: 3}
-    prefabItem: {fileID: 6593871118970111117, guid: b2597df903493bd47b6dc3a8e4cafdf1, type: 3}
+    prefabItemUI: {fileID: 6593871118970111117, guid: b2597df903493bd47b6dc3a8e4cafdf1, type: 3}
     equipItemType: 0
     damage: 6
     damageType: 0

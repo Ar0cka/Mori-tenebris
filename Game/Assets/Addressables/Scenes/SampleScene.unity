@@ -10935,10 +10935,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemsReference:
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 86407cde20d6e894c8fc28bd186b345c, type: 2}
+  - {fileID: 11400000, guid: e455560e3c9bf8348853d180fee9168e, type: 2}
   spawnItemPosition: {fileID: 885331508}
-  maxDrop: 7
+  maxDrop: 10
   minDrop: 1
 --- !u!1 &2104120741
 GameObject:

@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcf2dbe9ec6f43688d8d900d4fa6283c, type: 3}
   m_Name: HealthPotion 1
   m_EditorClassIdentifier: 
+  spawnPrefab: {fileID: 8596181059298199730, guid: b8536c4deb72b61448cfd58dd3cc2194, type: 3}
   potion:
     nameItem: Health potion
     description: "\u0425\u0438\u043B\u0438\u0442 \u043D\u0430 30"
     maxStackInSlot: 100
     itemTypes: 1
     iconItem: {fileID: 21300000, guid: fd081115fbfc06f4b8d7d568a1ab53ce, type: 3}
-    prefabItem: {fileID: 6593871118970111117, guid: d24a5df1e00d62a4e951064c3fd55ba1, type: 3}
+    prefabItemUI: {fileID: 6593871118970111117, guid: d24a5df1e00d62a4e951064c3fd55ba1, type: 3}
     PotionEffectType: 0
     healthAmount: 30
