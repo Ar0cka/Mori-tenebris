@@ -1,13 +1,10 @@
-﻿using Actors.Player.AbstractFSM;
-using Actors.Player.AttackSystemFSM;
-
-public abstract class State
+﻿public abstract class State
 {
     protected FStateMachine FStateMachine;
-    protected AbstractStateMachineRealize _stateMachineRealize;
+    protected StateMachineRealize _stateMachineRealize;
     protected bool animationState;
 
-    protected State(FStateMachine fsm, AbstractStateMachineRealize stateMachineRealize)
+    protected State(FStateMachine fsm, StateMachineRealize stateMachineRealize)
     {
         FStateMachine = fsm;
         _stateMachineRealize = stateMachineRealize;

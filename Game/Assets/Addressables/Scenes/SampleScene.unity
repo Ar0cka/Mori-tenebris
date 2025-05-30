@@ -5754,19 +5754,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 938168677}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7afe1032512431e963af887e3f89a1c, type: 3}
+  m_Script: {fileID: 11500000, guid: df663017dff64eb980597e3a662fa6f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  comboWindow: 1
-  attacks:
-  - nameTrigger: BaseAttack1
-    positionInQueue: 1
-    comboKey: 53
-  - nameTrigger: BaseAttack2
-    positionInQueue: 2
-    comboKey: 53
   animator: {fileID: 1907022998}
-  exitFromComboDelay: 0.5
+  spriteRenderer: {fileID: 1907023001}
+  nameSideParameters: x
+  leftSide: 0
+  rightSide: 1
+  baseAttackSettings: {fileID: 11400000, guid: 64dd749a838f6364f8e5ddf927cec936, type: 2}
 --- !u!1 &940571143
 GameObject:
   m_ObjectHideFlags: 0

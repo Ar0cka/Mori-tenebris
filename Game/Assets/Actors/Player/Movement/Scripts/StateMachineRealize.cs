@@ -1,12 +1,11 @@
 ﻿using System;
-using Actors.Player.AbstractFSM;
 using Actors.Player.Movement.Scripts;
 using EventBusNamespace;
 using PlayerNameSpace;
 using StateMachin.States;
 using UnityEngine;
 
-public class StateMachineRealize : AbstractStateMachineRealize
+public class StateMachineRealize : MonoBehaviour
 {
     [SerializeField] private Animator animator;
     [SerializeField] private PlayerScrObj playerScrObj;
@@ -18,6 +17,8 @@ public class StateMachineRealize : AbstractStateMachineRealize
     private FStateMachine stateMachine;
 
     private Action<MovementOffsetScr> _changeOffset;
+    
+    private bool _isInitialized;
     
     public void Initialize(ISubtractionStamina subtractionStamina)
     {
@@ -33,18 +34,18 @@ public class StateMachineRealize : AbstractStateMachineRealize
         
         stateMachine.ChangeState<IdleState>();
         
-        IsInitialized = true;
+        _isInitialized = true;
     }
 
     private void Update()
     {
-        if (IsInitialized)
+        if (_isInitialized)
         stateMachine.Update();
     }
 
     private void FixedUpdate()
     {
-        if (IsInitialized)
+        if (_isInitialized)
         stateMachine.FixedUpdate();
     }
 

@@ -52,7 +52,7 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
 
         private void EquipWeapon(WeaponData weaponData)
         {
-            EventBus.Publish(new SendEquipWeaponEvent(weaponData.damage, weaponData.damageType));
+            EventBus.Publish(new SendEquipWeaponEvent(weaponData.damage, weaponData.damageType, weaponData.weaponConfig));
         }
 
         private void EquipArmour(ArmourData armourData)

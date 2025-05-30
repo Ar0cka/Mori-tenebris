@@ -1,4 +1,5 @@
 using System;
+using Actors.Player.AttackSystem.Data;
 using DefaultNamespace.Enums;
 using Enemy;
 using Player.Inventory;
@@ -22,6 +23,7 @@ namespace Items.EquipArmour.Data
     [Serializable]
     public class WeaponData : EquipData
     {
+        public WeaponAttackSettings weaponConfig;
         public int damage;
         public DamageType damageType;
     }

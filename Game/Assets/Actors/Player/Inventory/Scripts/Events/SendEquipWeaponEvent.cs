@@ -1,3 +1,4 @@
+using Actors.Player.AttackSystem.Data;
 using DefaultNamespace.Enums;
 
 namespace Player.Inventory
@@ -7,10 +8,13 @@ namespace Player.Inventory
         public int WeaponDamage { get; private set; }
         public DamageType DamageType { get; private set; }
 
-        public SendEquipWeaponEvent(int weaponDamage, DamageType damageType)
+        public WeaponAttackSettings WeaponConfig { get; private set; }
+
+        public SendEquipWeaponEvent(int weaponDamage, DamageType damageType, WeaponAttackSettings weaponConfig)
         {
             WeaponDamage = weaponDamage;
             DamageType = damageType;
+            WeaponConfig = weaponConfig;
         }
     }
 }
