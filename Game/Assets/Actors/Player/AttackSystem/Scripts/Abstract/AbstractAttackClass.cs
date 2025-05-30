@@ -12,6 +12,7 @@ using UnityEngine;
          [SerializeField] private float comboWindow;
          [SerializeField] protected List<AttackSetting> attacks;
          [SerializeField] protected Animator animator;
+         [SerializeField] protected SpriteRenderer spriteRenderer;
 
          [SerializeField] private float exitFromComboDelay;
          
@@ -23,6 +24,8 @@ using UnityEngine;
          private Dictionary<int, AttackSetting> _attackData = new Dictionary<int, AttackSetting>();
 
          private bool _isEndCombo;
+
+         [Range(0, 1)] private int x = 0;
 
          protected void Awake()
          {
@@ -69,6 +72,8 @@ using UnityEngine;
 
          protected void StartAnimation(string animationName)
          {
+             x = spriteRenderer.flipX ? 0 : 1;
+             animator.SetFloat("x", x);
              animator.SetTrigger(animationName);
              SendEffectsEvent();
          }

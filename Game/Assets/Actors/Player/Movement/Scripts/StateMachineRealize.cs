@@ -1,11 +1,12 @@
 ﻿using System;
+using Actors.Player.AbstractFSM;
 using Actors.Player.Movement.Scripts;
 using EventBusNamespace;
 using PlayerNameSpace;
 using StateMachin.States;
 using UnityEngine;
 
-public class StateMachineRealize : MonoBehaviour
+public class StateMachineRealize : AbstractStateMachineRealize
 {
     [SerializeField] private Animator animator;
     [SerializeField] private PlayerScrObj playerScrObj;
@@ -18,8 +19,6 @@ public class StateMachineRealize : MonoBehaviour
 
     private Action<MovementOffsetScr> _changeOffset;
     
-    private bool initialized = false;
-
     public void Initialize(ISubtractionStamina subtractionStamina)
     {
         _changeOffset = ChangeModel;
@@ -29,29 +28,24 @@ public class StateMachineRealize : MonoBehaviour
         stateMachine = new FStateMachine();
         
         stateMachine.AddNewState(new IdleState(stateMachine, this));
-        stateMachine.AddNewState(new MovementState(stateMachine, this, playerScrObj, rb2D, spriteRenderer, movementOffsetScr, capsuleCollider));
-        stateMachine.AddNewState(new SprintRun(stateMachine, this, playerScrObj, rb2D, subtractionStamina, spriteRenderer, movementOffsetScr, capsuleCollider));
+        stateMachine.AddNewState(new MovementState(stateMachine, this, playerScrObj, rb2D, spriteRenderer, movementOffsetScr, capsuleCollider, animator));
+        stateMachine.AddNewState(new SprintRun(stateMachine, this, playerScrObj, rb2D, subtractionStamina, spriteRenderer, movementOffsetScr, capsuleCollider, animator));
         
         stateMachine.ChangeState<IdleState>();
         
-        initialized = true;
+        IsInitialized = true;
     }
 
     private void Update()
     {
-        if (initialized)
+        if (IsInitialized)
         stateMachine.Update();
     }
 
     private void FixedUpdate()
     {
-        if (initialized)
+        if (IsInitialized)
         stateMachine.FixedUpdate();
-    }
-
-    public void SetWalkAnimation(bool stateAnimation)
-    {
-        animator?.SetBool("Walk", stateAnimation);
     }
 
     private void ChangeModel(MovementOffsetScr offsetScr)

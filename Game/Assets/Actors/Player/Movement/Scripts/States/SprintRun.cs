@@ -13,8 +13,8 @@ namespace StateMachin.States
         private const float StaminaCheckThreshold = 1f;
         
         public SprintRun(FStateMachine fsm, StateMachineRealize stateMachineRealize, PlayerScrObj playerScr, Rigidbody2D _rb2D, ISubtractionStamina subtractionStamina, 
-            SpriteRenderer spriteRenderer, MovementOffsetScr movementOffsetScr, CapsuleCollider2D capsuleCollider) :
-            base(fsm, stateMachineRealize, playerScr, _rb2D, spriteRenderer, movementOffsetScr, capsuleCollider)
+            SpriteRenderer spriteRenderer, MovementOffsetScr movementOffsetScr, CapsuleCollider2D capsuleCollider, Animator animator) :
+            base(fsm, stateMachineRealize, playerScr, _rb2D, spriteRenderer, movementOffsetScr, capsuleCollider, animator)
         {
             _playerScr = playerScr;
             _subtractionStamina = subtractionStamina;

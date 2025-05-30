@@ -11,9 +11,10 @@ public class MovementState : State
     protected SpriteRenderer _spriteRenderer;
     protected MovementOffsetScr _movementOffsetScr;
     protected CapsuleCollider2D _capsuleCollider;
+    protected Animator _animator;
 
     public MovementState(FStateMachine fsm, StateMachineRealize stateMachineRealize, PlayerScrObj playerScr, Rigidbody2D _rb2D, 
-        SpriteRenderer spriteRenderer, MovementOffsetScr movementOffsetScr, CapsuleCollider2D capsuleCollider) :
+        SpriteRenderer spriteRenderer, MovementOffsetScr movementOffsetScr, CapsuleCollider2D capsuleCollider, Animator animator) :
         base(fsm, stateMachineRealize)
     {
         _playerScr = playerScr;
@@ -21,6 +22,7 @@ public class MovementState : State
         _spriteRenderer = spriteRenderer;
         _movementOffsetScr = movementOffsetScr;
         _capsuleCollider = capsuleCollider;
+        _animator = animator;
     }
 
     public override void UpdateLogic()
@@ -49,7 +51,7 @@ public class MovementState : State
     public override void SetAnimation()
     {
         base.SetAnimation();
-        _stateMachineRealize.SetWalkAnimation(animationState);
+        _animator.SetBool("Walk", InputVector().sqrMagnitude > 0);
     }
 
     public void UpdateMovementOffset(MovementOffsetScr movementOffsetScr)
