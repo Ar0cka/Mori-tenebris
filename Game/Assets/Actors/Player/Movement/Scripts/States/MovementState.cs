@@ -1,4 +1,5 @@
-﻿using PlayerNameSpace;
+﻿using Actors.Player.Movement.Scripts;
+using PlayerNameSpace;
 using StateMachin.States;
 using UnityEngine;
 
@@ -7,12 +8,19 @@ public class MovementState : State
 {
     protected PlayerScrObj _playerScr;
     protected Rigidbody2D rb2D;
+    protected SpriteRenderer _spriteRenderer;
+    protected MovementOffsetScr _movementOffsetScr;
+    protected CapsuleCollider2D _capsuleCollider;
 
-    public MovementState(FStateMachine fsm, StateMachineRealize stateMachineRealize, PlayerScrObj playerScr, Rigidbody2D _rb2D) :
+    public MovementState(FStateMachine fsm, StateMachineRealize stateMachineRealize, PlayerScrObj playerScr, Rigidbody2D _rb2D, 
+        SpriteRenderer spriteRenderer, MovementOffsetScr movementOffsetScr, CapsuleCollider2D capsuleCollider) :
         base(fsm, stateMachineRealize)
     {
         _playerScr = playerScr;
         rb2D = _rb2D;
+        _spriteRenderer = spriteRenderer;
+        _movementOffsetScr = movementOffsetScr;
+        _capsuleCollider = capsuleCollider;
     }
 
     public override void UpdateLogic()
@@ -35,6 +43,7 @@ public class MovementState : State
     {
         base.PhysicUpdate();
         Move(_playerScr.StaticPlayerStats.WalkSpeed);
+        ChangeSpriteSide(InputVector().normalized);
     }
 
     public override void SetAnimation()
@@ -43,6 +52,11 @@ public class MovementState : State
         _stateMachineRealize.SetWalkAnimation(animationState);
     }
 
+    public void UpdateMovementOffset(MovementOffsetScr movementOffsetScr)
+    {
+        _movementOffsetScr = movementOffsetScr;
+    }
+    
     protected void Move(float speed)
     {
         rb2D.MovePosition(rb2D.position + InputVector().normalized * speed * Time.deltaTime);
@@ -51,5 +65,11 @@ public class MovementState : State
     protected Vector2 InputVector()
     {
         return new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+    }
+
+    protected void ChangeSpriteSide(Vector2 inputVector)
+    {
+        _spriteRenderer.flipX = inputVector.x < 0;
+        _capsuleCollider.offset = inputVector.x < 0 ? _movementOffsetScr.MoveLeftOffset : _movementOffsetScr.MoveRightOffset;
     }
 }

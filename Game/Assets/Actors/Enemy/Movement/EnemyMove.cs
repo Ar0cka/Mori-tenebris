@@ -5,6 +5,7 @@ using Actors.Enemy.Data.Scripts;
 using Actors.Enemy.Pathfinder;
 using Actors.Enemy.Pathfinder.Interface;
 using Actors.Enemy.Stats.Scripts;
+using Actors.Player.Movement.Scripts;
 using PlayerNameSpace;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -18,11 +19,15 @@ namespace Actors.Enemy.Movement
     {
         #region param
 
+        [Header("Components")]
         [SerializeField] private EnemyData enemyData;
         [SerializeField] private Rigidbody2D rb2D;
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private Animator animator;
+        [SerializeField] private CapsuleCollider2D capsuleCollider2D;
+        [SerializeField] private MovementOffsetScr colliderOffset;
 
+        [Header("MoveSettings")]
         [SerializeField] private float switchNodeDistance;
         [SerializeField] private float delayForRequestPath;
         
@@ -103,14 +108,16 @@ namespace Actors.Enemy.Movement
             _move = moveDirection.magnitude > 0.01f;
             
             animator.SetBool("Walk", _move);
-            spriteRenderer.flipX = moveDirection.x > 0;
+            spriteRenderer.flipX = moveDirection.x < 0;
+            capsuleCollider2D.offset = moveDirection.x < 0 ? colliderOffset.MoveLeftOffset : colliderOffset.MoveRightOffset;
         }
         private bool CanSwitchMoveNode(Vector2 nextPoint) =>
             Vector2.Distance(nextPoint, rb2D.position) <= switchNodeDistance;
-
         private bool ValidateComponents()
         {
             return enemyData == null || _pathfinder == null || animator == null || rb2D == null || spriteRenderer == null;
         }
+        
+        
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Actors.Player.Movement.Scripts;
+using StateMachin.States;
 
 public class FStateMachine
 {
@@ -25,6 +27,17 @@ public class FStateMachine
         }
     }
 
+    public void UpdateStateData<T>(MovementOffsetScr movementOffset) where T : MovementState
+    {
+        var type = typeof(T);
+        if (CurrentState?.GetType() == type)
+        {
+            if (CurrentState is MovementState movementState)
+            {
+                movementState.UpdateMovementOffset(movementOffset);
+            }
+        }
+    }
     public void Update()
     {
         CurrentState.UpdateLogic();

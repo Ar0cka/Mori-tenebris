@@ -17,6 +17,8 @@ namespace Player.PlayerAttack
         {
             if (other.CompareTag("Enemy") && !_isHit)
             {
+                Debug.Log(other.name);
+                
                 _isHit = true;
                 
                 EnemyData enemyData = TakEnemyData(other.gameObject);
