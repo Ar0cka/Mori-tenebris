@@ -26,7 +26,7 @@ namespace Actors.Player.AttackSystem.Scripts
 
         private Action<SendEquipWeaponEvent> _equipWeaponAction;
         private bool CanAttack =>
-            Input.GetMouseButtonDown(0) && Cooldown <= 0 && !_isEndCombo && GlobalAttackStates.IsBusy;
+            Input.GetMouseButtonDown(0) && Cooldown <= 0 && !_isEndCombo && !GlobalAttackStates.IsBusy;
 
         protected override void Awake()
         {
@@ -73,7 +73,7 @@ namespace Actors.Player.AttackSystem.Scripts
             {
                 Attack();
                 _lastClick = Time.time;
-                Cooldown += 0.1f;
+                Cooldown += _currentAttackSettings.AttackSettings.delayBetweenAttacks;
             }
             else if (Cooldown > 0)
             {
@@ -138,6 +138,7 @@ namespace Actors.Player.AttackSystem.Scripts
             _currentCountAttack = 0;
             _currentAnimationName = "";
             _isEndCombo = false;
+            _endComboCoroutine = null;
         }
         
         

@@ -6,7 +6,7 @@ namespace Actors.Player.AttackSystem.Scripts
     public class AttackSettings
     {
         public float comboWindow;
-        public float exitFromComboDelay;
+        public float delayBetweenAttacks;
         public float attackCooldown;
     }
 

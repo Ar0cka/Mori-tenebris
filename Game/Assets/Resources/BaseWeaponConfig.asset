@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: BaseWeaponConfig
   m_EditorClassIdentifier: 
   attackSettingsSettings:
-    comboWindow: 1
-    exitFromComboDelay: 1
+    comboWindow: 3
+    exitFromComboDelay: 1.5
     attackCooldown: 1.5
   attackData:
   - triggerName: BaseAttack1
