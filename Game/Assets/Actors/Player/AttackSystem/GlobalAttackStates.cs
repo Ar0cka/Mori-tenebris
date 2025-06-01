@@ -10,7 +10,7 @@ namespace Actors.Player.AttackSystem
         
         public static void UpdateAttackState(bool attackState)
         {
-            GlobalAttackStates.IsAttacking = attackState;
+            IsAttacking = attackState;
         }
     }
 }

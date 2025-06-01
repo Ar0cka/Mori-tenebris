@@ -1,4 +1,5 @@
-﻿using Actors.Player.Movement.Scripts;
+﻿using Actors.Player.AttackSystem;
+using Actors.Player.Movement.Scripts;
 using PlayerNameSpace;
 using StateMachin.States;
 using UnityEngine;
@@ -71,7 +72,10 @@ public class MovementState : State
 
     protected void ChangeSpriteSide(Vector2 inputVector)
     {
-        _spriteRenderer.flipX = inputVector.x < 0;
-        _capsuleCollider.offset = inputVector.x < 0 ? _movementOffsetScr.MoveLeftOffset : _movementOffsetScr.MoveRightOffset;
+        if (!GlobalAttackStates.IsBusy)
+        {
+            _spriteRenderer.flipX = inputVector.x < 0;
+            _capsuleCollider.offset = inputVector.x < 0 ? _movementOffsetScr.MoveLeftOffset : _movementOffsetScr.MoveRightOffset;
+        }
     }
 }

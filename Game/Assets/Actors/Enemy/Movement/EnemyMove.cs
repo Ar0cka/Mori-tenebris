@@ -95,7 +95,7 @@ namespace Actors.Enemy.Movement
 
             SetModelSettings(moveDirection);
             
-            rb2D.MovePosition(rb2D.position + moveDirection * enemyScrObj.Speed * Time.fixedDeltaTime);
+            rb2D.MovePosition(rb2D.position + moveDirection * enemyScrObj.Speed * Time.time);
 
             if (CanSwitchMoveNode(targetPosition))
             {
@@ -108,7 +108,7 @@ namespace Actors.Enemy.Movement
             _move = moveDirection.magnitude > 0.01f;
             
             animator.SetBool("Walk", _move);
-            spriteRenderer.flipX = moveDirection.x < 0;
+            spriteRenderer.flipX = moveDirection.x > 0;
             capsuleCollider2D.offset = moveDirection.x < 0 ? colliderOffset.MoveLeftOffset : colliderOffset.MoveRightOffset;
         }
         private bool CanSwitchMoveNode(Vector2 nextPoint) =>
