@@ -11339,6 +11339,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 890869889144977939}
   enemyMove: {fileID: 1256665697}
   enemyData: {fileID: 8675836518605714041}
+  slimeSpriteConroller: {fileID: 1256665696}
   slimeBaseAttack: {fileID: 1153422905}
   cooldown: 3
   baseAttackDistance: 2
