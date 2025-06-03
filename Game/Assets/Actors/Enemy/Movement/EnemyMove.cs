@@ -14,7 +14,6 @@ using Zenject;
 
 namespace Actors.Enemy.Movement
 {
-    [RequireComponent(typeof(Rigidbody2D), typeof(EnemyData))]
     public class EnemyMove : MonoBehaviour
     {
         #region param
@@ -22,47 +21,55 @@ namespace Actors.Enemy.Movement
         [Header("Components")]
         [SerializeField] private EnemyData enemyData;
         [SerializeField] private Rigidbody2D rb2D;
-        [SerializeField] private SpriteRenderer spriteRenderer;
-        [SerializeField] private Animator animator;
-        [SerializeField] private CapsuleCollider2D capsuleCollider2D;
-        [SerializeField] private MovementOffsetScr colliderOffset;
+        [SerializeField] private SpriteController spriteController;
 
         [Header("MoveSettings")]
         [SerializeField] private float switchNodeDistance;
         [SerializeField] private float delayForRequestPath;
+        [SerializeField] private float stopDistance;
         
         [Inject] private IPathFind _pathfinder;
 
-        private EnemyScrObj enemyScrObj;
+        private MonsterScrObj _monsterScrObj;
+        private EnemyConfig MonsterConfig => _monsterScrObj?.GetConfig();
 
         private List<Node> _path = new List<Node>();
-        private bool _canMove => Vector2.Distance(transform.position, _playerPosition.position) <= enemyScrObj.AgressionDistance;
-        private bool _move;
+        
+        private bool _seePlayer;
+        private bool _canMove;
+        private bool _isAttacking;
+        
         private bool _canRequestPath;
 
         private int _nodeCounter;
-
-        private Transform _playerPosition;
         
         #endregion
         
-        private void Awake()
+        public void Initialize()
         {
             if (ValidateComponents())
             {
                 enabled = false;
                 return;
             }
-
-            _playerPosition = GameObject.FindGameObjectWithTag("Player").transform;
             
-            enemyScrObj = enemyData.GetEnemyScrObj();
+            _monsterScrObj = enemyData.GetEnemyScrObj();
             _canRequestPath = true;
+        }
+
+        private void Update()
+        {
+            if (_monsterScrObj != null)
+            {
+               _seePlayer = CheckDistanceWithPlayer(MonsterConfig.agressionDistance);
+               _canMove = !CheckDistanceWithPlayer(stopDistance);
+               Debug.Log("Enemy see Player? " + _seePlayer);
+            }
         }
 
         private void FixedUpdate()
         {
-            if (_canMove)
+            if (CanMove())
             {
                 if (_canRequestPath)
                 {
@@ -75,12 +82,16 @@ namespace Actors.Enemy.Movement
                     Move();
                 }
             }
+            else
+            {
+                spriteController.SetModelSettings(Vector2.zero);
+            }
         }
 
         private IEnumerator UpdatePath()
         {
             yield return new WaitForSeconds(delayForRequestPath);
-            _pathfinder.FindPath(transform.position, _playerPosition.position);
+            _pathfinder.FindPath(transform.position, enemyData.PlayerPosition.position);
             _path = _pathfinder.GetPath();
             _nodeCounter = 0;
             _canRequestPath = true;
@@ -88,36 +99,47 @@ namespace Actors.Enemy.Movement
 
         private void Move()
         {
-            Debug.Log("path count = " + _path.Count);
-
-            Vector2 targetPosition = _path[_nodeCounter].Waypoint;
-            Vector2 moveDirection = (_path[_nodeCounter].Waypoint - rb2D.position).normalized;
-
-            SetModelSettings(moveDirection);
+            Vector2 moveDirection = Vector2.zero;
             
-            rb2D.MovePosition(rb2D.position + moveDirection * enemyScrObj.Speed * Time.time);
-
-            if (CanSwitchMoveNode(targetPosition))
+            if (_nodeCounter < _path.Count)
             {
-                _nodeCounter++;
-            }
-        }
+                Vector2 targetPosition = _path[_nodeCounter].Waypoint;
+                moveDirection = Vector2.zero;
 
-        private void SetModelSettings(Vector2 moveDirection)
-        {
-            _move = moveDirection.magnitude > 0.01f;
+                if (_seePlayer && _canMove)
+                {
+                    moveDirection = (targetPosition - rb2D.position).normalized;
             
-            animator.SetBool("Walk", _move);
-            spriteRenderer.flipX = moveDirection.x > 0;
-            capsuleCollider2D.offset = moveDirection.x < 0 ? colliderOffset.MoveLeftOffset : colliderOffset.MoveRightOffset;
+                    rb2D.MovePosition(rb2D.position + moveDirection * MonsterConfig.speed * Time.fixedDeltaTime);
+
+                    if (CanSwitchMoveNode(targetPosition))
+                    {
+                        _nodeCounter++;
+                    }
+                }
+            }
+            spriteController.SetModelSettings(moveDirection);
         }
         private bool CanSwitchMoveNode(Vector2 nextPoint) =>
             Vector2.Distance(nextPoint, rb2D.position) <= switchNodeDistance;
+
+        private bool CheckDistanceWithPlayer(float distance) =>
+            Vector2.Distance(transform.position, enemyData.PlayerPosition.position) <= distance;
+        
         private bool ValidateComponents()
         {
-            return enemyData == null || _pathfinder == null || animator == null || rb2D == null || spriteRenderer == null;
+            return enemyData == null || _pathfinder == null;
         }
-        
-        
+
+        public void ChangeAttackState(bool isAttacking)
+        {
+            _isAttacking = isAttacking;
+        }
+
+        private bool CanMove()
+        {
+            Debug.Log($"_canMove = {_canMove}, _seePlayer = {_seePlayer}. _isAttacking = {_isAttacking}");
+            return _canMove && _seePlayer && !_isAttacking;
+        } 
     }
 }

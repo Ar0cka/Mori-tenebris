@@ -1,110 +1,83 @@
 using System;
 using System.Collections.Generic;
+using Actors.Enemy.Data.Scripts;
 using Actors.Enemy.Stats.Scripts;
 using Enemy;
+using Enemy.StatSystems.DamageSystem;
 using PlayerNameSpace;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Actors.Enemy.AttackSystem.Scripts
 {
-    public class AttackEnemyAbstract : MonoBehaviour
+    public abstract class AttackEnemyAbstract : MonoBehaviour
     {
-        [SerializeField] private EnemyData enemyData;
+        [Header("Components")]
         [SerializeField] protected Animator animator;
+        [Range(0, 1)] [SerializeField] protected float checkAnimationDelay;
+        
+        protected EnemyDamage DamageSystem;
+        protected int MaxComboAttack;
+        protected int CurrentCountAttack;
+        protected AttackConfig CurrentConfig;
+        
+      
+        [Min(0)] protected float CooldownAttack = 0;
 
 
-        private float _cooldownAttack = 0;
-
-        private void Awake()
+        protected void InitializeBaseComponents() 
         {
-            if (enemyData == null) enemyData = GetComponent<EnemyData>();
             if (animator == null) animator = GetComponent<Animator>();
 
-            if (animator == null || enemyData == null)
+            if (animator == null)
             {
 #if UNITY_EDITOR
                 Debug.LogError(
-                    $"EnemyData: {enemyData} / animator: {animator}");
+                    $"animator: {animator}");
 #endif
                 enabled = false;
             }
         }
 
-        /// <summary>
-        /// Базовая updateLogic состоит из проверки на cooldown и вызова метода атаки.
-        /// </summary>
-        private void Update()
-        {
-            if (_cooldownAttack >= 0)
-            {
-                _cooldownAttack -= Time.deltaTime;
-                return;
-            }
-
-            if (CheckAttackDistance())
-            {
-                AssingAttack();
-                ResetCooldownAttack();
-            }
-        }
-
-        /// <summary>
-        /// Обработка атак
-        /// </summary>
-        public virtual void AssingAttack()
-        {
-            
-        }
-
+        public abstract void AssingBaseAttack();
+        
         /// <summary>
         /// Логика назначения атак, с помощью этого скрипта выстраивается очередь и условия атак.
         /// </summary>
-        protected void Attack(List<string> animationList)
+        public virtual void Attack(string attackAnimation)
         {
-            for (int i = 0; i < animationList.Count; i++)
-            {
-                if (!CheckAttackDistance())
-                {
-                    foreach (var animation in animationList)
-                    {
-                        animator.ResetTrigger(animation);
-                    }
-                    break;
-                }
-                
-                var currentAnimationPlaying = animator.GetCurrentAnimatorStateInfo(0).IsName(animationList[i]);
+            var currentAnimationPlaying = animator.GetCurrentAnimatorStateInfo(0).IsName(attackAnimation);
 
-                if (!currentAnimationPlaying)
-                {
-                    animator.SetTrigger(animationList[i]);
-                }
+            if (!currentAnimationPlaying)
+            {
+                animator.SetTrigger(attackAnimation);
             }
         }
-        
-        private void ResetCooldownAttack()
+
+        protected void ResetCooldownAttack(float cooldown)
         {
-            _cooldownAttack = enemyData.GetEnemyScrObj().CooldownAttack;
+            CooldownAttack = cooldown; 
         }
 
         /// <summary>
         /// Проверка дистации между игроком и монстром
         /// </summary>
         /// <returns></returns>
-        protected bool CheckAttackDistance()
+        protected virtual bool CheckAttackDistance(float attackDistance = 1)
         {
             var playerTransform = GetPlayerPosition.PlayerPosition().position;
 
             return Vector2.Distance(playerTransform, transform.position) <=
-                   enemyData.GetEnemyScrObj().AttackDistance;
+                   attackDistance;
         }
 
         /// <summary>
         /// Проверка проигрывания анимации
         /// </summary>
         /// <returns></returns>
-        protected bool AnimationPlayChecker()
+        protected virtual bool AnimationPlayChecker()
         {
-            return animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f;
+            return animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= checkAnimationDelay;
         }
     }
 }

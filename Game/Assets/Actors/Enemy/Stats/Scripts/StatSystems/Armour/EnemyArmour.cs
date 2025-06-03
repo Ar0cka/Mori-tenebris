@@ -8,10 +8,10 @@ namespace Enemy.StatSystems.Armour
         private float _physicArmour;
         private float _magicArmour;
 
-        public EnemyArmour(EnemyScrObj enemyData)
+        public EnemyArmour(EnemyConfig enemyData)
         {
-            _physicArmour = enemyData.PhysicArmour;
-            _magicArmour = enemyData.MagicArmour;
+            _physicArmour = enemyData.physicArmour;
+            _magicArmour = enemyData.magicArmour;
         }
 
         public float GetArmour(DamageType damageType)

@@ -85,11 +85,6 @@ namespace Actors.Enemy.Pathfinder
             
             currentPath.Reverse();
             _path = currentPath;
-
-            foreach (var pathNode in _path)
-            {
-                Debug.Log($"{pathNode.X},{pathNode.Y}");
-            }
         }
 
         private int GetDistance(Node nodeA, Node NodeB)
@@ -105,18 +100,5 @@ namespace Actors.Enemy.Pathfinder
         public List<Node> GetPath() => _path;
         
         public bool CheckPathCount() => _path?.Count > 0;
-        
-        private void OnDrawGizmos()
-        {
-            if (_path != null)
-            {
-                foreach (var p in _path)
-                {
-                    Gizmos.color = Color.black;
-                    Debug.Log("Drawing path");
-                    Gizmos.DrawSphere(p.Waypoint, 0.2f);
-                }
-            }
-        }
     }
 }
