@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fff66efa6c4c4c69a4002acb22470690, type: 3}
   m_Name: ColliderOffset
   m_EditorClassIdentifier: 
-  moveRightOffset: {x: -0.0185337, y: 0.05804534}
-  moveLeftOffset: {x: -0.0185337, y: 0.05804534}
+  moveRightOffset: {x: -0.09, y: 0}
+  moveLeftOffset: {x: 0, y: 0}

@@ -47,7 +47,7 @@ MonoBehaviour:
   animator: {fileID: 6513426666230161752}
   checkAnimationDelay: 0.804
   attackName: Kus
-  exitDelay: 2
+  exitDelay: 1.2
   comboWindow: 0
 --- !u!1 &354072847783072028
 GameObject:
@@ -63,6 +63,7 @@ GameObject:
   - component: {fileID: 6513426666230161752}
   - component: {fileID: 4098614148894728043}
   - component: {fileID: 4982942837945721974}
+  - component: {fileID: 8403929767464392510}
   m_Layer: 0
   m_Name: Slime
   m_TagString: Enemy
@@ -87,6 +88,7 @@ Transform:
   - {fileID: 7215562886932277097}
   - {fileID: 4016053366932624307}
   - {fileID: 8551935271302242689}
+  - {fileID: 3786671325701699082}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8441530923066722415
@@ -130,7 +132,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 1549835399, guid: c3c7bcc79d9b3c84aac4ac27b6b0bb2d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 93c7cf628de4a614cbc795534d7f3aaf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -236,9 +238,76 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.1, y: 0.08168298}
-  m_Size: {x: 0.8879087, y: 1.5297047}
+  m_Offset: {x: 0.020066142, y: -0.18}
+  m_Size: {x: 0.869437, y: 0.8694373}
   m_Direction: 0
+--- !u!114 &8403929767464392510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 354072847783072028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08d99cbe0b2749d9a42d09709edf17d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 8441530923066722415}
+  enemyMove: {fileID: 4999094089250862601}
+  enemyData: {fileID: 4098614148894728043}
+  slimeSpriteConroller: {fileID: 7480575019817382607}
+  slimeBaseAttack: {fileID: 7759787653367246561}
+  cooldown: 3
+  baseAttackDistance: 2
+  jumpAttackDistance: 6
+--- !u!1 &2679207057907925201
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3786671325701699082}
+  - component: {fileID: 5136199425077012187}
+  m_Layer: 0
+  m_Name: Bootstrap
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3786671325701699082
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2679207057907925201}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 57644479407915503}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5136199425077012187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2679207057907925201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22ebf625f1e54e8b832d6c2a68340457, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyData: {fileID: 4098614148894728043}
+  monstersBattleController: {fileID: 8403929767464392510}
+  enemyMove: {fileID: 4999094089250862601}
 --- !u!1 &5979803375285513729
 GameObject:
   m_ObjectHideFlags: 0
@@ -329,8 +398,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4016053366932624307}
-  - component: {fileID: 7011095593725387600}
-  - component: {fileID: 2776372588396178688}
   - component: {fileID: 4999094089250862601}
   - component: {fileID: 7480575019817382607}
   m_Layer: 0
@@ -355,48 +422,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 57644479407915503}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!50 &7011095593725387600
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7461127437908047898}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
---- !u!114 &2776372588396178688
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7461127437908047898}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa3c94d78e924aa293ce17ebd924ef46, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  monsterScrObj: {fileID: 0}
-  animator: {fileID: 0}
-  delayForDestroy: 2
 --- !u!114 &4999094089250862601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -411,9 +436,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyData: {fileID: 4098614148894728043}
   rb2D: {fileID: 6606387638565382253}
-  spriteController: {fileID: 0}
+  spriteController: {fileID: 7480575019817382607}
   switchNodeDistance: 0.5
   delayForRequestPath: 0.5
+  stopDistance: 1.8
 --- !u!114 &7480575019817382607
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -16,7 +16,9 @@ namespace Project.Bootstrap
         {
             enemyData.Initialize();
             enemyMove.Initialize();
-            monstersBattleController.Initialize();
+            
+            if (monstersBattleController != null) 
+                monstersBattleController.Initialize();
         }
     }
 }

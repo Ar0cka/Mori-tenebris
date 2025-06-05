@@ -7,12 +7,9 @@ namespace Actors.Enemy.Movement
     {
         [SerializeField] protected SpriteRenderer spriteRenderer;
         [SerializeField] protected Animator animator;
-        [SerializeField] protected CapsuleCollider2D capsuleCollider2D;
-
-        [SerializeField] protected MovementOffsetScr colliderOffset;
         
         
-        public void SetModelSettings(Vector2 moveDirection)
+        public virtual void SetModelSettings(Vector2 moveDirection)
         {
             SetAnimationState(moveDirection);
             
@@ -32,7 +29,6 @@ namespace Actors.Enemy.Movement
 
         public virtual void SetColliderSettings(Vector2 moveDirection)
         {
-            capsuleCollider2D.offset = moveDirection.x < 0 ? colliderOffset.MoveLeftOffset : colliderOffset.MoveRightOffset;
         }
     }
 }
