@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Actors.Enemy.Data.Scripts;
+using Actors.Enemy.Monsters.AbstractEnemy;
 using Actors.Enemy.Pathfinder;
 using Actors.Enemy.Pathfinder.Interface;
 using Actors.Enemy.Stats.Scripts;
@@ -37,7 +38,7 @@ namespace Actors.Enemy.Movement
         
         private bool _seePlayer;
         private bool _canMove;
-        private bool _isAttacking;
+        private StateController _stateController;
         
         private bool _canRequestPath;
 
@@ -54,6 +55,8 @@ namespace Actors.Enemy.Movement
             }
             
             _monsterScrObj = enemyData.GetEnemyScrObj();
+            _stateController = enemyData.GetStateController();
+            
             _canRequestPath = true;
         }
 
@@ -131,15 +134,9 @@ namespace Actors.Enemy.Movement
             return enemyData == null || _pathfinder == null;
         }
 
-        public void ChangeAttackState(bool isAttacking)
-        {
-            _isAttacking = isAttacking;
-        }
-
         private bool CanMove()
         {
-            Debug.Log($"_canMove = {_canMove}, _seePlayer = {_seePlayer}. _isAttacking = {_isAttacking}");
-            return _canMove && _seePlayer && !_isAttacking;
+            return _canMove && _seePlayer && _stateController.CanAttack();
         } 
     }
 }

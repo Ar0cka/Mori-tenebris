@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Actors.Enemy.Data.Scripts;
+using Actors.Enemy.Monsters.AbstractEnemy;
 using Actors.Enemy.Stats.Scripts;
 using Enemy;
 using Enemy.StatSystems.DamageSystem;
@@ -20,6 +22,8 @@ namespace Actors.Enemy.AttackSystem.Scripts
         protected int MaxComboAttack;
         protected int CurrentCountAttack;
         protected AttackConfig CurrentConfig;
+        protected StateController StateController;
+        protected Coroutine ExitCorutine;
         
       
         [Min(0)] protected float CooldownAttack = 0;
@@ -78,6 +82,13 @@ namespace Actors.Enemy.AttackSystem.Scripts
         protected virtual bool AnimationPlayChecker()
         {
             return animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= checkAnimationDelay;
+        }
+        
+        protected void ExitAction()
+        {
+            StateController.ChangeStateAttack(false);
+            CurrentCountAttack = 0;
+            ExitCorutine = null;
         }
     }
 }

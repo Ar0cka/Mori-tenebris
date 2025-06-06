@@ -12,9 +12,10 @@ namespace Actors.Player.AttackSystem.Scripts
 {
     public class WeaponAttack : AbstractAttack, IDisposable
     {
-        [Header("AttackConfig")] [SerializeField]
-        private WeaponAttackSettings baseAttackSettings;
-
+        [Header("AttackConfig")] 
+        [SerializeField] private WeaponAttackSettings baseAttackSettings;
+        [SerializeField] private GameObject hitObject;
+        
         private WeaponAttackSettings _currentAttackSettings;
         
         private int _maxComboAttack;
@@ -23,6 +24,7 @@ namespace Actors.Player.AttackSystem.Scripts
         private float _lastClick;
         private bool _isEndCombo;
         private Coroutine _endComboCoroutine;
+        private Coroutine _attackCorutine;
 
         private Action<SendEquipWeaponEvent> _equipWeaponAction;
         private bool CanAttack =>
@@ -85,14 +87,25 @@ namespace Actors.Player.AttackSystem.Scripts
         {
             if (_currentCountAttack <= _currentAttackSettings.MaxCountAttack)
             {
-                if (_queueAttackDictionary.TryGetValue(_currentCountAttack, out var animationName))
+                if (_queueAttackDictionary.TryGetValue(_currentCountAttack, out var attackData))
                 {
-                    SetAnimation(animationName);
-                    _currentAnimationName = animationName;
-                    GlobalAttackStates.UpdateAttackState(true);
-                    _currentCountAttack++;
+                    if (_attackCorutine == null && !animator.GetCurrentAnimatorStateInfo(0).IsName(_currentAnimationName))
+                    {
+                        _attackCorutine = StartCoroutine(SetAnimation(attackData.triggerName, hitObject.transform, attackData.hitSize,
+                            attackData.angleCollider));
+                        _currentAnimationName = attackData.triggerName;
+                        GlobalAttackStates.UpdateAttackState(true);
+                        _currentCountAttack++;
+                    }
                 }
             }
+        }
+
+        protected override IEnumerator SetAnimation(string animationName, Transform hitPositon, Vector2 sizeHitCollider, float angle)
+        {
+            yield return base.SetAnimation(animationName, hitPositon, sizeHitCollider, angle);
+
+            _attackCorutine = null;
         }
 
         private void UpdateCurrentAttackList(WeaponAttackSettings weaponAttackSettings)
@@ -107,10 +120,7 @@ namespace Actors.Player.AttackSystem.Scripts
 
             foreach (var attack in sortingList)
             {
-                if (!_queueAttackDictionary.ContainsKey(attack.countQueue))
-                {
-                    _queueAttackDictionary.Add(attack.countQueue, attack.triggerName);
-                }
+                _queueAttackDictionary.TryAdd(attack.countQueue, attack);
             }
         }
 
@@ -125,6 +135,7 @@ namespace Actors.Player.AttackSystem.Scripts
         private IEnumerator EndComboCoroutine()
         {
             _isEndCombo = true;
+            _attackCorutine = null;
             
             Cooldown = _currentAttackSettings.AttackSettings.attackCooldown;
 
@@ -132,7 +143,7 @@ namespace Actors.Player.AttackSystem.Scripts
             
             foreach (var anim in _queueAttackDictionary)
             {
-                animator.ResetTrigger(anim.Value);
+                animator.ResetTrigger(anim.Value.triggerName);
             }
 
             _currentCountAttack = 0;
@@ -145,6 +156,15 @@ namespace Actors.Player.AttackSystem.Scripts
         public void Dispose()
         {
             EventBus.Unsubscribe(_equipWeaponAction);
+        }
+
+        private void OnDrawGizmos()
+        {
+            if (hitObject != null)
+            {
+                if (_queueAttackDictionary.TryGetValue(_currentCountAttack, out var data))
+                Gizmos.DrawCube(hitObject.transform.position, data.hitSize);
+            }
         }
     }
 }

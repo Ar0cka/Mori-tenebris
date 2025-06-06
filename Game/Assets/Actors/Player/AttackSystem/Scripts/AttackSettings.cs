@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace Actors.Player.AttackSystem.Scripts
 {
@@ -15,5 +16,7 @@ namespace Actors.Player.AttackSystem.Scripts
     {
         public string triggerName;
         public int countQueue;
+        public Vector2 hitSize;
+        public float angleCollider;
     }
 }

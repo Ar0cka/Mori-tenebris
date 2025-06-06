@@ -14,10 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackSettingsSettings:
     comboWindow: 3
-    exitFromComboDelay: 1.5
+    delayBetweenAttacks: 0
     attackCooldown: 1.5
   attackData:
   - triggerName: BaseAttack1
     countQueue: 0
+    hitSize: {x: 1, y: 1}
+    angleCollider: 90
   - triggerName: BaseAttack2
     countQueue: 1
+    hitSize: {x: 1, y: 1}
+    angleCollider: 45

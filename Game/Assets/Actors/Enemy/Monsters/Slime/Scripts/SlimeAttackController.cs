@@ -29,6 +29,8 @@ namespace Actors.Enemy.Monsters.Slime
         private float maxDistance;
 
         private bool _isInitialize;
+        
+        private StateController _stateController;
 
         public override void Initialize()
         {
@@ -43,8 +45,10 @@ namespace Actors.Enemy.Monsters.Slime
 
                 _attackConfig = MonsterScrObj.GetAttackConfig();
 
+                _stateController = enemyData.GetStateController();
+                
                 slimeBaseAttack.InitializeAttack(enemyData.GetDamageSystem(),
-                    GetAttackConfigFromList(slimeBaseAttack.AttackName), _slimeConfig);
+                    GetAttackConfigFromList(slimeBaseAttack.AttackName), _slimeConfig, _stateController);
             }
 
             _playerTransform = enemyData.PlayerPosition;
@@ -55,10 +59,8 @@ namespace Actors.Enemy.Monsters.Slime
         private void Update()
         {
             if (!_isInitialize) return;
-
-            enemyMove.ChangeAttackState(IsAttacking());
-
-            if (CheckDistance(baseAttackDistance))
+            
+            if (CheckDistance(baseAttackDistance) && _stateController.CanAttack())
             {
                 slimeBaseAttack.AssingBaseAttack();
             }
@@ -78,6 +80,7 @@ namespace Actors.Enemy.Monsters.Slime
             return null;
         }
 
+        
         private void RotateMonster()
         {
             Vector2 rotateVector2 =  (transform.position - _playerTransform.position).normalized;
@@ -88,7 +91,5 @@ namespace Actors.Enemy.Monsters.Slime
         {
             return Vector2.Distance(transform.position, _playerTransform.position) < distance;
         }
-
-        private bool IsAttacking() => slimeBaseAttack.isAttacking;
     }
 }

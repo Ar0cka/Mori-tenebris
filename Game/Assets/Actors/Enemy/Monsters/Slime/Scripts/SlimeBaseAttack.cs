@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Actors.Enemy.AttackSystem.Scripts;
 using Actors.Enemy.Data.Scripts;
+using Actors.Enemy.Monsters.AbstractEnemy;
 using Actors.Enemy.Monsters.Slime.Data.Scripts;
 using Actors.Enemy.Movement;
 using Enemy.StatSystems.DamageSystem;
@@ -21,14 +23,11 @@ public class SlimeBaseAttack : AttackEnemyAbstract
     private SlimeConfig _slimeConfig;
     
     private Dictionary<int, AnimAttackSettings> _attackQueue = new Dictionary<int, AnimAttackSettings>();
-
-    private Coroutine _exitCorutine;
+    
     private float lastAttackTime;
     
-    public bool isAttacking { get; private set; }
-    
     public void InitializeAttack(EnemyDamage damageSystem, 
-        AttackConfig attackConfig, SlimeConfig slimeConfig)
+        AttackConfig attackConfig, SlimeConfig slimeConfig, StateController stateController)
     {
         InitializeBaseComponents();
 
@@ -52,43 +51,45 @@ public class SlimeBaseAttack : AttackEnemyAbstract
 
             MaxComboAttack = _attackQueue.Count;
         }
+
+        StateController = stateController;
+    }
+
+    private void Update()
+    {
+        if (Time.time - lastAttackTime > comboWindow)
+        {
+            Exit();
+        }
+        
+        if (CooldownAttack > 0)
+        {
+            CooldownAttack -= Time.deltaTime;
+        }
     }
 
     public override void AssingBaseAttack()
     {
-        if (CooldownAttack > 0)
-        {
-            CooldownAttack -= Time.deltaTime;
-            return;
-        }
-        
         if (_attackQueue.TryGetValue(CurrentCountAttack, out var value) && CurrentCountAttack < MaxComboAttack)
         {
-            if (CooldownAttack <= 0 && CheckAttackDistance(_attackConfig.attackDistance) && _exitCorutine == null)
+            if (CooldownAttack <= 0 && CheckAttackDistance(_attackConfig.attackDistance) && StateController.CanAttack())
             {
-                isAttacking = true;
+                StateController.ChangeStateAttack(true);
                 DamageSystem?.DamageUpdate(_attackConfig);
+                lastAttackTime = Time.time;
                 CurrentConfig = _attackConfig;
                 Attack(value.nameTrigger);
-
-                if (AnimationPlayChecker())
-                {
-                    CurrentCountAttack++;
-                }
+                CurrentCountAttack++;
+                
             }
             else if (!CheckAttackDistance(_attackConfig.attackDistance))
             {
                 animator.ResetTrigger(value.nameTrigger);
-                _exitCorutine = StartCoroutine(ExitFromCombo());
+                ExitCorutine = StartCoroutine(ExitFromCombo());
             }
         }
-        else if (CurrentCountAttack >= MaxComboAttack)
-        {
-            if (_exitCorutine == null)
-            {
-                _exitCorutine = StartCoroutine(ExitFromCombo());
-            }
-        }
+        
+        Exit();
     }
     
     public override void Attack(string attackAnimation)
@@ -96,19 +97,27 @@ public class SlimeBaseAttack : AttackEnemyAbstract
         base.Attack(attackAnimation);
     }
 
+    private void Exit()
+    {
+        if (CurrentCountAttack >= MaxComboAttack)
+        {
+            if (ExitCorutine == null)
+            {
+                Debug.Log("Reset");
+                ExitCorutine = StartCoroutine(ExitFromCombo());
+            }
+        }
+    }
+    
     private IEnumerator ExitFromCombo()
     {
-        ResetCooldownAttack(CurrentConfig.cooldownAttack);
-
         yield return new WaitForSeconds(exitDelay);
-
+        
         foreach (var currentAttack in _attackQueue)
         {
             animator.ResetTrigger(currentAttack.Value.nameTrigger);
         }
-
-        isAttacking = false;
-        CurrentCountAttack = 0;
-        _exitCorutine = null;
+        
+        ExitAction();
     }
 }

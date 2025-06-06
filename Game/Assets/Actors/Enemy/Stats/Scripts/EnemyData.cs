@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Actors.Enemy.Data.Scripts;
+using Actors.Enemy.Monsters.AbstractEnemy;
 using Actors.Enemy.Monsters.Slime.Data.Scripts;
 using DefaultNamespace.Enums;
 using Enemy.Events;
@@ -19,13 +20,20 @@ namespace Actors.Enemy.Stats.Scripts
         [SerializeField] private MonsterScrObj monsterScrObj;
         [SerializeField] private Animator animator;
         [SerializeField] private float delayForDestroy = 2f;
+        [SerializeField] private float exitFromHitDelay = 1f;
+        
+        [Header("TriggersNames")] 
+        [SerializeField] private string deathTrigger;
+        [SerializeField] private string hitTrigger;
 
         private int _currentHitPoints;
         private EnemyArmour _enemyArmour;
         private EnemyDamage _enemyDamage;
-
-        private bool _isDie;
+        private StateController _stateController;
+        
         public Transform PlayerPosition { get; private set; }
+        
+        private Coroutine _exitCoroutine;
 
         public void Initialize()
         { 
@@ -35,21 +43,31 @@ namespace Actors.Enemy.Stats.Scripts
             Debug.Log("current hit points = " + _currentHitPoints);
             _enemyArmour = new EnemyArmour(monsterScrObj.GetConfig());
             _enemyDamage = new EnemyDamage();
+            _stateController = new StateController();
         }
         
         #region Health
 
         public void TakeDamage(int damage, DamageType damageType)
         {
-            if (_isDie) return;
+            if (_stateController.IsDeath) return;
             
             int finalDamage = CalculateDamage.CalculateFinalDamageWithResist(damage, _enemyArmour.GetArmour(damageType));
             
             _currentHitPoints -= finalDamage;
             
-            Debug.Log(_currentHitPoints);
-            
             EventBus.Publish(new HitEnemyEvent());
+
+            if (!_stateController.IsHit)
+            {
+                animator.SetTrigger(hitTrigger);
+                _stateController.ChangeStateHit(true);
+            }
+
+            if (_stateController.IsHit && _exitCoroutine == null)
+            {
+                _exitCoroutine = StartCoroutine(ExitFromHit());
+            }
             
             CheckDie();
         }
@@ -58,14 +76,30 @@ namespace Actors.Enemy.Stats.Scripts
         {
             if (_currentHitPoints <= 0)
             {
-                _isDie = true;
-                animator.SetTrigger("Dead");
+                _stateController.ChangeStateDeath(true);
+                animator.SetTrigger(deathTrigger);
                 EventBus.Publish(new SendDieEventEnemy());
                 
                 Destroy(gameObject, delayForDestroy);
             }
         }
 
+        public StateController GetStateController()
+        {
+            if (_stateController == null) return new StateController();
+            
+            return _stateController;
+        }
+
+        private IEnumerator ExitFromHit()
+        {
+            yield return new WaitForSeconds(exitFromHitDelay);
+            
+            animator.ResetTrigger(hitTrigger);
+            _stateController.ChangeStateHit(false);  
+            _exitCoroutine = null;
+        }
+        
         #endregion
         
         #region Getters
