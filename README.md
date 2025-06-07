@@ -1,3 +1,7 @@
+Mori tenabris
+
+Latin meaning: Mori Tenebris — roughly translates to "Dying in Darkness" or "Death in Shadows".
+
 Pixel Isometric Soulslike with Roguelike Elements
 A hardcore action RPG where the player takes on the role of a knight journeying through 10 unique zones, defeating enemies and powerful bosses.
 
