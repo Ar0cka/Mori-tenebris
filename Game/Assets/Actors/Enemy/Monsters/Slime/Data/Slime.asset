@@ -23,11 +23,14 @@ MonoBehaviour:
     maxCountHit: 2
     cooldownHit: 4
     prefab: {fileID: 354072847783072028, guid: a7b8000079e0ecf47b659d12a28f9258, type: 3}
-    jumpForceY: 2
-    jumpForceX: 2
-    jumpTime: 2
+    jumpForce: 2
+    jumpNums: 0
+    jumpTime: 1.5
+    landingBounceHeight: 0.3
+    landingTime: 0.2
     damageOutJump: 2
     startShield: 100
+    delayAfterJump: 0.5
   slimeAttackConfig:
   - nameAttack: Kus
     animAttackSettings:
@@ -37,4 +40,10 @@ MonoBehaviour:
     damageType: 0
     cooldownAttack: 2
     damage: 11
-    attackDistance: 3
+    attackDistance: 2
+  - nameAttack: Jump
+    animAttackSettings: []
+    damageType: 0
+    cooldownAttack: 6
+    damage: 21
+    attackDistance: 6

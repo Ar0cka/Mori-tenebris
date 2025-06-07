@@ -13,13 +13,6 @@ using UnityEngine;
 
 public class SlimeBaseAttack : AttackEnemyAbstract
 {
-    [SerializeField] private string attackName;
-    [SerializeField] private float exitDelay;
-    [SerializeField] private float comboWindow;
-
-    public string AttackName => attackName;
-
-    private AttackConfig _attackConfig;
     private SlimeConfig _slimeConfig;
     
     private Dictionary<int, AnimAttackSettings> _attackQueue = new Dictionary<int, AnimAttackSettings>();
@@ -27,22 +20,19 @@ public class SlimeBaseAttack : AttackEnemyAbstract
     private float lastAttackTime;
     
     public void InitializeAttack(EnemyDamage damageSystem, 
-        AttackConfig attackConfig, SlimeConfig slimeConfig, StateController stateController)
+        AttackConfig attackConfig, SlimeConfig slimeConfig, StateController stateController, Transform playerTransform)
     {
-        InitializeBaseComponents();
-
-        Debug.Log("attackConfig type = " + attackConfig);
+        InitializeBaseComponents(damageSystem, stateController);
         
         if (damageSystem != null && slimeConfig != null && attackConfig != null)
         {
-            DamageSystem = damageSystem;
             _slimeConfig = slimeConfig;
-            _attackConfig = attackConfig;
+            CurrentConfig = attackConfig;
         }
 
-        if (_attackConfig.nameAttack == attackName)
+        if (CurrentConfig.nameAttack == attackName)
         {
-            var sortedQueue = _attackConfig.animAttackSettings.OrderBy(a => a.countInQueue).ToList();
+            var sortedQueue = CurrentConfig.animAttackSettings.OrderBy(a => a.countInQueue).ToList();
         
             foreach (var attack in sortedQueue)
             {
@@ -50,12 +40,12 @@ public class SlimeBaseAttack : AttackEnemyAbstract
             }
 
             MaxComboAttack = _attackQueue.Count;
+            
+            PlayerTransform = playerTransform;
         }
-
-        StateController = stateController;
     }
 
-    private void Update()
+    protected override void Update()
     {
         if (Time.time - lastAttackTime > comboWindow)
         {
@@ -74,9 +64,10 @@ public class SlimeBaseAttack : AttackEnemyAbstract
         {
             if (CanAttack())
             {
+                Debug.Log("Attack");
                 StartAttack(value);
             }
-            else if (!CheckAttackDistance(_attackConfig.attackDistance))
+            else if (!CheckAttackDistance(CurrentConfig.attackDistance))
             {
                 animator.ResetTrigger(value.nameTrigger);
                 ExitCorutine = StartCoroutine(ExitFromCombo());
@@ -101,11 +92,9 @@ public class SlimeBaseAttack : AttackEnemyAbstract
     private void StartAttack(AnimAttackSettings value)
     {
         StateController.ChangeStateAttack(true);
-        DamageSystem?.DamageUpdate(_attackConfig);
+        DamageSystem?.DamageUpdate(CurrentConfig);
                 
         lastAttackTime = Time.time;
-                
-        CurrentConfig = _attackConfig;
                 
         Attack(value);
                 
@@ -114,6 +103,8 @@ public class SlimeBaseAttack : AttackEnemyAbstract
     
     private IEnumerator ExitFromCombo()
     {
+        ResetCooldownAttack(CurrentConfig.cooldownAttack);
+        
         yield return new WaitForSeconds(exitDelay);
         
         foreach (var currentAttack in _attackQueue)
@@ -126,7 +117,7 @@ public class SlimeBaseAttack : AttackEnemyAbstract
 
     private bool CanAttack()
     {
-        return CooldownAttack <= 0 && CheckAttackDistance(_attackConfig.attackDistance) &&
+        return CooldownAttack <= 0 && CheckAttackDistance(CurrentConfig.attackDistance) &&
                StateController.CanAttack() && CurrentCountAttack < MaxComboAttack;
     }
 }

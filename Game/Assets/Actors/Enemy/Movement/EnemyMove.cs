@@ -66,7 +66,6 @@ namespace Actors.Enemy.Movement
             {
                _seePlayer = CheckDistanceWithPlayer(MonsterConfig.agressionDistance);
                _canMove = !CheckDistanceWithPlayer(stopDistance);
-               Debug.Log("Enemy see Player? " + _seePlayer);
             }
         }
 

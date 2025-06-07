@@ -9,29 +9,42 @@ using Enemy.StatSystems.DamageSystem;
 using PlayerNameSpace;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Zenject;
 
 namespace Actors.Enemy.AttackSystem.Scripts
 {
     public abstract class AttackEnemyAbstract : MonoBehaviour
     {
-        [Header("Components")]
+        [Header("Components")] 
         [SerializeField] protected Animator animator;
-        [Range(0, 1)] [SerializeField] protected float checkAnimationDelay;
-        
+
+        [Header("Settings")] [SerializeField] protected string attackName;
+        [SerializeField] protected float exitDelay;
+        [SerializeField] protected float comboWindow;
+
         protected EnemyDamage DamageSystem;
         protected int MaxComboAttack;
         protected int CurrentCountAttack;
         protected AttackConfig CurrentConfig;
         protected StateController StateController;
         protected Coroutine ExitCorutine;
-        
-      
+        protected Transform PlayerTransform;
+
+        public bool IsCooldown => CooldownAttack > 0;
+
         [Min(0)] protected float CooldownAttack = 0;
 
+        public string AttackName => attackName;
 
-        protected void InitializeBaseComponents() 
+        protected void InitializeBaseComponents(EnemyDamage damageSystem, StateController stateController)
         {
             if (animator == null) animator = GetComponent<Animator>();
+
+            if (damageSystem != null || stateController != null)
+            {
+                DamageSystem = damageSystem;
+                StateController = stateController;
+            }
 
             if (animator == null)
             {
@@ -43,22 +56,30 @@ namespace Actors.Enemy.AttackSystem.Scripts
             }
         }
 
+        protected virtual void Update()
+        {
+            if (CooldownAttack > 0)
+            {
+                CooldownAttack -= Time.deltaTime;
+            }
+        }
+
         public abstract void TryAttack();
-        
+
         /// <summary>
         /// Логика назначения атак, с помощью этого скрипта выстраивается очередь и условия атак.
         /// </summary>
-        public virtual void  Attack(AnimAttackSettings currentAttackConfig)
+        public virtual void Attack(AnimAttackSettings currentAttackConfig)
         {
             var stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-            
-            if (!stateInfo.IsName(currentAttackConfig.nameTrigger)) 
+
+            if (!stateInfo.IsName(currentAttackConfig.nameTrigger))
                 animator.SetTrigger(currentAttackConfig.nameTrigger);
         }
 
         protected void ResetCooldownAttack(float cooldown)
         {
-            CooldownAttack = cooldown; 
+            CooldownAttack = cooldown;
         }
 
         /// <summary>
@@ -67,21 +88,10 @@ namespace Actors.Enemy.AttackSystem.Scripts
         /// <returns></returns>
         protected virtual bool CheckAttackDistance(float attackDistance = 1)
         {
-            var playerTransform = GetPlayerPosition.PlayerPosition().position;
-
-            return Vector2.Distance(playerTransform, transform.position) <=
+            return Vector2.Distance(PlayerTransform.position, transform.position) <=
                    attackDistance;
         }
 
-        /// <summary>
-        /// Проверка проигрывания анимации
-        /// </summary>
-        /// <returns></returns>
-        protected virtual bool AnimationPlayChecker()
-        {
-            return animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= checkAnimationDelay;
-        }
-        
         protected void ExitAction()
         {
             StateController.ChangeStateAttack(false);

@@ -7,6 +7,7 @@ using Actors.Enemy.Monsters.AbstractEnemy;
 using Actors.Enemy.Monsters.Slime.Data.Scripts;
 using PlayerNameSpace;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
 namespace Actors.Enemy.Monsters.Slime
@@ -15,10 +16,12 @@ namespace Actors.Enemy.Monsters.Slime
     {
         [SerializeField] private SlimeSpriteConroller slimeSpriteConroller;
         [SerializeField] private SlimeBaseAttack slimeBaseAttack;
+        [SerializeField] private SlimeJumpAttack slimeJumpAttack;
         [SerializeField] private float cooldown;
 
         [SerializeField] private float baseAttackDistance;
-        [SerializeField] private float jumpAttackDistance;
+        [SerializeField] private float jumpMax;
+        [SerializeField] private float jumpMin;
 
         private SlimeConfig _slimeConfig;
         private List<AttackConfig> _attackConfig;
@@ -46,26 +49,32 @@ namespace Actors.Enemy.Monsters.Slime
                 _attackConfig = MonsterScrObj.GetAttackConfig();
 
                 _stateController = enemyData.GetStateController();
+                    
+                _playerTransform = enemyData.PlayerPosition;
                 
                 slimeBaseAttack.InitializeAttack(enemyData.GetDamageSystem(),
-                    GetAttackConfigFromList(slimeBaseAttack.AttackName), _slimeConfig, _stateController);
+                    GetAttackConfigFromList(slimeBaseAttack.AttackName), _slimeConfig, _stateController, _playerTransform);
+                
+                slimeJumpAttack.Initialize(enemyData.GetDamageSystem(), GetAttackConfigFromList(slimeJumpAttack.AttackName), _slimeConfig, _stateController, _playerTransform);
             }
-
-            _playerTransform = enemyData.PlayerPosition;
-
+            
             _isInitialize = true;
         }
 
         private void Update()
         {
-            if (!_isInitialize) return;
+            if (!_isInitialize || !_stateController.CanAttack()) return;
             
-            if (CheckDistance(baseAttackDistance) && _stateController.CanAttack())
+            RotateMonster();
+            
+            if (CheckJumpDistance(jumpMin, jumpMax) && !slimeJumpAttack.IsCooldown)
             {
-                RotateMonster();
+                slimeJumpAttack.TryAttack();
+            }
+            else if (CheckDistance(baseAttackDistance) && !slimeBaseAttack.IsCooldown)
+            {
                 slimeBaseAttack.TryAttack();
             }
-                
         }
 
         private AttackConfig GetAttackConfigFromList(string nameAttack)
@@ -90,7 +99,13 @@ namespace Actors.Enemy.Monsters.Slime
         
         private bool CheckDistance(float distance)
         {
-            return Vector2.Distance(transform.position, _playerTransform.position) < distance;
+            return Vector2.Distance(transform.position, _playerTransform.position) < distance ;
+        }
+
+        private bool CheckJumpDistance(float minDistance, float maxDistance)
+        {
+            return Vector2.Distance(transform.position, _playerTransform.position) < maxDistance && 
+                   Vector2.Distance(transform.position, _playerTransform.position) > minDistance;
         }
     }
 }

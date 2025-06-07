@@ -18,8 +18,6 @@ namespace Actors.Enemy.Data.Scripts
         public float cooldownAttack;
         public int damage;
         public float attackDistance;
-
-        
     }
 
     [Serializable]

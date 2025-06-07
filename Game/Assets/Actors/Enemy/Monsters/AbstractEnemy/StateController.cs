@@ -30,8 +30,15 @@ namespace Actors.Enemy.Monsters.AbstractEnemy
             IsInterruptAttack = canInterrupt;
         }
 
+        public void Jump(bool isAttacking, bool isInterrupt)
+        {
+            IsAttacking = isAttacking;
+            IsInterruptAttack = isInterrupt;
+        }
+
         public bool CanAttack()
         {
+            Debug.Log($"IsHit: {IsHit}, IsDeath: {IsDeath}, IsAttacking: {IsAttacking}");
             return !IsHit && !IsAttacking && !IsDeath;
         }
         
