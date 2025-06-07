@@ -15,19 +15,19 @@ Between runs, players return to a central hub to upgrade their stats and purchas
 
 Current Features
 
-Fully working player and enemy combat systems
+✅Fully working player and enemy combat systems
 
-Complete pathfinding and AI logic (based on previous project: Prototype)
+✅Complete pathfinding and AI logic (based on previous project: Prototype)
 
-Player core systems: stats, health, armor, damage, level progression, save/load
+✅Player core systems: stats, health, armor, damage, level progression, save/load
 
-FSM-based movement and state system (generic switch via dictionary)
+✅FSM-based movement and state system (generic switch via dictionary)
 
-Flexible combo attack system with overridable logic and event-based effects
+✅Flexible combo attack system with overridable logic and event-based effects
 
-Inventory system: item slot management and initialization
+✅Inventory system: item slot management and initialization
 
-Optimized for modular combat mechanics and future expansions
+✅Optimized for modular combat mechanics and future expansions
 
 Tech Stack
 
