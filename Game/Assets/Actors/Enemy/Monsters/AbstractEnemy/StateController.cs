@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Actors.Enemy.Monsters.AbstractEnemy
 {
     public class StateController
@@ -5,6 +7,8 @@ namespace Actors.Enemy.Monsters.AbstractEnemy
         public bool IsHit { get; private set; }
         public bool IsDeath { get; private set; }
         public bool IsAttacking { get; private set; }
+        
+        public bool IsInterruptAttack { get; private set; }
         
         public void ChangeStateHit(bool isHit)
         {
@@ -20,15 +24,26 @@ namespace Actors.Enemy.Monsters.AbstractEnemy
         {
             IsAttacking = isAttacking;
         }
+        
+        public void ChangeInterruptAttack(bool canInterrupt)
+        {
+            IsInterruptAttack = canInterrupt;
+        }
 
         public bool CanAttack()
         {
             return !IsHit && !IsAttacking && !IsDeath;
         }
-
+        
         public bool CanMove()
         {
             return !IsAttacking && !IsDeath;
+        }
+
+        public bool CanHit()
+        {
+            Debug.Log("is interrupt = " + IsInterruptAttack);
+            return !IsInterruptAttack;
         }
     }
 }

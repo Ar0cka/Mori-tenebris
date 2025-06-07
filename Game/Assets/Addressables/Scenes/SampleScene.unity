@@ -817,6 +817,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyData: {fileID: 1481467982}
+  interrupt: {fileID: 1481467984}
   monstersBattleController: {fileID: 1481467983}
   enemyMove: {fileID: 455578825}
 --- !u!1 &147133413 stripped
@@ -1772,7 +1773,7 @@ Transform:
   m_GameObject: {fileID: 471346330}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.89, y: -0.09, z: 0}
+  m_LocalPosition: {x: 0.995, y: 0.061, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5899,10 +5900,13 @@ MonoBehaviour:
   leftSide: 0
   rightSide: 1
   startAnimationDelay: 0.2
-  checkHitAnimationDelay: 0.1
+  checkHitAnimationDelay: 0.05
   endAnimationDelay: 0
   baseAttackSettings: {fileID: 11400000, guid: 64dd749a838f6364f8e5ddf927cec936, type: 2}
   hitObject: {fileID: 471346330}
+  angle: 48.2
+  hitSize: {x: 1.88, y: 0.41}
+  sceneTest: 1
 --- !u!1 &940571143
 GameObject:
   m_ObjectHideFlags: 0
@@ -8403,6 +8407,7 @@ GameObject:
   - component: {fileID: 1481467980}
   - component: {fileID: 1481467982}
   - component: {fileID: 1481467983}
+  - component: {fileID: 1481467984}
   m_Layer: 0
   m_Name: SlimeV2
   m_TagString: Enemy
@@ -8471,7 +8476,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_Sprite: {fileID: 1595364293, guid: fa98a4a4c68967c49b4e74491b6c8381, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -8604,7 +8609,7 @@ MonoBehaviour:
   monsterScrObj: {fileID: 11400000, guid: ba658f6ed6924e44d954da480fa40206, type: 2}
   animator: {fileID: 1481467977}
   delayForDestroy: 1
-  exitFromHitDelay: 1.1
+  exitFromHitDelay: 1.5
   deathTrigger: Death
   hitTrigger: Hit
 --- !u!114 &1481467983
@@ -8627,6 +8632,19 @@ MonoBehaviour:
   cooldown: 3
   baseAttackDistance: 2
   jumpAttackDistance: 5
+--- !u!114 &1481467984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1481467976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36e3c9737dd64cd4bb7e0e249d02ba98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyData: {fileID: 1481467982}
 --- !u!1 &1516820096
 GameObject:
   m_ObjectHideFlags: 0
@@ -10124,7 +10142,7 @@ Transform:
   m_GameObject: {fileID: 1907022997}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.85, y: 0.06, z: -1}
+  m_LocalPosition: {x: -5.71, y: 1.61, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

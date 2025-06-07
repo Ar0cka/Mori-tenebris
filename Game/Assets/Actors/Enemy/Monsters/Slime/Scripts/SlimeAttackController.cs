@@ -62,7 +62,8 @@ namespace Actors.Enemy.Monsters.Slime
             
             if (CheckDistance(baseAttackDistance) && _stateController.CanAttack())
             {
-                slimeBaseAttack.AssingBaseAttack();
+                RotateMonster();
+                slimeBaseAttack.TryAttack();
             }
                 
         }
@@ -83,7 +84,7 @@ namespace Actors.Enemy.Monsters.Slime
         
         private void RotateMonster()
         {
-            Vector2 rotateVector2 =  (transform.position - _playerTransform.position).normalized;
+            Vector2 rotateVector2 =  (_playerTransform.position - transform.position).normalized;
             slimeSpriteConroller.SetFlipState(rotateVector2);
         }
         

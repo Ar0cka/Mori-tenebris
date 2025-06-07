@@ -28,6 +28,9 @@ namespace Actors.Player.AttackSystem
         [Inject] protected DamageSystem PlayerDamageSystem;
         
         protected Dictionary<int, AttackData> _queueAttackDictionary = new Dictionary<int, AttackData>();
+
+        protected float CurrentAngle;
+        protected Vector2 CurrentSize;
         
         protected float Cooldown;
         protected string CurrentAnimation;
@@ -42,8 +45,8 @@ namespace Actors.Player.AttackSystem
             }
         }
 
-        protected virtual IEnumerator SetAnimation(string animationName, Transform hitPositon, Vector2 sizeHitCollider,
-            float angle)
+        protected virtual IEnumerator SetAnimation(string animationName, Transform hitPositon,
+            WeaponHitColliderSettings hitCollider)
         {
             animator.SetFloat(nameSideParameters, GetAnimationVector());
             animator.SetTrigger(animationName);
@@ -51,8 +54,11 @@ namespace Actors.Player.AttackSystem
             yield return new WaitForSeconds(startAnimationDelay);
             
             yield return new WaitForSeconds(checkHitAnimationDelay);
+                
+            CurrentAngle = GetAnimationVector() == leftSide ? hitCollider.angleColliderLeft : hitCollider.angleColliderRight;
+            CurrentSize = hitCollider.hitSize;
             
-            var hit = Physics2D.OverlapBoxAll(hitPositon.position, sizeHitCollider, angle);
+            var hit = Physics2D.OverlapBoxAll(hitPositon.position, hitCollider.hitSize, CurrentAngle);
 
             var sortedList = hit.Where(a => a.CompareTag("Enemy")).ToList();
             
@@ -65,7 +71,7 @@ namespace Actors.Player.AttackSystem
             yield return new WaitForSeconds(endAnimationDelay);
         }
 
-        private int GetAnimationVector()
+        protected int GetAnimationVector()
         {
             return spriteRenderer.flipX ? leftSide : rightSide;
         }

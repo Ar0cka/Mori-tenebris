@@ -19,9 +19,13 @@ MonoBehaviour:
   attackData:
   - triggerName: BaseAttack1
     countQueue: 0
-    hitSize: {x: 1, y: 1}
-    angleCollider: 90
+    weaponHitColliderSettings:
+      hitSize: {x: 1.48, y: 0.68}
+      angleColliderRight: 82.3
+      angleColliderLeft: 82.3
   - triggerName: BaseAttack2
     countQueue: 1
-    hitSize: {x: 1, y: 1}
-    angleCollider: 45
+    weaponHitColliderSettings:
+      hitSize: {x: 1.88, y: 0.41}
+      angleColliderRight: 47.1
+      angleColliderLeft: 136.1

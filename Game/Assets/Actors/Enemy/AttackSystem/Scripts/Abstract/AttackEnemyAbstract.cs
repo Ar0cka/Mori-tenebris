@@ -43,19 +43,17 @@ namespace Actors.Enemy.AttackSystem.Scripts
             }
         }
 
-        public abstract void AssingBaseAttack();
+        public abstract void TryAttack();
         
         /// <summary>
         /// Логика назначения атак, с помощью этого скрипта выстраивается очередь и условия атак.
         /// </summary>
-        public virtual void Attack(string attackAnimation)
+        public virtual void  Attack(AnimAttackSettings currentAttackConfig)
         {
-            var currentAnimationPlaying = animator.GetCurrentAnimatorStateInfo(0).IsName(attackAnimation);
-
-            if (!currentAnimationPlaying)
-            {
-                animator.SetTrigger(attackAnimation);
-            }
+            var stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+            
+            if (!stateInfo.IsName(currentAttackConfig.nameTrigger)) 
+                animator.SetTrigger(currentAttackConfig.nameTrigger);
         }
 
         protected void ResetCooldownAttack(float cooldown)

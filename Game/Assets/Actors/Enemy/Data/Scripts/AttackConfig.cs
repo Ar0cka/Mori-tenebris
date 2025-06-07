@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using DefaultNamespace.Enums;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Actors.Enemy.Data.Scripts
 {
@@ -17,6 +18,8 @@ namespace Actors.Enemy.Data.Scripts
         public float cooldownAttack;
         public int damage;
         public float attackDistance;
+
+        
     }
 
     [Serializable]

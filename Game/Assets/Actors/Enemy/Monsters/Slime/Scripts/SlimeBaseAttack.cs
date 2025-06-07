@@ -68,19 +68,13 @@ public class SlimeBaseAttack : AttackEnemyAbstract
         }
     }
 
-    public override void AssingBaseAttack()
+    public override void TryAttack()
     {
-        if (_attackQueue.TryGetValue(CurrentCountAttack, out var value) && CurrentCountAttack < MaxComboAttack)
+        if (_attackQueue.TryGetValue(CurrentCountAttack, out var value) )
         {
-            if (CooldownAttack <= 0 && CheckAttackDistance(_attackConfig.attackDistance) && StateController.CanAttack())
+            if (CanAttack())
             {
-                StateController.ChangeStateAttack(true);
-                DamageSystem?.DamageUpdate(_attackConfig);
-                lastAttackTime = Time.time;
-                CurrentConfig = _attackConfig;
-                Attack(value.nameTrigger);
-                CurrentCountAttack++;
-                
+                StartAttack(value);
             }
             else if (!CheckAttackDistance(_attackConfig.attackDistance))
             {
@@ -90,11 +84,6 @@ public class SlimeBaseAttack : AttackEnemyAbstract
         }
         
         Exit();
-    }
-    
-    public override void Attack(string attackAnimation)
-    {
-        base.Attack(attackAnimation);
     }
 
     private void Exit()
@@ -108,6 +97,20 @@ public class SlimeBaseAttack : AttackEnemyAbstract
             }
         }
     }
+
+    private void StartAttack(AnimAttackSettings value)
+    {
+        StateController.ChangeStateAttack(true);
+        DamageSystem?.DamageUpdate(_attackConfig);
+                
+        lastAttackTime = Time.time;
+                
+        CurrentConfig = _attackConfig;
+                
+        Attack(value);
+                
+        CurrentCountAttack++;
+    }
     
     private IEnumerator ExitFromCombo()
     {
@@ -119,5 +122,11 @@ public class SlimeBaseAttack : AttackEnemyAbstract
         }
         
         ExitAction();
+    }
+
+    private bool CanAttack()
+    {
+        return CooldownAttack <= 0 && CheckAttackDistance(_attackConfig.attackDistance) &&
+               StateController.CanAttack() && CurrentCountAttack < MaxComboAttack;
     }
 }

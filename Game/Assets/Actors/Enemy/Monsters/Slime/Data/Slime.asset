@@ -17,9 +17,11 @@ MonoBehaviour:
     description: kus and jump
     agressionDistance: 7
     speed: 2
-    hitPoints: 30
+    hitPoints: 1111
     physicArmour: 0
     magicArmour: 0
+    maxCountHit: 2
+    cooldownHit: 4
     prefab: {fileID: 354072847783072028, guid: a7b8000079e0ecf47b659d12a28f9258, type: 3}
     jumpForceY: 2
     jumpForceX: 2
