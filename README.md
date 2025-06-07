@@ -1,17 +1,32 @@
-Игра в жанре Top down rouglike
+Pixel Isometric Soulslike with Roguelike Elements
+A hardcore action RPG where the player takes on the role of a knight journeying through 10 unique zones, defeating enemies and powerful bosses.
 
-Игра про рыцаря, который путешевствует по разным локациям и зачищает их.
-1. Процес игры спавн в общей зоне, в которой игрок может прокачиваться и покупать снаряжение между походами.
-2. Зоны - игра поделенна на 10 зон. Игрок доходя до финального босса зоны и побеждая его, сохраняет свой прогресс и дальнейшие похождения будет начинать со следующей игровой зоны.
+Core Gameplay
 
-Что сделано в игре:
-Player:
-1. Реализованны следующие части бекграуда игрока(Общие статы, система здоровья, армора, урона, уровня, сохранения). 
-2. Движение игрока сделано через реализацию паттерна FSM с использованием абстрактного класса State. Переключение между состояниями происходит через Generic метод и поиск подходящего состояния в словаре.
-3. Система комбо атак - реализовал через абстрактный класс, логику которого можно будет изменять под разные виды атак (есть возможно переопределить метода UpdateLogic и SendEffectEvent который отвечает за отправку ивентов).
-4. Инвентарь - реализованно добавление в слоты и инитиализация инвентаря.
+The game is divided into 10 progressively challenging zones.
 
-Enemy: 
-1. Есть готовыe наработки патчфаиндера и AI логики на основе прошлого заброшеного проекта https://github.com/Ar0cka/Prototype
+Defeating a zone's boss unlocks the next zone and saves progress.
 
-Используемые инструменты : Unity 2022.3.59f1, C#, Zenject, Dotween, Addresablse.
+Between runs, players return to a central hub to upgrade their stats and purchase gear.
+
+Current Features
+✅ Fully working player and enemy combat systems
+✅ Complete pathfinding and AI logic (based on previous project: Prototype)
+✅ Player core systems: stats, health, armor, damage, level progression, save/load
+✅ FSM-based movement and state system (generic switch via dictionary)
+✅ Flexible combo attack system with overridable logic and event-based effects
+✅ Inventory system: item slot management and initialization
+✅ Optimized for modular combat mechanics and future expansions
+
+Tech Stack
+
+Engine: Unity 2022.3.59f1
+
+Language: C#
+
+Architecture: Zenject (Dependency Injection)
+
+Visuals & FX: DOTween
+
+Assets: Addressables
+
