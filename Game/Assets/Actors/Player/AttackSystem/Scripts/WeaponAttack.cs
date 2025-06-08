@@ -13,20 +13,12 @@ namespace Actors.Player.AttackSystem.Scripts
 {
     public class WeaponAttack : AbstractAttack, IDisposable
     {
-        [Header("AttackConfig")] [SerializeField]
-        private WeaponAttackSettings baseAttackSettings;
+        [Header("AttackConfig")]
+        [SerializeField] private WeaponAttackSettings baseAttackSettings;
 
         [SerializeField] private GameObject hitObject;
 
         private WeaponAttackSettings _currentAttackSettings;
-
-        private int _maxComboAttack;
-        private int _currentCountAttack;
-        private string _currentAnimationName;
-        private float _lastClick;
-        private bool _isEndCombo;
-        private Coroutine _endComboCoroutine;
-        private Coroutine _attackCorutine;
 
 #if  UNITY_EDITOR
         [Header("debug")] 
@@ -35,12 +27,6 @@ namespace Actors.Player.AttackSystem.Scripts
         [SerializeField] private bool sceneTest;
 #endif
         
-
-        private Action<SendEquipWeaponEvent> _equipWeaponAction;
-
-        private bool CanAttack =>
-            Input.GetMouseButtonDown(0) && Cooldown <= 0 && !_isEndCombo && !GlobalAttackStates.IsBusy;
-
         protected override void Awake()
         {
             base.Awake();
@@ -53,31 +39,31 @@ namespace Actors.Player.AttackSystem.Scripts
                 _currentAttackSettings = baseAttackSettings;
             }
 
-            _maxComboAttack = _currentAttackSettings.MaxCountAttack;
-            _equipWeaponAction = e => UpdateCurrentAttackList(e.WeaponConfig);
-            EventBus.Subscribe(_equipWeaponAction);
+            MaxComboAttack = _currentAttackSettings.MaxCountAttack;
+            EquipWeaponAction = e => UpdateCurrentAttackList(e.WeaponConfig);
+            EventBus.Subscribe(EquipWeaponAction);
 
             UpdateQueueAttack();
         }
 
         private void Update()
         {
-            if (Time.time - _lastClick > _currentAttackSettings.AttackSettings.comboWindow && !_isEndCombo &&
-                _currentCountAttack > 0)
+            if (Time.time - LastClick > _currentAttackSettings.AttackSettings.comboWindow &&
+                CurrentCountAttack > 0)
             {
                 TryStartEndCombo();
             }
 
             InputLogic();
 
-            if (!animator.GetCurrentAnimatorStateInfo(0).IsName(_currentAnimationName) &&
+            if (!animator.GetCurrentAnimatorStateInfo(0).IsName(CurrentAnimationName) &&
                 GlobalAttackStates.IsAttacking)
             {
                 GlobalAttackStates.UpdateAttackState(false);
             }
 
-            if (!_isEndCombo && _currentCountAttack >= _maxComboAttack &&
-                !animator.GetCurrentAnimatorStateInfo(0).IsName(_currentAnimationName))
+            if (CurrentCountAttack >= MaxComboAttack &&
+                !animator.GetCurrentAnimatorStateInfo(0).IsName(CurrentAnimationName))
             {
                 TryStartEndCombo();
             }
@@ -90,7 +76,7 @@ namespace Actors.Player.AttackSystem.Scripts
             if (CanAttack)
             {
                 Attack();
-                _lastClick = Time.time;
+                LastClick = Time.time;
                 Cooldown += _currentAttackSettings.AttackSettings.delayBetweenAttacks;
             }
             else if (Cooldown > 0)
@@ -101,18 +87,18 @@ namespace Actors.Player.AttackSystem.Scripts
 
         private void Attack()
         {
-            if (_currentCountAttack <= _currentAttackSettings.MaxCountAttack)
+            if (CurrentCountAttack <= _currentAttackSettings.MaxCountAttack)
             {
-                if (_queueAttackDictionary.TryGetValue(_currentCountAttack, out var attackData))
+                if (_queueAttackDictionary.TryGetValue(CurrentCountAttack, out var attackData))
                 {
-                    if (_attackCorutine == null &&
-                        !animator.GetCurrentAnimatorStateInfo(0).IsName(_currentAnimationName))
+                    if (AttackCoroutine == null &&
+                        !animator.GetCurrentAnimatorStateInfo(0).IsName(CurrentAnimationName))
                     {
-                        _attackCorutine = StartCoroutine(SetAnimation(attackData.triggerName, hitObject.transform,
+                        AttackCoroutine = StartCoroutine(SetAnimation(attackData.triggerName, hitObject.transform,
                             attackData.weaponHitColliderSettings));
-                        _currentAnimationName = attackData.triggerName;
+                        CurrentAnimationName = attackData.triggerName;
                         GlobalAttackStates.UpdateAttackState(true);
-                        _currentCountAttack++;
+                        CurrentCountAttack++;
                     }
                 }
             }
@@ -123,13 +109,13 @@ namespace Actors.Player.AttackSystem.Scripts
         {
             yield return base.SetAnimation(animationName, hitPositon, hitColliderSettings);
 
-            _attackCorutine = null;
+            AttackCoroutine = null;
         }
 
         private void UpdateCurrentAttackList(WeaponAttackSettings weaponAttackSettings)
         {
             _currentAttackSettings = weaponAttackSettings;
-            _maxComboAttack = _currentAttackSettings.MaxCountAttack;
+            MaxComboAttack = _currentAttackSettings.MaxCountAttack;
         }
 
         private void UpdateQueueAttack()
@@ -144,16 +130,15 @@ namespace Actors.Player.AttackSystem.Scripts
 
         private void TryStartEndCombo()
         {
-            if (_endComboCoroutine == null)
+            if (ExitFromComboCoroutine == null)
             {
-                _endComboCoroutine = StartCoroutine(EndComboCoroutine());
+                ExitFromComboCoroutine = StartCoroutine(EndComboCoroutine());
             }
         }
 
-        private IEnumerator EndComboCoroutine()
+        private IEnumerator EndComboCoroutine() 
         {
-            _isEndCombo = true;
-            _attackCorutine = null;
+            AttackCoroutine = null;
 
             Cooldown = _currentAttackSettings.AttackSettings.attackCooldown;
 
@@ -164,16 +149,13 @@ namespace Actors.Player.AttackSystem.Scripts
                 animator.ResetTrigger(anim.Value.triggerName);
             }
 
-            _currentCountAttack = 0;
-            _currentAnimationName = "";
-            _isEndCombo = false;
-            _endComboCoroutine = null;
+            BaseExit();
         }
 
 
         public void Dispose()
         {
-            EventBus.Unsubscribe(_equipWeaponAction);
+            EventBus.Unsubscribe(EquipWeaponAction);
         }
 
 #if UNITY_EDITOR

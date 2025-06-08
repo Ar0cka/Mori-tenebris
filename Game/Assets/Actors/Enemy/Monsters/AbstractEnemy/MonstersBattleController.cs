@@ -14,6 +14,8 @@ namespace Actors.Enemy.Monsters.AbstractEnemy
         [SerializeField] protected EnemyData enemyData;
 
         protected MonsterScrObj MonsterScrObj;
+        
+        protected Transform PlayerTransform;
 
         public virtual void Initialize()
         {
@@ -38,6 +40,17 @@ namespace Actors.Enemy.Monsters.AbstractEnemy
                 return false;
             
             return true;
+        }
+        
+        protected void RotateMonster(SpriteController spriteController)
+        {
+            Vector2 rotateVector2 =  (PlayerTransform.position - transform.position).normalized;
+            spriteController.SetFlipState(rotateVector2);
+        }
+        
+        protected bool CheckDistance(float distance)
+        {
+            return Vector2.Distance(transform.position, PlayerTransform.position) < distance ;
         }
     }
 }

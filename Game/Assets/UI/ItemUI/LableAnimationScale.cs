@@ -12,6 +12,6 @@ public class LableAnimationScale : MonoBehaviour
     {
         transform.DOScale(maxScale, scaleDuration)
             .SetEase(Ease.InOutSine)
-            .SetLoops(-1, LoopType.Yoyo);
+            .SetLoops(-1, LoopType.Yoyo).SetLink(gameObject, LinkBehaviour.KillOnDestroy);
     }
 }

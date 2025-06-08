@@ -26,11 +26,6 @@ namespace Actors.Enemy.Monsters.Slime
         private SlimeConfig _slimeConfig;
         private List<AttackConfig> _attackConfig;
 
-        private Transform _playerTransform;
-        private float _cooldown;
-
-        private float maxDistance;
-
         private bool _isInitialize;
         
         private StateController _stateController;
@@ -50,12 +45,12 @@ namespace Actors.Enemy.Monsters.Slime
 
                 _stateController = enemyData.GetStateController();
                     
-                _playerTransform = enemyData.PlayerPosition;
+                PlayerTransform = enemyData.PlayerPosition;
                 
                 slimeBaseAttack.InitializeAttack(enemyData.GetDamageSystem(),
-                    GetAttackConfigFromList(slimeBaseAttack.AttackName), _slimeConfig, _stateController, _playerTransform);
+                    GetAttackConfigFromList(slimeBaseAttack.AttackName), _slimeConfig, _stateController, PlayerTransform);
                 
-                slimeJumpAttack.Initialize(enemyData.GetDamageSystem(), GetAttackConfigFromList(slimeJumpAttack.AttackName), _slimeConfig, _stateController, _playerTransform);
+                slimeJumpAttack.Initialize(enemyData.GetDamageSystem(), GetAttackConfigFromList(slimeJumpAttack.AttackName), _slimeConfig, _stateController, PlayerTransform);
             }
             
             _isInitialize = true;
@@ -65,7 +60,7 @@ namespace Actors.Enemy.Monsters.Slime
         {
             if (!_isInitialize || !_stateController.CanAttack()) return;
             
-            RotateMonster();
+            RotateMonster(slimeSpriteConroller);
             
             if (CheckJumpDistance(jumpMin, jumpMax) && !slimeJumpAttack.IsCooldown)
             {
@@ -90,22 +85,10 @@ namespace Actors.Enemy.Monsters.Slime
             return null;
         }
 
-        
-        private void RotateMonster()
-        {
-            Vector2 rotateVector2 =  (_playerTransform.position - transform.position).normalized;
-            slimeSpriteConroller.SetFlipState(rotateVector2);
-        }
-        
-        private bool CheckDistance(float distance)
-        {
-            return Vector2.Distance(transform.position, _playerTransform.position) < distance ;
-        }
-
         private bool CheckJumpDistance(float minDistance, float maxDistance)
         {
-            return Vector2.Distance(transform.position, _playerTransform.position) < maxDistance && 
-                   Vector2.Distance(transform.position, _playerTransform.position) > minDistance;
+            return Vector2.Distance(transform.position, PlayerTransform.position) < maxDistance && 
+                   Vector2.Distance(transform.position, PlayerTransform.position) > minDistance;
         }
     }
 }

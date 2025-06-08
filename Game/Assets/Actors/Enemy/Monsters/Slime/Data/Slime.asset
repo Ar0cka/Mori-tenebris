@@ -17,7 +17,7 @@ MonoBehaviour:
     description: kus and jump
     agressionDistance: 7
     speed: 2
-    hitPoints: 1111
+    hitPoints: 40
     physicArmour: 0
     magicArmour: 0
     maxCountHit: 2

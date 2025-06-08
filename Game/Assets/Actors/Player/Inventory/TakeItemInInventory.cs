@@ -9,7 +9,6 @@ using Zenject;
 
 public class TakeItemInInventory : MonoBehaviour
 {
-    [SerializeField] private int countTakeItems = 1;
     [SerializeField] private float overlapRadius = 1.5f;
     [Inject] private IInventoryAdder _inventoryAdder;
 

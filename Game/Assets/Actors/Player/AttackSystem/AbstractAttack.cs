@@ -1,15 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Actors.Enemy.Stats.Scripts;
 using Actors.Player.AttackSystem.Scripts;
+using Player.Inventory;
 using PlayerNameSpace;
 using UnityEngine;
 using Zenject;
 
 namespace Actors.Player.AttackSystem
 {
-    public class AbstractAttack : MonoBehaviour
+    public abstract class AbstractAttack : MonoBehaviour
     {
         [Header("Components")]
         [SerializeField] protected Animator animator;
@@ -32,9 +34,19 @@ namespace Actors.Player.AttackSystem
         protected float CurrentAngle;
         protected Vector2 CurrentSize;
         
+        protected int MaxComboAttack;
+        protected int CurrentCountAttack;
+        protected string CurrentAnimationName;
+        protected float LastClick;
+        protected Coroutine ExitFromComboCoroutine;
+        protected Coroutine AttackCoroutine;
+        
         protected float Cooldown;
-        protected string CurrentAnimation;
-        protected bool isBusy;
+        
+        protected Action<SendEquipWeaponEvent> EquipWeaponAction;
+        
+        protected bool CanAttack =>
+            Input.GetMouseButtonDown(0) && Cooldown <= 0 && !GlobalAttackStates.IsBusy;
        
         protected virtual void Awake()
         {
@@ -83,6 +95,13 @@ namespace Actors.Player.AttackSystem
             
             
             return spriteRenderer == null || animator == null;
+        }
+
+        protected void BaseExit()
+        {
+            CurrentCountAttack = 0;
+            CurrentAnimationName = "";
+            ExitFromComboCoroutine = null;
         }
     }
 }

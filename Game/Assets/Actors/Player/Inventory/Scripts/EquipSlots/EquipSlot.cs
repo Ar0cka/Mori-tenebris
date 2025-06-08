@@ -23,6 +23,8 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
         
         public ItemInstance EquipItem(ItemInstance itemInstance)
         {
+            if (itemInstance == null) return null;
+            
             #region SendUpdateEvents
 
             if (itemInstance.itemData is WeaponData weaponData)
@@ -66,14 +68,14 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
             
             var currentItem = ItemData;
             
-            if (ItemData.itemID == itemInstance.itemID)
+            if (ItemData?.itemID == itemInstance.itemID)
             {
                 IsEquipped = false;
                 ItemData = null;
             }
             
             return currentItem;
-        }
+            }
 
         public ItemInstance ChangeItemInSlot(ItemInstance itemData)
         {

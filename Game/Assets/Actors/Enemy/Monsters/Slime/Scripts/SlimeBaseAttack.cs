@@ -17,7 +17,7 @@ public class SlimeBaseAttack : AttackEnemyAbstract
     
     private Dictionary<int, AnimAttackSettings> _attackQueue = new Dictionary<int, AnimAttackSettings>();
     
-    private float lastAttackTime;
+    private float _lastAttackTime;
     
     public void InitializeAttack(EnemyDamage damageSystem, 
         AttackConfig attackConfig, SlimeConfig slimeConfig, StateController stateController, Transform playerTransform)
@@ -47,7 +47,7 @@ public class SlimeBaseAttack : AttackEnemyAbstract
 
     protected override void Update()
     {
-        if (Time.time - lastAttackTime > comboWindow)
+        if (Time.time - _lastAttackTime > comboWindow)
         {
             Exit();
         }
@@ -94,7 +94,7 @@ public class SlimeBaseAttack : AttackEnemyAbstract
         StateController.ChangeStateAttack(true);
         DamageSystem?.DamageUpdate(CurrentConfig);
                 
-        lastAttackTime = Time.time;
+        _lastAttackTime = Time.time;
                 
         Attack(value);
                 

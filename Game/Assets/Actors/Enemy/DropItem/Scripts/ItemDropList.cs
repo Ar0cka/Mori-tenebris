@@ -88,12 +88,14 @@ namespace Actors.Enemy.DropItem.Scripts
 
             if (spawnAnimation != null && takeItems != null)
             {
-                takeItems.Initialize(itemData, stackCount);
+                Debug.Log("drop");
+                
+                takeItems.Initialize(itemData, stackCount, spawnAnimation);
                 spawnAnimation.PlaySpawnAnimation();
             }
             else
             {
-                Destroy(itemPrefab);
+                Destroy(itemPrefab, 0.1f);
             }
 
             return itemCount - stackCount;

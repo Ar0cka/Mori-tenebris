@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using Enemy;
 using Player.Inventory.InventoryInterface;
 using UnityEngine;
@@ -10,13 +11,16 @@ namespace Player.Inventory
     {
         [SerializeField] private GameObject putText;
 
+        private SpawnAnimation _spawnAnimation;
+        
         private ItemInstance _itemInstance;
         private int _countAdd;
 
         private bool _initialized;
 
-        public void Initialize(ItemData itemData, int countItem)
+        public void Initialize(ItemData itemData, int countItem, SpawnAnimation spawnAnimation)
         {
+            _spawnAnimation = spawnAnimation;
             _itemInstance = new ItemInstance(itemData);
             _countAdd = countItem;
             _initialized = true;
@@ -26,7 +30,7 @@ namespace Player.Inventory
         {
             if (!_initialized) return null;
             
-            Destroy(this.gameObject);
+            Destroy(gameObject);
             
             return new PutItem(_itemInstance, _countAdd);
         }
