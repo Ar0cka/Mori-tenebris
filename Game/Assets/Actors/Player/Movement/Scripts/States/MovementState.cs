@@ -72,7 +72,7 @@ public class MovementState : State
 
     protected void ChangeSpriteSide(Vector2 inputVector)
     {
-        if (!GlobalAttackStates.IsBusy)
+        if (!GlobalAttackStates.IsBusy && inputVector.x != 0)
         {
             _spriteRenderer.flipX = inputVector.x < 0;
             _capsuleCollider.offset = inputVector.x < 0 ? _movementOffsetScr.MoveLeftOffset : _movementOffsetScr.MoveRightOffset;

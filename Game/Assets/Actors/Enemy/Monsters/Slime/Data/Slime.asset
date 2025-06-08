@@ -17,7 +17,7 @@ MonoBehaviour:
     description: kus and jump
     agressionDistance: 7
     speed: 2
-    hitPoints: 40
+    hitPoints: 1111
     physicArmour: 0
     magicArmour: 0
     maxCountHit: 2
@@ -40,7 +40,7 @@ MonoBehaviour:
     damageType: 0
     cooldownAttack: 2
     damage: 11
-    attackDistance: 2
+    attackDistance: 1.3
   - nameAttack: Jump
     animAttackSettings: []
     damageType: 0
