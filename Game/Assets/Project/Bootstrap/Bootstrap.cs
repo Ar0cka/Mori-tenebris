@@ -18,6 +18,7 @@ namespace DefaultNamespace
         [SerializeField] private PassiveRegenerationStats passiveRegenerationStats;
         [SerializeField] private PlayerUI player;
         [SerializeField] private StateMachineRealize stateMachineRealize;
+        [SerializeField] private LogController playerLogController;
         
         [Header("Inventory")]
         [SerializeField] private Transform slotContent;
@@ -51,6 +52,7 @@ namespace DefaultNamespace
 
             player.Initialize();
             playerUIManager.Initialize();
+            playerLogController.Initialize();
 
             #endregion
         }

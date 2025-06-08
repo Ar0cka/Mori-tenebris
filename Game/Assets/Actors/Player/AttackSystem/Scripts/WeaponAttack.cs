@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Actors.Player.AttackSystem.Data;
 using Player.Inventory;
+using UI;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -16,6 +17,9 @@ namespace Actors.Player.AttackSystem.Scripts
         [Header("AttackConfig")]
         [SerializeField] private WeaponAttackSettings baseAttackSettings;
 
+        [Header("MessageSettings")] 
+        [SerializeField] private string text = "Cooldown attack";
+        
         [SerializeField] private GameObject hitObject;
 
         private WeaponAttackSettings _currentAttackSettings;
@@ -73,6 +77,11 @@ namespace Actors.Player.AttackSystem.Scripts
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
 
+            if (Input.GetMouseButtonDown(0) && Cooldown > 0)
+            {
+                EventBus.Publish(new LogText(text, CustomLogType.Error));
+            }
+            
             if (CanAttack)
             {
                 Attack();
