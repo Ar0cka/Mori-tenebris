@@ -26,6 +26,10 @@ namespace Actors.Enemy.Pathfinder
             gridHeight = Mathf.FloorToInt(gridWorldSize.y / nodeDiameter);
 
             InitializeGrid();
+            
+#if UNITY_EDITOR
+             Debug.Log("InitializeGrid :)");
+#endif
         }
 
         private void InitializeGrid()
@@ -42,9 +46,7 @@ namespace Actors.Enemy.Pathfinder
                                        Vector2.up * (y * nodeDiameter + nodeRadius);
 
                     bool isWalkable = !Physics2D.OverlapCircle(waypoint, overlapRadius, unwalkableMask);
-#if UNITY_EDITOR
-                    Debug.Log(isWalkable + " InitializeGrid");
-#endif
+                    
                     grid[x, y] = new Node(x, y, isWalkable, waypoint);
                 }
             }

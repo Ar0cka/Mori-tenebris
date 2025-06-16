@@ -61,9 +61,9 @@ namespace Actors.Player.AttackSystem.Scripts
             InputLogic();
 
             if (!animator.GetCurrentAnimatorStateInfo(0).IsName(CurrentAnimationName) &&
-                GlobalAttackStates.IsAttacking)
+                PlayerStates.IsAttacking)
             {
-                GlobalAttackStates.UpdateAttackState(false);
+                PlayerStates.UpdateAttackState(false);
             }
 
             if (CurrentCountAttack >= MaxComboAttack &&
@@ -103,7 +103,7 @@ namespace Actors.Player.AttackSystem.Scripts
                     if (AttackCoroutine == null &&
                         !animator.GetCurrentAnimatorStateInfo(0).IsName(CurrentAnimationName))
                     {
-                        GlobalAttackStates.UpdateAttackState(true);
+                        PlayerStates.UpdateAttackState(true);
                         AttackCoroutine = StartCoroutine(SetAnimation(attackData.triggerName, hitObject.transform,
                             attackData.weaponHitColliderSettings));
                         CurrentAnimationName = attackData.triggerName;

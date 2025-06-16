@@ -26,7 +26,7 @@ MonoBehaviour:
     upgradeCount: 0
     countUpgradeAdd: 3
     speedRegenerationHealth: 0.1
-    speedRegenerationStamina: 0.2
+    speedRegenerationStamina: 0.05
   playerDefaultStat:
     baseDamage: 3
     startMaxHitPoint: 100
@@ -34,4 +34,7 @@ MonoBehaviour:
     walkSpeed: 4
     spritSpeed: 5
     staminaSubstractionInSecond: 1
-    speedRegenerationStamina: 1
+    rollDistance: 2
+    rollDuration: 0.5
+    rollCooldown: 1
+    costRoll: 15

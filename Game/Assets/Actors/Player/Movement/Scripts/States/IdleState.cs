@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using PlayerNameSpace;
+using UnityEngine;
 
 namespace StateMachin.States
 {
@@ -6,7 +7,7 @@ namespace StateMachin.States
     {
         private bool isRunning;
         
-        public IdleState(FStateMachine fsm, StateMachineRealize stateMachineRealize) : base(fsm, stateMachineRealize)
+        public IdleState(FStateMachine fsm, StateMachineRealize stateMachineRealize, PlayerScrObj playerScr) : base(fsm, stateMachineRealize, playerScr)
         {
             
         }

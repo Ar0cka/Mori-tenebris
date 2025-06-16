@@ -21,8 +21,6 @@ namespace SceneSettings.LevelGenerator
 
         [Header("Spawn settings")] 
         [SerializeField] private int maxDistance;
-        
-        [SerializeField] private List<GameObject> spawnedObstacles;
 
         private Dictionary<PositionSettings, ObstaclesSettings> _placedNodes = new();
 
@@ -31,6 +29,9 @@ namespace SceneSettings.LevelGenerator
         
         public void SpawnScene()
         {
+            if (_placedNodes.Count > 0) 
+                ClearObstacleDictionary();
+            
             float sizeSpriteX = backgroundSprite.bounds.size.x;
             float sizeSpriteY = backgroundSprite.bounds.size.y;
 
@@ -46,18 +47,45 @@ namespace SceneSettings.LevelGenerator
             if (obstacles.Count > 0) SpawnObstacles();
         }
 
+        private Vector2 CalculateSizeSprite(float sizeX, float sizeY)
+        {
+            float sizeWorldX = worldSize.x * 1f / sizeX;
+            float sizeWorldY = worldSize.y * 1f / sizeY;
+
+            if (sizeWorldY <= 0 || sizeWorldX <= 0) return Vector2.zero;
+            
+            return new Vector2(sizeWorldX, sizeWorldY);
+        }
+
+        
         #region Obstacles
+
+        private void ClearObstacleDictionary()
+        {
+            foreach (var obstacle in _placedNodes)
+            {
+                var item = obstacle.Value.referencePrefab;
+                if (item != null && !Application.isPlaying)
+                    DestroyImmediate(item);
+                else if (item != null)
+                    Destroy(item);
+            }
+            
+            _placedNodes.Clear();
+        }
         private void SpawnObstacles()
         {
             _maxTryCount = worldSize.x * worldSize.y * 2;
             
             foreach (ObstaclesSettings obstacle in obstacles)
             {
-                var obj = Instantiate(obstacle.prefab, obstacle.parent);
+                var cloneObstacle = obstacle.Clone();
+                
+                var obj = Instantiate(cloneObstacle.prefab, cloneObstacle.parent);
                 
                 if (obj == null) continue;
                 
-                var position = GetWorldPosition(obstacle.size.x, obstacle.size.y);
+                var position = GetWorldPosition(cloneObstacle.size.x, cloneObstacle.size.y);
 
                 if (position == null)
                 {
@@ -69,8 +97,10 @@ namespace SceneSettings.LevelGenerator
                     continue;
                 
                 obj.transform.position = position.WorldPosition;
+                
+                cloneObstacle.referencePrefab = obj;
 
-                if (!_placedNodes.TryAdd(position, obstacle))
+                if (!_placedNodes.TryAdd(position, cloneObstacle))
                 {
                     Debug.LogError("Can't add obstacle");
                 }
@@ -88,39 +118,26 @@ namespace SceneSettings.LevelGenerator
             var obj = Instantiate(obstacles[indexObstacle].prefab, obstacles[indexObstacle].parent);
         }
         #endregion
-        
-        private Vector2 CalculateSizeSprite(float sizeX, float sizeY)
-        {
-            float sizeWorldX = worldSize.x * 1f / sizeX;
-            float sizeWorldY = worldSize.y * 1f / sizeY;
-
-            if (sizeWorldY <= 0 || sizeWorldX <= 0) return Vector2.zero;
-            
-            return new Vector2(sizeWorldX, sizeWorldY);
-        }
-
         private PositionSettings GetWorldPosition(float sizeX, float sizeY)
         {
             _tryCount = 0;
             
+            int gridWidth = Mathf.FloorToInt(worldSize.x / sizeX);
+            int gridHeight = Mathf.FloorToInt(worldSize.y / sizeY);
+            
             while (_tryCount++ < _maxTryCount)
             {
-                int gridWidth = worldSize.x;
-                int gridHeight = worldSize.y;
-            
                 int randomNodeX = Random.Range(0, gridWidth);
                 int randomNodeY = Random.Range(0, gridHeight);
-
-                if (!CheckObstacles(randomNodeX, randomNodeY))
+                
+                Vector2 bottomLeft = (Vector2) transform.position - Vector2.right * worldSize.x / 2 - Vector2.up * worldSize.y / 2;
+                
+                Vector2 waypoint = bottomLeft + Vector2.right * (randomNodeX * sizeX) + Vector2.up * (randomNodeY * sizeY);
+                
+                if (!CheckObstacles(waypoint))
                 {
                     continue;
                 }
-
-                float offsetX = -worldSize.x / 2f * sizeX;
-                float offsetY = -worldSize.y / 2f * sizeY;
-
-                Vector2 waypoint = (Vector2)transform.position 
-                                   + new Vector2(offsetX + randomNodeX * sizeX, offsetY + randomNodeY * sizeY);
             
                 PositionSettings positionSettings = new PositionSettings(randomNodeX, randomNodeY, waypoint);
 
@@ -130,30 +147,24 @@ namespace SceneSettings.LevelGenerator
             return null;
         }
 
-        private bool CheckObstacles(int x, int y)
+        private bool CheckObstacles(Vector2 waypoint)
         {
             foreach (var item in _placedNodes)
             {
-                int distanceX = item.Key.X - x;
-                int distanceY = item.Key.Y - y;
+                Vector2 itemPos = item.Key.WorldPosition;
 
-                if (!Distance(distanceX, distanceY))
+                if (!Distance(itemPos, waypoint))
                 {
                     return false;
                 }
             }
-            
+
             return true;
         }
 
-        private bool Distance(int dX, int dY)
+        private bool Distance(Vector2 distance1, Vector2 distance2)
         {
-            dX = Mathf.Abs(dX);
-            dY = Mathf.Abs(dY);
-            
-            if (dX <= 0 && dY <= 0) return false;
-            
-            if (dX <= maxDistance || dY <= maxDistance) return false;
+            if (Vector2.Distance(distance1, distance2) < maxDistance) return false;
             
             return true;
         }
@@ -178,6 +189,13 @@ namespace SceneSettings.LevelGenerator
         public GameObject prefab;
         public Transform parent;
         public Vector2 size;
+
+        public GameObject referencePrefab;
+
+        public ObstaclesSettings Clone()
+        {
+            return (ObstaclesSettings)MemberwiseClone();
+        }
     }
     public class PositionSettings
     {

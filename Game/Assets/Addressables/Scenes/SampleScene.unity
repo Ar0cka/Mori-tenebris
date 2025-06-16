@@ -8528,7 +8528,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!95 &1481467977
 Animator:
   serializedVersion: 5
@@ -10204,7 +10204,7 @@ MonoBehaviour:
   playerScrObj: {fileID: 11400000, guid: 3026b8b51cfee5d42b8ad6e05755dc7a, type: 2}
   rb2D: {fileID: 1907023000}
   spriteRenderer: {fileID: 1907023001}
-  movementOffsetScr: {fileID: 11400000, guid: c00ad530509658342818cf478a9799e7, type: 2}
+  movementColliderOffset: {fileID: 11400000, guid: c00ad530509658342818cf478a9799e7, type: 2}
   capsuleCollider: {fileID: 1907023005}
 --- !u!50 &1907023000
 Rigidbody2D:

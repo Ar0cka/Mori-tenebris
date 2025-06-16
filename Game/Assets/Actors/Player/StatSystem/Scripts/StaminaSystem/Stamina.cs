@@ -11,14 +11,12 @@ namespace PlayerNameSpace
         
         private int maxStamina;
         public int CurrentStamina { get; private set; }
-        public float SubstractionCount { get; private set; }
         
         private PlayerDataStats _playerDataStats => _playerStat.GetPlayerDataStats();
 
         public void Initialize()
         {
             EventBus.Subscribe<SendUpdateStatEvent>(e => UpdateStamina());
-            SubstractionCount = _playerStat.GetPlayerDataStaticStats().StaminaSubstraction;
             UpdateStamina();
         }
 
@@ -30,7 +28,6 @@ namespace PlayerNameSpace
         public void RegenerationStamina(int value)
         {
             CurrentStamina += value;
-            Debug.Log($"Regeneration stamina. Current stamina = {CurrentStamina} and add value = {value}");
         }
         
         private void UpdateStamina()

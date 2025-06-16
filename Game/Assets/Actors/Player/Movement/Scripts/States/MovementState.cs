@@ -7,21 +7,20 @@ using UnityEngine;
 
 public class MovementState : State
 {
-    protected PlayerScrObj _playerScr;
     protected Rigidbody2D rb2D;
     protected SpriteRenderer _spriteRenderer;
-    protected MovementOffsetScr _movementOffsetScr;
+    protected MovementColliderOffset MovementColliderOffset;
     protected CapsuleCollider2D _capsuleCollider;
     protected Animator _animator;
 
     public MovementState(FStateMachine fsm, StateMachineRealize stateMachineRealize, PlayerScrObj playerScr, Rigidbody2D _rb2D, 
-        SpriteRenderer spriteRenderer, MovementOffsetScr movementOffsetScr, CapsuleCollider2D capsuleCollider, Animator animator) :
-        base(fsm, stateMachineRealize)
+        SpriteRenderer spriteRenderer, MovementColliderOffset movementColliderOffset, CapsuleCollider2D capsuleCollider, Animator animator) :
+        base(fsm, stateMachineRealize, playerScr)
     {
-        _playerScr = playerScr;
+        _playerScrObj = playerScr;
         rb2D = _rb2D;
         _spriteRenderer = spriteRenderer;
-        _movementOffsetScr = movementOffsetScr;
+        MovementColliderOffset = movementColliderOffset;
         _capsuleCollider = capsuleCollider;
         _animator = animator;
     }
@@ -29,12 +28,6 @@ public class MovementState : State
     public override void UpdateLogic()
     {
         base.UpdateLogic();
-        Vector2 input = InputVector();
-
-        if (input.sqrMagnitude == 0)
-        {
-            FStateMachine.ChangeState<IdleState>();
-        }
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
@@ -45,37 +38,30 @@ public class MovementState : State
     public override void PhysicUpdate()
     {
         base.PhysicUpdate();
-        Move(_playerScr.StaticPlayerStats.WalkSpeed);
-        ChangeSpriteSide(InputVector().normalized);
+        Move(_playerScrObj.StaticPlayerStats.WalkSpeed);
+        ChangeSpriteSide(GetInput());
     }
 
     public override void SetAnimation()
     {
-        base.SetAnimation();
-        _animator.SetBool("Walk", InputVector().sqrMagnitude > 0);
+        _animator.SetBool("Walk", animationState);
     }
 
-    public void UpdateMovementOffset(MovementOffsetScr movementOffsetScr)
+    public void UpdateMovementOffset(MovementColliderOffset movementColliderOffset)
     {
-        _movementOffsetScr = movementOffsetScr;
+        MovementColliderOffset = movementColliderOffset;
     }
     
     protected void Move(float speed)
     {
-        rb2D.MovePosition(rb2D.position + InputVector().normalized * speed * Time.deltaTime);
+        rb2D.MovePosition(rb2D.position + GetInput().normalized * speed * Time.deltaTime);
     }
-
-    protected Vector2 InputVector()
-    {
-        return new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-    }
-
     protected void ChangeSpriteSide(Vector2 inputVector)
     {
-        if (!GlobalAttackStates.IsBusy && inputVector.x != 0)
+        if (!PlayerStates.IsBusy && inputVector.x != 0)
         {
             _spriteRenderer.flipX = inputVector.x < 0;
-            _capsuleCollider.offset = inputVector.x < 0 ? _movementOffsetScr.MoveLeftOffset : _movementOffsetScr.MoveRightOffset;
+            _capsuleCollider.offset = inputVector.x < 0 ? MovementColliderOffset.MoveLeftOffset : MovementColliderOffset.MoveRightOffset;
         }
     }
 }

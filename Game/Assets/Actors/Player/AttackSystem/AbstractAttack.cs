@@ -46,7 +46,7 @@ namespace Actors.Player.AttackSystem
         protected Action<SendEquipWeaponEvent> EquipWeaponAction;
         
         protected bool CanAttack =>
-            Input.GetMouseButtonDown(0) && Cooldown <= 0 && !GlobalAttackStates.IsBusy;
+            Input.GetMouseButtonDown(0) && Cooldown <= 0 && !PlayerStates.IsBusy;
        
         protected virtual void Awake()
         {

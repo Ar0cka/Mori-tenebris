@@ -4,6 +4,7 @@ using EventBusNamespace;
 using PlayerNameSpace;
 using StateMachin.States;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class StateMachineRealize : MonoBehaviour
 {
@@ -11,14 +12,16 @@ public class StateMachineRealize : MonoBehaviour
     [SerializeField] private PlayerScrObj playerScrObj;
     [SerializeField] private Rigidbody2D rb2D;
     [SerializeField] private SpriteRenderer spriteRenderer;
-    [SerializeField] private MovementOffsetScr movementOffsetScr;
+    [FormerlySerializedAs("movementOffsetScr")] [SerializeField] private MovementColliderOffset movementColliderOffset;
     [SerializeField] private CapsuleCollider2D capsuleCollider;
 
     private FStateMachine stateMachine;
 
-    private Action<MovementOffsetScr> _changeOffset;
+    private Action<MovementColliderOffset> _changeOffset;
     
     private bool _isInitialized;
+    
+    public float RollCooldown { get; private set; }
     
     public void Initialize(ISubtractionStamina subtractionStamina)
     {
@@ -28,9 +31,10 @@ public class StateMachineRealize : MonoBehaviour
         
         stateMachine = new FStateMachine();
         
-        stateMachine.AddNewState(new IdleState(stateMachine, this));
-        stateMachine.AddNewState(new MovementState(stateMachine, this, playerScrObj, rb2D, spriteRenderer, movementOffsetScr, capsuleCollider, animator));
-        stateMachine.AddNewState(new SprintRun(stateMachine, this, playerScrObj, rb2D, subtractionStamina, spriteRenderer, movementOffsetScr, capsuleCollider, animator));
+        stateMachine.AddNewState(new IdleState(stateMachine, this, playerScrObj));
+        stateMachine.AddNewState(new MovementState(stateMachine, this, playerScrObj, rb2D, spriteRenderer, movementColliderOffset, capsuleCollider, animator));
+        stateMachine.AddNewState(new SprintRun(stateMachine, this, playerScrObj, rb2D, subtractionStamina, spriteRenderer, movementColliderOffset, capsuleCollider, animator));
+        stateMachine.AddNewState(new Roll(stateMachine, this, playerScrObj, rb2D, spriteRenderer,  capsuleCollider, animator, subtractionStamina));
         
         stateMachine.ChangeState<IdleState>();
         
@@ -40,7 +44,14 @@ public class StateMachineRealize : MonoBehaviour
     private void Update()
     {
         if (_isInitialized)
-        stateMachine.Update();
+        {
+            if (RollCooldown > 0)
+            {
+                RollCooldown -= Time.deltaTime;
+            }
+            
+            stateMachine.Update();
+        }
     }
 
     private void FixedUpdate()
@@ -49,13 +60,18 @@ public class StateMachineRealize : MonoBehaviour
         stateMachine.FixedUpdate();
     }
 
-    private void ChangeModel(MovementOffsetScr offsetScr)
+    private void ChangeModel(MovementColliderOffset colliderOffset)
     {
-        stateMachine.UpdateStateData<MovementState>(offsetScr);
+        stateMachine.UpdateStateData<MovementState>(colliderOffset);
     }
 
     private void OnDestroy()
     {
         EventBus.Unsubscribe(_changeOffset);
+    }
+
+    public void RollCooldownReset(float cooldwon)
+    {
+        RollCooldown = cooldwon;
     }
 }

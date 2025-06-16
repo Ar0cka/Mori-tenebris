@@ -12,13 +12,17 @@ namespace StateMachin.States
         private float _staminaCount;
         private const float StaminaCheckThreshold = 1f;
         
+        private float _subtractionStaminaOnRun;
+        
         public SprintRun(FStateMachine fsm, StateMachineRealize stateMachineRealize, PlayerScrObj playerScr, Rigidbody2D _rb2D, ISubtractionStamina subtractionStamina, 
-            SpriteRenderer spriteRenderer, MovementOffsetScr movementOffsetScr, CapsuleCollider2D capsuleCollider, Animator animator) :
-            base(fsm, stateMachineRealize, playerScr, _rb2D, spriteRenderer, movementOffsetScr, capsuleCollider, animator)
+            SpriteRenderer spriteRenderer, MovementColliderOffset movementColliderOffset, CapsuleCollider2D capsuleCollider, Animator animator) :
+            base(fsm, stateMachineRealize, playerScr, _rb2D, spriteRenderer, movementColliderOffset, capsuleCollider, animator)
         {
-            _playerScr = playerScr;
+            _playerScrObj = playerScr;
             _subtractionStamina = subtractionStamina;
             rb2D = _rb2D;
+
+            _subtractionStaminaOnRun = _playerScrObj.StaticPlayerStats.RunSubtraction;
         }
 
         public override void Enter()
@@ -29,12 +33,7 @@ namespace StateMachin.States
 
         public override void UpdateLogic()
         {
-            if (InputVector().sqrMagnitude == 0)
-            {
-                FStateMachine.ChangeState<IdleState>();
-            }
-
-            if (Input.GetKeyUp(KeyCode.LeftShift))
+            if (Input.GetKeyUp(KeyCode.LeftShift) || _subtractionStamina.CurrentStamina < _subtractionStaminaOnRun)
             {
                 FStateMachine.ChangeState<MovementState>();
             }
@@ -42,8 +41,8 @@ namespace StateMachin.States
 
         public override void PhysicUpdate()
         {
-            Move(_playerScr.StaticPlayerStats.SpritSpeed);
-            ChangeSpriteSide(InputVector().normalized);
+            Move(_playerScrObj.StaticPlayerStats.SpritSpeed);
+            ChangeSpriteSide(GetInput().normalized);
             SubstractionStamina();
         }
 
@@ -51,7 +50,7 @@ namespace StateMachin.States
         {
             try
             {
-                _staminaCount += _subtractionStamina.SubstractionCount;
+                _staminaCount += _subtractionStaminaOnRun;
                 if (_staminaCount >= StaminaCheckThreshold)
                 {
                     int staminaSubstraction = Mathf.FloorToInt(_staminaCount);

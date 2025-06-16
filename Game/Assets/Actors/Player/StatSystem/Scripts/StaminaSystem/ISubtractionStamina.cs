@@ -2,7 +2,7 @@ namespace PlayerNameSpace
 {
     public interface ISubtractionStamina
     {
-        public float SubstractionCount { get; }
+        public int CurrentStamina { get; }
         void SubtractionStamina(int value); 
     }
 }

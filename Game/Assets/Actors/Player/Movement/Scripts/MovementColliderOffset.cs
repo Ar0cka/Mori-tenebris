@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Actors.Player.Movement.Scripts
 {
     [CreateAssetMenu(fileName = "MoveColliderSettings", menuName = "Player/ColliderSettings", order = 0)]
-    public class MovementOffsetScr : ScriptableObject
+    public class MovementColliderOffset : ScriptableObject
     {
         [Header("ColliderOffset")]
         [SerializeField] private Vector2 moveRightOffset;
