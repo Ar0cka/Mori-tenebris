@@ -6,6 +6,7 @@ using Actors.Enemy.Monsters.AbstractEnemy;
 using Actors.Enemy.Stats.Scripts;
 using Enemy;
 using Enemy.StatSystems.DamageSystem;
+using NegativeEffects;
 using PlayerNameSpace;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -17,15 +18,19 @@ namespace Actors.Enemy.AttackSystem.Scripts
     {
         [Header("Components")] 
         [SerializeField] protected Animator animator;
+        [SerializeField] protected Transform hitPosition;
+        [SerializeField] protected float radiusAttack;
 
-        [Header("Settings")] [SerializeField] protected string attackName;
+        [Header("Settings")] 
+        [SerializeField] protected string attackName;
         [SerializeField] protected float exitDelay;
         [SerializeField] protected float comboWindow;
+        
 
         protected EnemyDamage DamageSystem;
         protected int MaxComboAttack;
         protected int CurrentCountAttack;
-        protected AttackConfig CurrentConfig;
+        protected AttackConfig CurrentAttackConfig;
         protected StateController StateController;
         protected Coroutine ExitCorutine;
         protected Transform PlayerTransform;
@@ -69,14 +74,14 @@ namespace Actors.Enemy.AttackSystem.Scripts
         /// <summary>
         /// Логика назначения атак, с помощью этого скрипта выстраивается очередь и условия атак.
         /// </summary>
-        public virtual void Attack(AnimAttackSettings currentAttackConfig)
+        public virtual void StartAnimation(AnimAttackSettings currentAttackConfig)
         {
             var stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
             if (!stateInfo.IsName(currentAttackConfig.nameTrigger))
                 animator.SetTrigger(currentAttackConfig.nameTrigger);
         }
-
+        
         protected void ResetCooldownAttack(float cooldown)
         {
             CooldownAttack = cooldown;
@@ -97,6 +102,18 @@ namespace Actors.Enemy.AttackSystem.Scripts
             StateController.ChangeStateAttack(false);
             CurrentCountAttack = 0;
             ExitCorutine = null;
+        }
+
+        protected Collider2D HitCollider(Vector2 position, float radius)
+        {
+            var hit = Physics2D.OverlapCircle(position, radius);
+
+            if (hit != null)
+            {
+                return hit;
+            }
+
+            return null;
         }
     }
 }

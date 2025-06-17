@@ -1,8 +1,9 @@
 using DefaultNamespace.Enums;
+using NegativeEffects;
 
 namespace PlayerNameSpace
 {
-    public interface ITakeDamage
+    public interface IHitPlayer
     {
         public int CurrentHitPoint { get; }
 

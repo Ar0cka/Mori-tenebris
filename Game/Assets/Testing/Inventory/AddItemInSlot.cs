@@ -12,7 +12,7 @@ public class AddItemInSlot : MonoBehaviour
     
     [Inject] private IInventoryAdder _addItemOnInventoryAdder;
     [Inject] private IInventoryRemove _inventoryRemove;
-    [Inject] private ITakeDamage _takeDamage;
+    [Inject] private IHitPlayer _hitPlayer;
 
     public void ClickAndAdd()
     {

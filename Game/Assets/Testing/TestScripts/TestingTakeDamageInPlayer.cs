@@ -12,22 +12,22 @@ namespace TestingNameSpace
         [SerializeField] private GameObject objectPlayer;
         [SerializeField] private float cooldownTakeDamage = 2;
         [SerializeField] private int damage = 1;
-        private ITakeDamage _takeDamage;
+        private IHitPlayer _hitPlayer;
 
         [Inject]
-        public void Constructor(ITakeDamage takeDamage)
+        public void Constructor(IHitPlayer hitPlayer)
         {
-            _takeDamage = takeDamage;
+            _hitPlayer = hitPlayer;
         }
 
         private void Update()
         {
             if (cooldownTakeDamage <= 0)
             {
-                Debug.Log($"Current hit point before damage = {_takeDamage.CurrentHitPoint}");
-                _takeDamage.TakeDamage(damage, DamageType.Physic);
+                Debug.Log($"Current hit point before damage = {_hitPlayer.CurrentHitPoint}");
+                _hitPlayer.TakeDamage(damage, DamageType.Physic);
                 cooldownTakeDamage = 2;
-                Debug.Log($"current hit point after damage = {_takeDamage.CurrentHitPoint}");
+                Debug.Log($"current hit point after damage = {_hitPlayer.CurrentHitPoint}");
             }
             else
             {

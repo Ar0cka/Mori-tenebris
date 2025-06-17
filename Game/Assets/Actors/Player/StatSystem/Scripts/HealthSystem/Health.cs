@@ -8,7 +8,7 @@ using Zenject;
 
 namespace PlayerNameSpace
 {
-    public class Health : ITakeDamage, IRegenerationHealth, IDisposable
+    public class Health : IHitPlayer, IRegenerationHealth, IDisposable
     {
         private readonly IGetPlayerStat _getPlayerStat;
         private readonly IUpgradeStat _upgradeStat;

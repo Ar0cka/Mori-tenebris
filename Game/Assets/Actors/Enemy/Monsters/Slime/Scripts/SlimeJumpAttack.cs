@@ -16,8 +16,6 @@ namespace Actors.Enemy.Monsters.Slime
     public class SlimeJumpAttack : AttackEnemyAbstract
     {
         [SerializeField] private Transform slimeTransform;
-        [SerializeField] private Transform jumpHitPoint;
-        [SerializeField] private float overlapCircle;
         [SerializeField] private float offsetJump;
 
         private SlimeConfig _slimeConfig;
@@ -35,7 +33,7 @@ namespace Actors.Enemy.Monsters.Slime
             if (slimeConfig != null || attackConfig != null || playerTransform != null)
             {
                 _slimeConfig = slimeConfig;
-                CurrentConfig = attackConfig;
+                CurrentAttackConfig = attackConfig;
                 PlayerTransform = playerTransform;
             }
 
@@ -48,35 +46,35 @@ namespace Actors.Enemy.Monsters.Slime
             if (StateController.CanAttack() && _jumpCoroutine == null && CooldownAttack <= 0)
             {
                 Debug.Log("Jump");
-                _jumpCoroutine = StartCoroutine(Jump());
+                _jumpCoroutine = StartCoroutine(Attack());
             }
         }
 
-        private IEnumerator Jump()
+        private IEnumerator Attack()
         {
-            if (!ForceSlime()) yield break;
+            if (!StartAttack()) yield break;
 
             yield return new WaitForSeconds(_slimeConfig.jumpTime);
 
-            if (!HitPlayer()) yield break;
+            if (!Hit()) yield break;
 
             yield return new WaitForSeconds(_slimeConfig.delayAfterJump);
 
-            ExitFromJump();
+            EndAttack();
         }
 
-        private bool ForceSlime()
+        protected virtual bool StartAttack()
         {
             try
             {
-                DamageSystem.DamageUpdate(CurrentConfig);
-                
+                DamageSystem.DamageUpdate(CurrentAttackConfig);
+
                 _jumpSequence?.Kill();
 
                 StateController.Jump(true, true);
-                
+
                 Vector3 targetPosition = PlayerTransform.position;
-                
+
                 _jumpSequence = DOTween.Sequence()
                     .Append(slimeTransform
                         .DOJump(targetPosition, _slimeConfig.jumpForce, _slimeConfig.jumpNums, _slimeConfig.jumpTime)
@@ -93,18 +91,18 @@ namespace Actors.Enemy.Monsters.Slime
             }
         }
 
-        private bool HitPlayer()
+        private bool Hit()
         {
             try
             {
-                var hit = Physics2D.OverlapCircle(jumpHitPoint.position, overlapCircle, LayerMask.GetMask("Player"));
+                var hit = Physics2D.OverlapCircle(hitPosition.position, radiusAttack, LayerMask.GetMask("Player"));
 
                 if (hit != null)
                 {
-                    var playerTakeHit = hit.gameObject.GetComponentInChildren<TakeDamage>();
+                    var playerTakeHit = hit.gameObject.GetComponentInChildren<PlayerTakeDamage>();
                     playerTakeHit.TakeHit(DamageSystem.Damage, DamageSystem.DamageType);
                 }
-                
+
                 return true;
             }
             catch (Exception e)
@@ -114,9 +112,9 @@ namespace Actors.Enemy.Monsters.Slime
             }
         }
 
-        private void ExitFromJump()
+        private void EndAttack()
         {
-            ResetCooldownAttack(CurrentConfig.cooldownAttack);
+            ResetCooldownAttack(CurrentAttackConfig.cooldownAttack);
             StateController.Jump(false, false);
             _slimeShield.DamageAfterJump(_slimeConfig.damageOutJump);
             _jumpCoroutine = null;
@@ -130,7 +128,7 @@ namespace Actors.Enemy.Monsters.Slime
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            Gizmos.DrawWireSphere(jumpHitPoint.position, overlapCircle);
+            Gizmos.DrawWireSphere(hitPosition.position, radiusAttack);
         }
 #endif
     }

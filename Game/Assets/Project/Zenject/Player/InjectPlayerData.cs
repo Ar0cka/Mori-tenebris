@@ -25,7 +25,7 @@ namespace DefaultNamespace.Zenject
 
             Container.Bind<Health>().AsSingle().NonLazy();
 
-            Container.Bind<ITakeDamage>().To<Health>().FromResolve();
+            Container.Bind<IHitPlayer>().To<Health>().FromResolve();
             Container.Bind<IRegenerationHealth>().To<Health>().FromResolve();
             
             Container.Bind<Stamina>().AsSingle().NonLazy();
