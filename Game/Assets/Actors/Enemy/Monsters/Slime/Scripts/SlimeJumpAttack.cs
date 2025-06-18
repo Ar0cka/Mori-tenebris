@@ -13,73 +13,60 @@ using Random = UnityEngine.Random;
 
 namespace Actors.Enemy.Monsters.Slime
 {
-    public class SlimeJumpAttack : AttackEnemyAbstract
+    public class SlimeJumpAttack : EnemyAttackBase
     {
         [SerializeField] private Transform slimeTransform;
-        [SerializeField] private float offsetJump;
+        [SerializeField] private float jumpOffset;
 
-        private SlimeConfig _slimeConfig;
-        private SlimeShield _slimeShield;
+        private SlimeConfig slimeConfig;
+        private SlimeShield slimeShield;
 
-        private Coroutine _jumpCoroutine;
-        private Sequence _jumpSequence;
+        private Coroutine jumpCoroutine;
+        private Sequence jumpSequence;
 
-        public void Initialize(EnemyDamage damageSystem,
-            AttackConfig attackConfig, SlimeConfig slimeConfig, StateController stateController,
-            Transform playerTransform)
+        public void Initialize(EnemyDamage damageSys,
+            AttackConfig attackConfig, SlimeConfig config, StateController stateCtrl,
+            Transform playerTrans)
         {
-            InitializeBaseComponents(damageSystem, stateController);
+            InitializeComponents(damageSys, stateCtrl);
 
-            if (slimeConfig != null || attackConfig != null || playerTransform != null)
+            if (config != null || attackConfig != null || playerTrans != null)
             {
-                _slimeConfig = slimeConfig;
-                CurrentAttackConfig = attackConfig;
-                PlayerTransform = playerTransform;
+                slimeConfig = config;
+                _currentAttackConfig = attackConfig;
+                _playerTransform = playerTrans;
             }
 
-            if (_slimeConfig != null)
-                _slimeShield = new SlimeShield(_slimeConfig.startShield);
+            if (slimeConfig != null)
+                slimeShield = new SlimeShield(slimeConfig.startShield);
         }
 
         public override void TryAttack()
         {
-            if (StateController.CanAttack() && _jumpCoroutine == null && CooldownAttack <= 0)
+            if (_stateController.CanAttack() && jumpCoroutine == null && attackCooldown <= 0)
             {
                 Debug.Log("Jump");
-                _jumpCoroutine = StartCoroutine(Attack());
+                jumpCoroutine = StartCoroutine(PerformAttack(slimeConfig.jumpTime, slimeConfig.delayAfterJump, null));
             }
         }
 
-        private IEnumerator Attack()
-        {
-            if (!StartAttack()) yield break;
-
-            yield return new WaitForSeconds(_slimeConfig.jumpTime);
-
-            if (!Hit()) yield break;
-
-            yield return new WaitForSeconds(_slimeConfig.delayAfterJump);
-
-            EndAttack();
-        }
-
-        protected virtual bool StartAttack()
+        protected override bool BeginAttack(AnimAttackSettings attackSettings)
         {
             try
             {
-                DamageSystem.DamageUpdate(CurrentAttackConfig);
+                _damageSystem.DamageUpdate(_currentAttackConfig);
 
-                _jumpSequence?.Kill();
+                jumpSequence?.Kill();
 
-                StateController.Jump(true, true);
+                _stateController.Jump(true, true);
 
-                Vector3 targetPosition = PlayerTransform.position;
+                Vector3 targetPosition = _playerTransform.position;
 
-                _jumpSequence = DOTween.Sequence()
+                jumpSequence = DOTween.Sequence()
                     .Append(slimeTransform
-                        .DOJump(targetPosition, _slimeConfig.jumpForce, _slimeConfig.jumpNums, _slimeConfig.jumpTime)
+                        .DOJump(targetPosition, slimeConfig.jumpForce, slimeConfig.jumpNums, slimeConfig.jumpTime)
                         .SetEase(Ease.Linear))
-                    .Join(transform.DOScaleY(0.7f, _slimeConfig.jumpTime).SetLoops(2, LoopType.Yoyo)
+                    .Join(transform.DOScaleY(0.7f, slimeConfig.jumpTime).SetLoops(2, LoopType.Yoyo)
                         .SetEase(Ease.OutBack));
 
                 return true;
@@ -91,16 +78,16 @@ namespace Actors.Enemy.Monsters.Slime
             }
         }
 
-        private bool Hit()
+        protected override bool ExecuteHit()
         {
             try
             {
-                var hit = Physics2D.OverlapCircle(hitPosition.position, radiusAttack, LayerMask.GetMask("Player"));
+                var hit = Physics2D.OverlapCircle(hitOrigin.position, attackRadius, LayerMask.GetMask("Player"));
 
                 if (hit != null)
                 {
-                    var playerTakeHit = hit.gameObject.GetComponentInChildren<PlayerTakeDamage>();
-                    playerTakeHit.TakeHit(DamageSystem.Damage, DamageSystem.DamageType);
+                    var playerTakeDamage = hit.gameObject.GetComponentInChildren<PlayerTakeDamage>();
+                    playerTakeDamage?.TakeHit(_damageSystem.Damage, _damageSystem.DamageType);
                 }
 
                 return true;
@@ -112,23 +99,23 @@ namespace Actors.Enemy.Monsters.Slime
             }
         }
 
-        private void EndAttack()
+        protected override void EndAttack()
         {
-            ResetCooldownAttack(CurrentAttackConfig.cooldownAttack);
-            StateController.Jump(false, false);
-            _slimeShield.DamageAfterJump(_slimeConfig.damageOutJump);
-            _jumpCoroutine = null;
+            ResetAttackCooldown(_currentAttackConfig.cooldownAttack);
+            _stateController.Jump(false, false);
+            slimeShield.DamageAfterJump(slimeConfig.damageOutJump);
+            jumpCoroutine = null;
         }
 
         private void OnDisable()
         {
-            _jumpSequence.Kill();
+            jumpSequence?.Kill();
         }
 
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            Gizmos.DrawWireSphere(hitPosition.position, radiusAttack);
+            Gizmos.DrawWireSphere(hitOrigin.position, attackRadius);
         }
 #endif
     }

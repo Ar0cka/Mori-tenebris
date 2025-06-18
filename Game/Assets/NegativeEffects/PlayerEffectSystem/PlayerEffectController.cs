@@ -13,13 +13,15 @@ namespace NegativeEffects
         private Dictionary<EffectType, IEffectData> _waitedEffects = new();
         private Dictionary<EffectType, IEffectData> _activeEffects = new();
         
-        private void Update()
+        private void FixedUpdate()
         {
             CheckWaitedEffects();
             
             TickSystem();
             
             RemoveEffect();
+            
+            DumpStack();
         }
 
         private void CheckWaitedEffects()
@@ -46,6 +48,29 @@ namespace NegativeEffects
             }
         }
 
+        private void DumpStack()
+        {
+            List<EffectType> removeEffect = new List<EffectType>();
+            
+            foreach (var effect in _waitedEffects)
+            {
+                var effectData = effect.Value.EffectData();
+
+                if (effectData.СanDump)
+                {
+                    effectData.RemoveStack();
+                }
+                
+                if (effectData.CurrentStack <= 0)
+                    removeEffect.Add(effect.Key);
+            }
+
+            foreach (var remove in removeEffect)
+            {
+                _waitedEffects.Remove(remove);
+            }
+        }
+
         private void TickSystem()
         {
             foreach (var effect in _activeEffects)
@@ -54,7 +79,7 @@ namespace NegativeEffects
                 
                 if (!action.IsEffecting) continue;
                 
-                action.Tick(Time.deltaTime);
+                action.Tick(Time.fixedDeltaTime);
             }
         }
         
@@ -62,19 +87,19 @@ namespace NegativeEffects
         {
             var effectData = effect.EffectData();
 
-            if (_activeEffects.ContainsKey(effectData.effectType))
+            if (_activeEffects.ContainsKey(effectData.EffectType))
             {
-                _activeEffects[effectData.effectType].ActionEffect().UpdateEffect();
+                _activeEffects[effectData.EffectType].ActionEffect().UpdateEffect();
                 return;
             }
             
-            if (_waitedEffects.ContainsKey(effectData.effectType))
+            if (_waitedEffects.ContainsKey(effectData.EffectType))
             {
-                _waitedEffects[effectData.effectType].EffectData().AddStack(effectData.addStack);
+                _waitedEffects[effectData.EffectType].EffectData().AddStack(effectData.AddStackCount);
                 return;
             }
 
-            _waitedEffects.Add(effectData.effectType, effect);
+            _waitedEffects.Add(effectData.EffectType, effect);
         }
 
         private void RemoveEffect()
@@ -104,10 +129,9 @@ namespace NegativeEffects
             foreach (var effect in _activeEffects.Values)
             {
                 effect.ActionEffect().RemoveEffect(effect.EffectData());
-                _activeEffects.Remove(effect.EffectData().effectType);
             }
             
-            if (_activeEffects.Count > 0) _activeEffects.Clear();
+            _activeEffects.Clear();
         }
     }
    

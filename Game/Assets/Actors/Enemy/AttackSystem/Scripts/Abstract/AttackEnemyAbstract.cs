@@ -1,119 +1,157 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Actors.Enemy.Data.Scripts;
 using Actors.Enemy.Monsters.AbstractEnemy;
-using Actors.Enemy.Stats.Scripts;
-using Enemy;
 using Enemy.StatSystems.DamageSystem;
 using NegativeEffects;
 using PlayerNameSpace;
 using UnityEngine;
-using UnityEngine.Serialization;
-using Zenject;
 
 namespace Actors.Enemy.AttackSystem.Scripts
 {
-    public abstract class AttackEnemyAbstract : MonoBehaviour
+    public abstract class EnemyAttackBase : MonoBehaviour
     {
+        #region Fields
+
         [Header("Components")] 
         [SerializeField] protected Animator animator;
-        [SerializeField] protected Transform hitPosition;
-        [SerializeField] protected float radiusAttack;
+        [SerializeField] protected Transform hitOrigin;
+        [SerializeField] protected float attackRadius;
 
         [Header("Settings")] 
         [SerializeField] protected string attackName;
-        [SerializeField] protected float exitDelay;
-        [SerializeField] protected float comboWindow;
-        
+        [SerializeField] protected float attackExitDelay;
+        [SerializeField] protected float comboInputWindow;
+        [SerializeField] protected List<string> hittableTags;
 
-        protected EnemyDamage DamageSystem;
-        protected int MaxComboAttack;
-        protected int CurrentCountAttack;
-        protected AttackConfig CurrentAttackConfig;
-        protected StateController StateController;
-        protected Coroutine ExitCorutine;
-        protected Transform PlayerTransform;
+        protected EnemyDamage _damageSystem;
+        protected int _maxComboCount;
+        protected int _currentComboCount;
+        protected AttackConfig _currentAttackConfig;
+        protected StateController _stateController;
+        protected Coroutine _exitCoroutine;
+        protected Transform _playerTransform;
 
-        public bool IsCooldown => CooldownAttack > 0;
+        public bool IsOnCooldown => attackCooldown > 0;
 
-        [Min(0)] protected float CooldownAttack = 0;
+        [Min(0)] protected float attackCooldown = 0;
 
         public string AttackName => attackName;
 
-        protected void InitializeBaseComponents(EnemyDamage damageSystem, StateController stateController)
+        #endregion
+        
+        #region Initialization
+
+        protected void InitializeComponents(EnemyDamage damageSys, StateController stateCtrl)
         {
             if (animator == null) animator = GetComponent<Animator>();
 
-            if (damageSystem != null || stateController != null)
-            {
-                DamageSystem = damageSystem;
-                StateController = stateController;
-            }
+            if (damageSys != null) _damageSystem = damageSys;
+            if (stateCtrl != null) _stateController = stateCtrl;
 
             if (animator == null)
             {
 #if UNITY_EDITOR
-                Debug.LogError(
-                    $"animator: {animator}");
+                Debug.LogError($"Animator component missing on {gameObject.name}");
 #endif
                 enabled = false;
             }
         }
+        
+        #endregion
+
+        #region Attack Logic
+
+        protected bool ApplyDamage(ITakeDamage target)
+        {
+            if (target == null || _currentAttackConfig == null) return false;
+            
+            target.TakeHit(_currentAttackConfig.damage, _currentAttackConfig.damageType);
+            
+            return true;
+        }
+
+        protected bool ApplyEffect(ITakeDamage target, EffectScrObj effect)
+        {
+            if (target == null || effect == null) return false;
+            
+            target.AddEffect(effect);
+            return true;
+        }
+
+        protected bool ApplyDamageWithEffect(ITakeDamage target, EffectScrObj effect)
+        {
+            if (target == null || effect == null) return false;
+
+            var damageApplied = ApplyDamage(target);
+            var effectApplied = ApplyEffect(target, effect);
+
+            return damageApplied && effectApplied;
+        }
+        
+        protected void ResetAttackCooldown(float cooldown)
+        {
+            attackCooldown = cooldown;
+        }
+
+        protected virtual IEnumerator PerformAttack(float delayBeforeHit, float delayAfterHit, AnimAttackSettings attackSettings)
+        {
+            if (!BeginAttack(attackSettings))
+            
+            yield return new WaitForSeconds(delayBeforeHit);
+
+            if (!ExecuteHit()) yield break;
+
+            yield return new WaitForSeconds(delayAfterHit);
+            
+            EndAttack();
+        }
+        
+        protected void ExitAttack()
+        {
+            _stateController.ChangeStateAttack(false);
+            _currentComboCount = 0;
+            _exitCoroutine = null;
+        }
+
+        #endregion
+        
+        #region Abstract Methods
+        
+        public abstract void TryAttack();
+
+        protected abstract bool BeginAttack(AnimAttackSettings animAttack);
+
+        protected abstract bool ExecuteHit();
+        protected abstract void EndAttack();
+        
+        #endregion
+
+        #region Unity Callbacks
 
         protected virtual void Update()
         {
-            if (CooldownAttack > 0)
+            if (attackCooldown > 0)
             {
-                CooldownAttack -= Time.deltaTime;
+                attackCooldown -= Time.deltaTime;
             }
         }
-
-        public abstract void TryAttack();
-
-        /// <summary>
-        /// Логика назначения атак, с помощью этого скрипта выстраивается очередь и условия атак.
-        /// </summary>
-        public virtual void StartAnimation(AnimAttackSettings currentAttackConfig)
+        
+        protected virtual void PlayAttackAnimation(AnimAttackSettings attackSettings)
         {
             var stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
-            if (!stateInfo.IsName(currentAttackConfig.nameTrigger))
-                animator.SetTrigger(currentAttackConfig.nameTrigger);
+            if (!stateInfo.IsName(attackSettings.nameTrigger))
+                animator.SetTrigger(attackSettings.nameTrigger);
         }
         
-        protected void ResetCooldownAttack(float cooldown)
+        protected virtual bool IsPlayerInRange(float range = 1f)
         {
-            CooldownAttack = cooldown;
+            if (_playerTransform == null) return false;
+
+            return Vector2.Distance(_playerTransform.position, transform.position) <= range;
         }
 
-        /// <summary>
-        /// Проверка дистации между игроком и монстром
-        /// </summary>
-        /// <returns></returns>
-        protected virtual bool CheckAttackDistance(float attackDistance = 1)
-        {
-            return Vector2.Distance(PlayerTransform.position, transform.position) <=
-                   attackDistance;
-        }
-
-        protected void ExitAction()
-        {
-            StateController.ChangeStateAttack(false);
-            CurrentCountAttack = 0;
-            ExitCorutine = null;
-        }
-
-        protected Collider2D HitCollider(Vector2 position, float radius)
-        {
-            var hit = Physics2D.OverlapCircle(position, radius);
-
-            if (hit != null)
-            {
-                return hit;
-            }
-
-            return null;
-        }
+        #endregion
     }
 }

@@ -1,16 +1,17 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace NegativeEffects
 {
     [Serializable]
     public class EffectData
     {
-        public int addStack;
-        public StatusEffectType Status => IsReady ? StatusEffectType.Active : StatusEffectType.Pending;
-        public EffectType effectType;
-        public int threshold;
-        public int maxStackEffect;
+        [field:SerializeField] public int AddStackCount { get; private set; }
+        [field:SerializeField] public EffectType EffectType { get; private set; }
+        [SerializeField] private int thresholdStack;
+        [SerializeField] private int maxStackEffect;
+        [SerializeField] private int dumpStackCount;
         public float LastTimeStack { get; private set; }
         public float CurrentStack { get; private set; }
 
@@ -20,13 +21,19 @@ namespace NegativeEffects
             LastTimeStack = Time.time;
         }
 
+        public void RemoveStack()
+        {
+            CurrentStack -= dumpStackCount;
+            LastTimeStack = Time.time;
+        }
+        
         public void ResetStack()
         {
             CurrentStack = 0;
         }
         
         public bool IsReady => CurrentStack >= maxStackEffect;
-        public bool СanDump => Time.time - LastTimeStack >= threshold;
+        public bool СanDump => Time.time - LastTimeStack >= thresholdStack;
     }
     
     public enum EffectType
@@ -34,11 +41,5 @@ namespace NegativeEffects
         Burn,
         Poison,
         Decay,
-    }
-
-    public enum StatusEffectType
-    {
-        Active,
-        Pending
     }
 }

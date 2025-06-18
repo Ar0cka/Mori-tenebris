@@ -6,106 +6,147 @@ using Actors.Enemy.Data.Scripts;
 using Actors.Enemy.Monsters.AbstractEnemy;
 using Actors.Enemy.Monsters.Slime.Data.Scripts;
 using Enemy.StatSystems.DamageSystem;
+using HitChecker;
 using NegativeEffects;
+using PlayerNameSpace;
 using UnityEngine;
 
-public class SlimeBaseAttack : AttackEnemyAbstract
+public class SlimeBaseAttack : EnemyAttackBase
 {
     [SerializeField] private EffectScrObj poisonEffect;
     
-    private SlimeConfig _slimeConfig;
+    private SlimeConfig slimeConfig;
     
-    private Dictionary<int, AnimAttackSettings> _attackQueue = new Dictionary<int, AnimAttackSettings>();
+    private Dictionary<int, AnimAttackSettings> attackSequence = new Dictionary<int, AnimAttackSettings>();
     
-    private float _lastAttackTime;
+    private float lastAttackTimestamp;
     
     public void InitializeAttack(EnemyDamage damageSystem, 
-        AttackConfig attackConfig, SlimeConfig slimeConfig, StateController stateController, Transform playerTransform)
+        AttackConfig attackConfig, SlimeConfig config, StateController stateController, Transform playerTransform)
     {
-        InitializeBaseComponents(damageSystem, stateController);
+        InitializeComponents(damageSystem, stateController);
         
-        if (damageSystem != null && slimeConfig != null && attackConfig != null)
+        if (damageSystem != null && config != null && attackConfig != null)
         {
-            _slimeConfig = slimeConfig;
-            CurrentAttackConfig = attackConfig;
+            slimeConfig = config;
+            _currentAttackConfig = attackConfig;
         }
 
-        if (CurrentAttackConfig.nameAttack == attackName)
+        if (_currentAttackConfig.nameAttack == attackName)
         {
-            var sortedQueue = CurrentAttackConfig.animAttackSettings.OrderBy(a => a.countInQueue).ToList();
+            var sortedAttacks = _currentAttackConfig.animAttackSettings
+                .OrderBy(a => a.countInQueue)
+                .ToList();
         
-            foreach (var attack in sortedQueue)
+            foreach (var attack in sortedAttacks)
             {
-                _attackQueue.TryAdd(attack.countInQueue, attack);
+                attackSequence.TryAdd(attack.countInQueue, attack);
             }
 
-            MaxComboAttack = _attackQueue.Count;
+            _maxComboCount = attackSequence.Count;
             
-            PlayerTransform = playerTransform;
+            _playerTransform = playerTransform;
         }
     }
 
     protected override void Update()
     {
-        if (Time.time - _lastAttackTime > comboWindow)
+        if (Time.time - lastAttackTimestamp > comboInputWindow)
         {
-            Exit();
+            ExitCombo();
         }
         
-        if (CooldownAttack > 0)
+        if (attackCooldown > 0)
         {
-            CooldownAttack -= Time.deltaTime;
+            attackCooldown -= Time.deltaTime;
         }
     }
 
     public override void TryAttack()
     {
-        if (_attackQueue.TryGetValue(CurrentCountAttack, out var value) )
+        if (attackSequence.TryGetValue(_currentComboCount, out var currentAttack))
         {
-            if (CanAttack())
+            if (CanPerformAttack())
             {
                 Debug.Log("Attack");
-                StartAnimation(value);
+                StartCoroutine(PerformAttack(currentAttack.startAttackDelay, currentAttack.hitDelay, currentAttack));
             }
-            else if (!CheckAttackDistance(CurrentAttackConfig.attackDistance))
+            else if (!IsPlayerInRange(_currentAttackConfig.attackDistance))
             {
-                animator.ResetTrigger(value.nameTrigger);
-                ExitCorutine = StartCoroutine(ExitFromCombo());
+                animator.ResetTrigger(currentAttack.nameTrigger);
+                _exitCoroutine = StartCoroutine(ExitComboCoroutine());
             }
         }
         
-        Exit();
+        ExitCombo();
     }
-    
-    private void Exit()
+
+    protected override bool BeginAttack(AnimAttackSettings attackSettings)
     {
-        if (CurrentCountAttack >= MaxComboAttack)
+        if (attackSettings == null) return false;
+        
+        PlayAttackAnimation(attackSettings);
+        
+        return true;
+    }
+
+    protected override bool ExecuteHit()
+    {
+        if (hittableTags.Count == 0) return false;
+
+        GameObject hitObject = null;
+        
+        foreach (var tag in hittableTags)
         {
-            if (ExitCorutine == null)
+            hitObject = HitSystem.CircleHit(hitOrigin.position, attackRadius, tag);
+            
+            if (hitObject != null)
+                break;
+        }
+
+        ITakeDamage takeDamage = hitObject.GetComponent<ITakeDamage>();
+        
+        if (takeDamage == null) return false;
+        
+        var hitSuccess = ApplyDamageWithEffect(takeDamage, poisonEffect);
+        
+        return hitSuccess;
+    }
+
+    protected override void EndAttack()
+    {
+        // intentionally left empty
+    }
+
+    private void ExitCombo()
+    {
+        if (_currentComboCount >= _maxComboCount)
+        {
+            if (_exitCoroutine == null)
             {
-                Debug.Log("Reset");
-                ExitCorutine = StartCoroutine(ExitFromCombo());
+                Debug.Log("Reset combo");
+                _exitCoroutine = StartCoroutine(ExitComboCoroutine());
             }
         }
     }
 
-    private IEnumerator ExitFromCombo()
+    private IEnumerator ExitComboCoroutine()
     {
-        ResetCooldownAttack(CurrentAttackConfig.cooldownAttack);
+        ResetAttackCooldown(_currentAttackConfig.cooldownAttack);
         
-        yield return new WaitForSeconds(exitDelay);
+        yield return new WaitForSeconds(attackExitDelay);
         
-        foreach (var currentAttack in _attackQueue)
+        foreach (var attackEntry in attackSequence)
         {
-            animator.ResetTrigger(currentAttack.Value.nameTrigger);
+            animator.ResetTrigger(attackEntry.Value.nameTrigger);
         }
         
-        ExitAction();
+        ExitAttack();
     }
 
-    private bool CanAttack()
+    private bool CanPerformAttack()
     {
-        return CooldownAttack <= 0 && CheckAttackDistance(CurrentAttackConfig.attackDistance) &&
-               StateController.CanAttack() && CurrentCountAttack < MaxComboAttack;
+        return attackCooldown <= 0 && IsPlayerInRange(_currentAttackConfig.attackDistance) &&
+               _stateController.CanAttack() && _currentComboCount < _maxComboCount;
     }
 }

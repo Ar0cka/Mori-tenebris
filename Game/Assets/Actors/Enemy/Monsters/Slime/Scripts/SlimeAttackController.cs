@@ -1,14 +1,8 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Actors.Enemy.Data.Scripts;
 using Actors.Enemy.Monsters.AbstractEnemy;
 using Actors.Enemy.Monsters.Slime.Data.Scripts;
-using PlayerNameSpace;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UIElements;
 
 namespace Actors.Enemy.Monsters.Slime
 {
@@ -62,11 +56,11 @@ namespace Actors.Enemy.Monsters.Slime
             
             RotateMonster(slimeSpriteConroller);
             
-            if (CheckJumpDistance(jumpMin, jumpMax) && !slimeJumpAttack.IsCooldown)
+            if (CheckJumpDistance(jumpMin, jumpMax) && !slimeJumpAttack.IsOnCooldown)
             {
                 slimeJumpAttack.TryAttack();
             }
-            else if (CheckDistance(baseAttackDistance) && !slimeBaseAttack.IsCooldown)
+            else if (CheckDistance(baseAttackDistance) && !slimeBaseAttack.IsOnCooldown)
             {
                 slimeBaseAttack.TryAttack();
             }
