@@ -13,9 +13,11 @@ namespace PlayerNameSpace
         private readonly IGetPlayerStat _getPlayerStat;
         private readonly IUpgradeStat _upgradeStat;
         private readonly Armour _armour;
-        
-        private int _maxHitPoint;
+
+        public int MaxHitPoint { get; private set; }
         public int CurrentHitPoint { get; private set; }
+        
+        public bool IsDead { get; private set; }
 
         [Inject]
         public Health(IGetPlayerStat getPlayerStat, Armour armour, IUpgradeStat upgradeStat)
@@ -28,24 +30,30 @@ namespace PlayerNameSpace
         {
             EventBus.Subscribe<SendUpdateStatEvent>(e => UpdateStats());
             UpdateStats();
+            EventBus.Publish(new SendUpdateHealthEvent(CurrentHitPoint, MaxHitPoint));
+            
+            CurrentHitPoint = Math.Clamp(CurrentHitPoint, 0, MaxHitPoint);
         }
 
         public void TakeDamage(int damage, DamageType damageType)
         {
+            if (IsDead) return;
+            
             int finalDamage = CalculateDamage.CalculateFinalDamageWithResist(damage, _armour.GetArmour(damageType));
             
-            CurrentHitPoint -= finalDamage;
+            CurrentHitPoint -= Mathf.Min(finalDamage, CurrentHitPoint);
             
-            Debug.Log($"Current hit point = {CurrentHitPoint}");
+            EventBus.Publish(new SendUpdateHealthEvent(CurrentHitPoint, MaxHitPoint));
             
             CheckDead();
         }
 
         public void Regeneration(int countRegeneration)
         {
-            if (CurrentHitPoint < _maxHitPoint)
+            if (CurrentHitPoint < MaxHitPoint && !IsDead)
             {
-                CurrentHitPoint += Mathf.Clamp(countRegeneration, 0, _maxHitPoint);
+                CurrentHitPoint += Mathf.Clamp(countRegeneration, 0, MaxHitPoint);
+                EventBus.Publish(new SendUpdateHealthEvent(CurrentHitPoint, MaxHitPoint));
             }
         }
 
@@ -59,6 +67,7 @@ namespace PlayerNameSpace
         
         private void PlayerDead()
         {
+            IsDead = true;
             EventBus.Publish(new SendDieEvent());
         }
 
@@ -66,15 +75,15 @@ namespace PlayerNameSpace
         {
             PlayerDataStats loadData = _getPlayerStat.GetPlayerDataStats();
             
-            _maxHitPoint = _getPlayerStat.GetPlayerDataStaticStats().StartMaxHitPoint + loadData.Vitality * 5;
-            CurrentHitPoint = _maxHitPoint;
+            MaxHitPoint = _getPlayerStat.GetPlayerDataStaticStats().StartMaxHitPoint + loadData.Vitality * 5;
+            CurrentHitPoint = MaxHitPoint;
 
             Debug.Log($"Current hit point = {CurrentHitPoint}");
         }
 
         public int GetMaxHealth()
         {
-            return _maxHitPoint;
+            return MaxHitPoint;
         }
         
         public void Dispose()
@@ -86,3 +95,15 @@ namespace PlayerNameSpace
 }
 
 public class SendDieEvent {}
+
+public class SendUpdateHealthEvent
+{
+    public int CurrentHitPoint { get; private set; }
+    public int MaxHitPoint { get; private set; }
+
+    public SendUpdateHealthEvent(int currentHitPoint, int maxHitPoint)
+    {
+        CurrentHitPoint = currentHitPoint;
+        MaxHitPoint = maxHitPoint;
+    }
+}

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using EventBusNamespace;
 using PlayerNameSpace;
+using UI.EffectUI;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -12,7 +14,13 @@ namespace NegativeEffects
         
         private Dictionary<EffectType, IEffectData> _waitedEffects = new();
         private Dictionary<EffectType, IEffectData> _activeEffects = new();
-        
+
+        private void Awake()
+        {
+            _waitedEffects.Clear();
+            _activeEffects.Clear();
+        }
+
         private void FixedUpdate()
         {
             CheckWaitedEffects();
@@ -95,11 +103,12 @@ namespace NegativeEffects
             
             if (_waitedEffects.ContainsKey(effectData.EffectType))
             {
-                _waitedEffects[effectData.EffectType].EffectData().AddStack(effectData.AddStackCount);
+                _waitedEffects[effectData.EffectType].EffectData().AddStack();
                 return;
             }
 
-            _waitedEffects.Add(effectData.EffectType, effect);
+            _waitedEffects.Add(effectData.EffectType, new EffectClone(effect));
+            _waitedEffects[effectData.EffectType].EffectData().AddStack();
         }
 
         private void RemoveEffect()
@@ -134,5 +143,25 @@ namespace NegativeEffects
             _activeEffects.Clear();
         }
     }
-   
+
+    public class EffectClone : IEffectData
+    {
+        private readonly EffectData _effectData;
+        private readonly AbstractActionEffect _effectAction;
+        
+        public EffectClone(EffectScrObj effect)
+        {
+            _effectData = effect.EffectData().CloneData();
+            _effectAction = effect.ActionEffect();
+        }
+
+        public EffectData EffectData() => _effectData;
+        public AbstractActionEffect ActionEffect() => _effectAction;
+    }
+    
+    public interface IEffectData
+    {
+        EffectData EffectData();
+        AbstractActionEffect ActionEffect();
+    }
 }

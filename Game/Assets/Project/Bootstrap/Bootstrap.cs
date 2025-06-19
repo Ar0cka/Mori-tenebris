@@ -2,10 +2,15 @@ using System.Collections.Generic;
 using Project.Bootstrap;
 using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
 using EventBusNamespace;
+using NegativeEffects;
 using PlayerNameSpace;
 using PlayerNameSpace.Inventory;
 using Systems.SpawnMonsterSystem;
+using UI;
+using UI.EffectUI;
+using UI.PlayerHpBar;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 namespace DefaultNamespace
@@ -16,9 +21,11 @@ namespace DefaultNamespace
         [SerializeField] private Transform playerTransform;
         [SerializeField] private PlayerStatsUI playerUIManager;
         [SerializeField] private PassiveRegenerationStats passiveRegenerationStats;
-        [SerializeField] private PlayerUI player;
         [SerializeField] private StateMachineRealize stateMachineRealize;
         [SerializeField] private LogController playerLogController;
+        [SerializeField] private EffectUIController effectUIController;
+        [SerializeField] private PlayerHealthBar playerHealthBar;
+        [SerializeField] private PlayerGeterStats playerGetStats;
         
         [Header("Inventory")]
         [SerializeField] private Transform slotContent;
@@ -45,14 +52,16 @@ namespace DefaultNamespace
 
         private void Initialize()
         {
+            playerHealthBar.Init();
+            
             SpawnPlayer();  
             //SpawnMonster();
             
             #region UI
-
-            player.Initialize();
+            
             playerUIManager.Initialize();
             playerLogController.Initialize();
+            effectUIController.Init();
 
             #endregion
         }
@@ -69,6 +78,7 @@ namespace DefaultNamespace
             _health.Initialize();
             _stamina.Initialize();
             _damageSystem.Initialize();
+            playerGetStats.Init();
             
             #endregion
             

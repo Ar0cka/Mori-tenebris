@@ -6,7 +6,7 @@ namespace HitChecker
     {
         public static GameObject CircleHit(Vector2 position, float radius, string hitTag)
         {
-            var hit = Physics2D.OverlapCircle(position, radius);
+            var hit = Physics2D.OverlapCircle(position, radius, LayerMask.GetMask("Player"));
 
             if (hit != null && hit.CompareTag(hitTag))
             {

@@ -37,6 +37,8 @@ MonoBehaviour:
     - nameTriggers: []
       nameTrigger: BaseAttack1
       countInQueue: 0
+      startAttackDelay: 0.2
+      hitDelay: 0.2
     damageType: 0
     cooldownAttack: 2
     damage: 11

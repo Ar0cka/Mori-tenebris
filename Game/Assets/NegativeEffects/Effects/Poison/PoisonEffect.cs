@@ -23,17 +23,15 @@ namespace NegativeEffects
 
         private float _tick;
         
-        private IHitPlayer _damage;
-        private Health _health;
+        private ITakeDamage takeDamage;
 
         public override bool ApplyEffect<TStatProvider>(TStatProvider statProvider)
         {
             if (statProvider is IPoisonStats poisonStats)
             {
-                _health = poisonStats.Health;
-                _damage = poisonStats.Damage;
-                
-                if (_health == null || _damage == null) return false;
+                takeDamage = poisonStats.Damage;
+
+                if (takeDamage == null) return false;
                 
                 CurrentDuration = duration;
                 IsActive = true;
@@ -46,6 +44,7 @@ namespace NegativeEffects
         public override void UpdateEffect()
         {
             CurrentDuration = duration;
+            Debug.Log("Update Effect = " + CurrentDuration);
         }
 
         public override void Tick(float dt)
@@ -55,9 +54,11 @@ namespace NegativeEffects
 
             if (_tick >= tickInterval && IsActive)
             {
-                _damage.TakeDamage(CalculateDamage(_health.CurrentHitPoint), damageType);
+                takeDamage.TakeHit(CalculateDamage(takeDamage.GetCurrentHitPoint()), damageType);
                 _tick = 0;
             }
+            
+            Debug.Log("Tick. Current duration = " + CurrentDuration);
         }
 
         public override void RemoveEffect(EffectData effectData)
@@ -68,7 +69,11 @@ namespace NegativeEffects
         }
         private int CalculateDamage(int currentHealth = 0)
         {
-            return Mathf.FloorToInt((currentHealth * PercentageOfLife) + damageInSeconds);
+            var damage = Mathf.FloorToInt((currentHealth * PercentageOfLife) + damageInSeconds);
+
+            if (damage == 0) return 1;
+            
+            return damage;
         }
     }
     

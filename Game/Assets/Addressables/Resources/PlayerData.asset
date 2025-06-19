@@ -25,7 +25,7 @@ MonoBehaviour:
     maxLevel: 101
     upgradeCount: 0
     countUpgradeAdd: 3
-    speedRegenerationHealth: 0.1
+    speedRegenerationHealth: 0.003
     speedRegenerationStamina: 0.05
   playerDefaultStat:
     baseDamage: 3
@@ -33,7 +33,7 @@ MonoBehaviour:
     startMaxStamina: 100
     walkSpeed: 4
     spritSpeed: 5
-    staminaSubstractionInSecond: 1
+    runSubtractionInSecond: 1
     rollDistance: 2
     rollDuration: 0.5
     rollCooldown: 1

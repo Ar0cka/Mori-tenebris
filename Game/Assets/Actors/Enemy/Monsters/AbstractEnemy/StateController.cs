@@ -38,7 +38,6 @@ namespace Actors.Enemy.Monsters.AbstractEnemy
 
         public bool CanAttack()
         {
-            Debug.Log($"IsHit: {IsHit}, IsDeath: {IsDeath}, IsAttacking: {IsAttacking}");
             return !IsHit && !IsAttacking && !IsDeath;
         }
         

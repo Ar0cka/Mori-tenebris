@@ -32,5 +32,7 @@ namespace PlayerNameSpace
         int GetCurrentHitPoint();
         void TakeHit(int damage, DamageType damageType);
         void AddEffect(EffectScrObj effect);
-    } 
+    }
+
+    
 }

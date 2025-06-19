@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,7 +69,6 @@ public class SlimeBaseAttack : EnemyAttackBase
         {
             if (CanPerformAttack())
             {
-                Debug.Log("Attack");
                 StartCoroutine(PerformAttack(currentAttack.startAttackDelay, currentAttack.hitDelay, currentAttack));
             }
             else if (!IsPlayerInRange(_currentAttackConfig.attackDistance))
@@ -84,16 +84,18 @@ public class SlimeBaseAttack : EnemyAttackBase
     protected override bool BeginAttack(AnimAttackSettings attackSettings)
     {
         if (attackSettings == null) return false;
+
+        float x = spriteRenderer.flipX ? 0 : 1;
+
+        _currentComboCount++;
         
-        PlayAttackAnimation(attackSettings);
+        PlayAttackAnimation(attackSettings, x);
         
         return true;
     }
 
     protected override bool ExecuteHit()
     {
-        if (hittableTags.Count == 0) return false;
-
         GameObject hitObject = null;
         
         foreach (var tag in hittableTags)
@@ -104,9 +106,9 @@ public class SlimeBaseAttack : EnemyAttackBase
                 break;
         }
 
-        ITakeDamage takeDamage = hitObject.GetComponent<ITakeDamage>();
+        if (hitObject == null) return false;
         
-        if (takeDamage == null) return false;
+        ITakeDamage takeDamage = hitObject.GetComponentInChildren<ITakeDamage>();
         
         var hitSuccess = ApplyDamageWithEffect(takeDamage, poisonEffect);
         
@@ -115,7 +117,7 @@ public class SlimeBaseAttack : EnemyAttackBase
 
     protected override void EndAttack()
     {
-        // intentionally left empty
+        _exitCoroutine = StartCoroutine(ExitComboCoroutine());
     }
 
     private void ExitCombo()
@@ -149,4 +151,13 @@ public class SlimeBaseAttack : EnemyAttackBase
         return attackCooldown <= 0 && IsPlayerInRange(_currentAttackConfig.attackDistance) &&
                _stateController.CanAttack() && _currentComboCount < _maxComboCount;
     }
+    
+    #if UNITY_EDITOR
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawSphere(hitOrigin.position, attackRadius);
+    }
+
+#endif
 }

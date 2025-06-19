@@ -7,14 +7,13 @@ namespace NegativeEffects
 {
     public class PlayerGeterStats : MonoBehaviour
     {
-        [Inject] private Health _health;
-        [Inject] private IHitPlayer _hitPlayer;
+        [SerializeField] private PlayerTakeDamage playerTakeDamage;
 
         private Dictionary<EffectType, IEffectStat> _stats = new();
 
         public void Init()
         {
-            _stats.Add(EffectType.Poison, new PoisonStat(_health, _hitPlayer));
+            _stats.Add(EffectType.Poison, new PoisonStat(playerTakeDamage));
         }
 
         public TStat GetStat<TStat>(EffectType effectType) where TStat : class, IEffectStat
@@ -36,18 +35,15 @@ namespace NegativeEffects
     
     public interface IPoisonStats : IEffectStat
     {
-        public Health Health { get; }
-        public IHitPlayer Damage { get; }
+        public ITakeDamage Damage { get; }
     }
     
     public class PoisonStat: IPoisonStats
     {
-        public Health Health { get; }
-        public IHitPlayer Damage { get; }
+        public ITakeDamage Damage { get; }
 
-        public PoisonStat(Health health, IHitPlayer damage)
+        public PoisonStat(ITakeDamage damage)
         {
-            Health = health;
             Damage = damage;
         }
     }

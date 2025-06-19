@@ -15,6 +15,7 @@ namespace Actors.Enemy.AttackSystem.Scripts
 
         [Header("Components")] 
         [SerializeField] protected Animator animator;
+        [SerializeField] protected SpriteRenderer spriteRenderer;
         [SerializeField] protected Transform hitOrigin;
         [SerializeField] protected float attackRadius;
 
@@ -96,7 +97,13 @@ namespace Actors.Enemy.AttackSystem.Scripts
 
         protected virtual IEnumerator PerformAttack(float delayBeforeHit, float delayAfterHit, AnimAttackSettings attackSettings)
         {
-            if (!BeginAttack(attackSettings))
+            if (delayAfterHit == 0 || delayBeforeHit == 0)
+            {
+                delayBeforeHit = 1;
+                delayAfterHit = 1;
+            }
+            
+            if (!BeginAttack(attackSettings)) yield break;
             
             yield return new WaitForSeconds(delayBeforeHit);
 
@@ -137,12 +144,16 @@ namespace Actors.Enemy.AttackSystem.Scripts
             }
         }
         
-        protected virtual void PlayAttackAnimation(AnimAttackSettings attackSettings)
+        protected virtual void PlayAttackAnimation(AnimAttackSettings attackSettings, float x)
         {
             var stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
             if (!stateInfo.IsName(attackSettings.nameTrigger))
+            {
+                animator.SetFloat("X", x);
                 animator.SetTrigger(attackSettings.nameTrigger);
+            }
+               
         }
         
         protected virtual bool IsPlayerInRange(float range = 1f)
