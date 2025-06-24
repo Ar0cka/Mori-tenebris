@@ -11,7 +11,7 @@ using Zenject;
 
 namespace Actors.Player.AttackSystem
 {
-    public abstract class AbstractAttack : MonoBehaviour
+    public abstract class AttackEnemyAbstract : MonoBehaviour
     {
         [Header("Components")]
         [SerializeField] protected Animator animator;

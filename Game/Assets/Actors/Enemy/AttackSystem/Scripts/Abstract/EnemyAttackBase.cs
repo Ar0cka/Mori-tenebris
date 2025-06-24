@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Actors.Enemy.Data.Scripts;
@@ -144,16 +145,25 @@ namespace Actors.Enemy.AttackSystem.Scripts
             }
         }
         
-        protected virtual void PlayAttackAnimation(AnimAttackSettings attackSettings, float x)
+        public virtual bool PlayAttackAnimation(AnimAttackSettings attackSettings, float x)
         {
-            var stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-
-            if (!stateInfo.IsName(attackSettings.nameTrigger))
+            try
             {
-                animator.SetFloat("X", x);
-                animator.SetTrigger(attackSettings.nameTrigger);
+                var stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+                if (!stateInfo.IsName(attackSettings.nameTrigger))
+                {
+                    animator.SetFloat("X", x);
+                    animator.SetTrigger(attackSettings.nameTrigger);
+                }
+
+                return true;
             }
-               
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+                return false;
+            }
         }
         
         protected virtual bool IsPlayerInRange(float range = 1f)

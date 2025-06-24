@@ -12,7 +12,7 @@ using EventBus = EventBusNamespace.EventBus;
 
 namespace Actors.Player.AttackSystem.Scripts
 {
-    public class WeaponAttack : AbstractAttack, IDisposable
+    public class Weapon : AttackEnemyAbstract, IDisposable
     {
         [Header("AttackConfig")]
         [SerializeField] private WeaponAttackSettings baseAttackSettings;

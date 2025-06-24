@@ -43,7 +43,7 @@ namespace PlayerNameSpace
             
             CurrentHitPoint -= Mathf.Min(finalDamage, CurrentHitPoint);
             
-            EventBus.Publish(new SendUpdateHealthEvent(CurrentHitPoint, MaxHitPoint));
+            EventBus.Publish(new SendUpdateHealthEvent(CurrentHitPoint, MaxHitPoint, finalDamage));
             
             CheckDead();
         }
@@ -100,10 +100,12 @@ public class SendUpdateHealthEvent
 {
     public int CurrentHitPoint { get; private set; }
     public int MaxHitPoint { get; private set; }
+    public int Damage { get; private set; }
 
-    public SendUpdateHealthEvent(int currentHitPoint, int maxHitPoint)
+    public SendUpdateHealthEvent(int currentHitPoint, int maxHitPoint, int finallyDamage = 0)
     {
         CurrentHitPoint = currentHitPoint;
         MaxHitPoint = maxHitPoint;
+        Damage = finallyDamage;
     }
 }

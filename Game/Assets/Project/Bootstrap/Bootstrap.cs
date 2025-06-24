@@ -8,6 +8,7 @@ using PlayerNameSpace.Inventory;
 using Systems.SpawnMonsterSystem;
 using UI;
 using UI.EffectUI;
+using UI.Player.Log;
 using UI.PlayerHpBar;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -26,6 +27,7 @@ namespace DefaultNamespace
         [SerializeField] private EffectUIController effectUIController;
         [SerializeField] private PlayerHealthBar playerHealthBar;
         [SerializeField] private PlayerGeterStats playerGetStats;
+        [SerializeField] private HitLog hitLog;
         
         [Header("Inventory")]
         [SerializeField] private Transform slotContent;
@@ -79,6 +81,7 @@ namespace DefaultNamespace
             _stamina.Initialize();
             _damageSystem.Initialize();
             playerGetStats.Init();
+            hitLog.Initialize();
             
             #endregion
             
