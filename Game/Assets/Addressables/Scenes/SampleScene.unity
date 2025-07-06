@@ -8388,7 +8388,7 @@ MonoBehaviour:
   hitLogText: {fileID: 1335711006}
   logPrefab: {fileID: 1335711003}
   logPosition: {fileID: 1192111897}
-  lifeTime: 3
+  lifeTime: 0.3
 --- !u!114 &1335711006
 MonoBehaviour:
   m_ObjectHideFlags: 0

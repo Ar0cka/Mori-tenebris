@@ -15,6 +15,7 @@ namespace UI.Player.Log
         [SerializeField] private GameObject logPrefab;
         [SerializeField] private Transform logPosition;
 
+        [SerializeField] private float flyDistance;
         [SerializeField] private float lifeTime;
         
         private Action<SendUpdateHealthEvent> _healthCallback;
@@ -40,7 +41,7 @@ namespace UI.Player.Log
 
         private void StartAnim()
         {
-            Vector2 up = transform.position + Vector3.up;
+            Vector2 up = new Vector2(transform.position.x, transform.position.y + flyDistance);
             
             transform.DOMove(up, lifeTime);
             
