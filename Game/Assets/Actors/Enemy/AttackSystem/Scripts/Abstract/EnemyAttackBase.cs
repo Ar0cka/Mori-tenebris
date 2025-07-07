@@ -19,6 +19,7 @@ namespace Actors.Enemy.AttackSystem.Scripts
         [SerializeField] protected SpriteRenderer spriteRenderer;
         [SerializeField] protected Transform hitOrigin;
         [SerializeField] protected float attackRadius;
+        [SerializeField] protected AttackScrConf attackConfig;
 
         [Header("Settings")] 
         [SerializeField] protected string attackName;
@@ -27,12 +28,12 @@ namespace Actors.Enemy.AttackSystem.Scripts
         [SerializeField] protected List<string> hittableTags;
 
         protected EnemyDamage _damageSystem;
-        protected int _maxComboCount;
-        protected int _currentComboCount;
         protected AttackConfig _currentAttackConfig;
         protected StateController _stateController;
         protected Coroutine _exitCoroutine;
         protected Transform _playerTransform;
+
+        private float _lastClick;
 
         public bool IsOnCooldown => attackCooldown > 0;
 
@@ -51,13 +52,16 @@ namespace Actors.Enemy.AttackSystem.Scripts
             if (damageSys != null) _damageSystem = damageSys;
             if (stateCtrl != null) _stateController = stateCtrl;
 
-            if (animator == null)
+            if (animator == null && attackConfig == null)
             {
 #if UNITY_EDITOR
                 Debug.LogError($"Animator component missing on {gameObject.name}");
 #endif
                 enabled = false;
+                return;
             }
+
+            _currentAttackConfig = attackConfig.GetAttackConfig();
         }
         
         #endregion
@@ -95,43 +99,20 @@ namespace Actors.Enemy.AttackSystem.Scripts
         {
             attackCooldown = cooldown;
         }
-
-        protected virtual IEnumerator PerformAttack(float delayBeforeHit, float delayAfterHit, AnimAttackSettings attackSettings)
-        {
-            if (delayAfterHit == 0 || delayBeforeHit == 0)
-            {
-                delayBeforeHit = 1;
-                delayAfterHit = 1;
-            }
-            
-            if (!BeginAttack(attackSettings)) yield break;
-            
-            yield return new WaitForSeconds(delayBeforeHit);
-
-            if (!ExecuteHit()) yield break;
-
-            yield return new WaitForSeconds(delayAfterHit);
-            
-            EndAttack();
-        }
         
         protected void ExitAttack()
         {
             _stateController.ChangeStateAttack(false);
-            _currentComboCount = 0;
             _exitCoroutine = null;
         }
 
         #endregion
         
         #region Abstract Methods
-        
-        public abstract void TryAttack();
-
-        protected abstract bool BeginAttack(AnimAttackSettings animAttack);
-
-        protected abstract bool ExecuteHit();
-        protected abstract void EndAttack();
+        public abstract bool BeginAttack(AnimAttackSettings animAttack);
+        public abstract bool ExecuteHit();
+        public abstract void EndAttack();
+        public abstract bool IsTargetInRange();
         
         #endregion
 
@@ -171,6 +152,45 @@ namespace Actors.Enemy.AttackSystem.Scripts
             if (_playerTransform == null) return false;
 
             return Vector2.Distance(_playerTransform.position, transform.position) <= range;
+        }
+        
+        public int GetWeight()
+        {
+            return 0;
+        }
+
+        public AttackConfig GetAttackConfig() => _currentAttackConfig;
+
+        #endregion
+
+        #region DistanceDefaultChecers
+        protected bool IsDistanceLess(float distance)
+        {
+            return GetPlayerDistance() <= distance;
+        }
+        protected bool IsDistanceInRange(float distanceMin, float distanceMax)
+        {
+            float dist = GetPlayerDistance();
+            return dist >= distanceMin && dist <= distanceMax;
+        }
+        protected float GetPlayerDistance()
+        {
+            return Vector2.Distance(transform.position, _playerTransform.position);
+        }
+
+        #endregion
+
+        #region ControllAttackLogic
+
+        public void UpdateInputWindow(float inputWindow)
+        {
+            if (Time.time - _lastClick > comboInputWindow)
+                ExitAttack();
+        }
+
+        public void SetLastClick()
+        {
+            _lastClick = Time.time;
         }
 
         #endregion

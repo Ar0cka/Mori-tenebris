@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using Actors.Enemy.AttackSystem.Scripts;
 using Actors.Enemy.Data.Scripts;
 using Actors.Enemy.Monsters.AbstractEnemy;
 using Actors.Enemy.Monsters.Slime.Data.Scripts;
@@ -8,81 +11,88 @@ namespace Actors.Enemy.Monsters.Slime
 {
     public class SlimeAttackController : MonstersBattleController
     {
-        [SerializeField] private SlimeSpriteConroller slimeSpriteConroller;
         [SerializeField] private SlimeBaseAttack slimeBaseAttack;
         [SerializeField] private SlimeJumpAttack slimeJumpAttack;
-        [SerializeField] private float cooldown;
 
-        [SerializeField] private float baseAttackDistance;
-        [SerializeField] private float jumpMax;
-        [SerializeField] private float jumpMin;
+        [SerializeField] private List<string> attackNames;
+
+        private List<EnemyAttackBase> _attackStates = new();
+        private SlimeScrObj _monsterData;
 
         private SlimeConfig _slimeConfig;
-        private List<AttackConfig> _attackConfig;
-
-        private bool _isInitialize;
+        private AttackAction _attackAction;
         
-        private StateController _stateController;
-
         public override void Initialize()
         {
             base.Initialize();
-
-            if (MonsterScrObj != null)
+            
+            if (_monsterData.GetConfig() is SlimeConfig slimeConfig)
             {
-                if (MonsterScrObj.GetConfig() is SlimeConfig slimeConfig)
-                {
-                    _slimeConfig = slimeConfig;
-                }
+                _slimeConfig = slimeConfig;
+            }
+            
+            slimeBaseAttack.InitializeAttack(enemyData.GetDamageSystem(), StateController, PlayerTransform);
+            slimeJumpAttack.Initialize(enemyData.GetDamageSystem(), _slimeConfig, StateController, PlayerTransform);
+            
+            IsInitialize = true;
+        }
 
-                _attackConfig = MonsterScrObj.GetAttackConfig();
-
-                _stateController = enemyData.GetStateController();
-                    
-                PlayerTransform = enemyData.PlayerPosition;
+        protected override void FixedUpdate()
+        {
+            if (!IsInitialize) return;
+            
+            if (!IsHaveState)
+            {
+                EnemyAttackBase currentAttack = ChoiceAttackState();
                 
-                slimeBaseAttack.InitializeAttack(enemyData.GetDamageSystem(),
-                    GetAttackConfigFromList(slimeBaseAttack.AttackName), _slimeConfig, _stateController, PlayerTransform);
-                
-                slimeJumpAttack.Initialize(enemyData.GetDamageSystem(), GetAttackConfigFromList(slimeJumpAttack.AttackName), _slimeConfig, _stateController, PlayerTransform);
-            }
-            
-            _isInitialize = true;
-        }
-
-        private void Update()
-        {
-            if (!_isInitialize || !_stateController.CanAttack()) return;
-            
-            RotateMonster(slimeSpriteConroller);
-            
-            if (CheckJumpDistance(jumpMin, jumpMax) && !slimeJumpAttack.IsOnCooldown)
-            {
-                slimeJumpAttack.TryAttack();
-            }
-            else if (CheckDistance(baseAttackDistance) && !slimeBaseAttack.IsOnCooldown)
-            {
-                slimeBaseAttack.TryAttack();
+                AttackAction.EnterInAttackState(currentAttack);
             }
         }
 
-        private AttackConfig GetAttackConfigFromList(string nameAttack)
+        protected EnemyAttackBase ChoiceAttackState()
         {
-            for (int i = 0; i < _attackConfig.Count; i++)
-            {
-                if (_attackConfig[i].nameAttack == nameAttack)
-                {
-                    return _attackConfig[i];
-                }
-            }
+            EnemyAttackBase bestAttack = null;
 
-            return null;
+            foreach (var state in _attackStates)
+            {
+                if (state.IsOnCooldown || !state.IsTargetInRange())
+                    continue;
+
+                if (bestAttack == null || bestAttack.GetWeight() < state.GetWeight())
+                    bestAttack = state;
+            }
+            
+            return bestAttack;
+        }
+    }
+
+    public class AttackAction
+    {
+        private MonstersBattleController _monsterController;
+        
+        private int _maxComboCount;
+        private int _currentComboCount;
+        
+        private AttackConfig _attackConfig;
+        private EnemyAttackBase _enemyAttackBase;
+
+        public AttackAction(MonstersBattleController battleController)
+        {
+            _monsterController = battleController;
         }
 
-        private bool CheckJumpDistance(float minDistance, float maxDistance)
+        public void EnterInAttackState(EnemyAttackBase enemyAttackBase)
         {
-            return Vector2.Distance(transform.position, PlayerTransform.position) < maxDistance && 
-                   Vector2.Distance(transform.position, PlayerTransform.position) > minDistance;
+            _attackConfig = enemyAttackBase.GetAttackConfig();
+            _enemyAttackBase = enemyAttackBase;
+
+            _maxComboCount = _attackConfig.animAttackSettings.Count;
+            _currentComboCount = 0;
+        }
+
+        public void UpdateLogic()
+        {
+            
         }
     }
 }

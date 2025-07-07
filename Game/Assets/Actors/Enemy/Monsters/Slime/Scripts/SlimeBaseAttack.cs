@@ -15,23 +15,11 @@ using UnityEngine;
 public class SlimeBaseAttack : EnemyAttackBase
 {
     [SerializeField] private EffectScrObj poisonEffect;
-    
-    private SlimeConfig slimeConfig;
-    
     private Dictionary<int, AnimAttackSettings> attackSequence = new Dictionary<int, AnimAttackSettings>();
     
-    private float lastAttackTimestamp;
-    
-    public void InitializeAttack(EnemyDamage damageSystem, 
-        AttackConfig attackConfig, SlimeConfig config, StateController stateController, Transform playerTransform)
+    public void InitializeAttack(EnemyDamage damageSystem, StateController stateController, Transform playerTransform)
     {
         InitializeComponents(damageSystem, stateController);
-        
-        if (damageSystem != null && config != null && attackConfig != null)
-        {
-            slimeConfig = config;
-            _currentAttackConfig = attackConfig;
-        }
 
         if (_currentAttackConfig.nameAttack == attackName)
         {
@@ -43,58 +31,23 @@ public class SlimeBaseAttack : EnemyAttackBase
             {
                 attackSequence.TryAdd(attack.countInQueue, attack);
             }
-
-            _maxComboCount = attackSequence.Count;
             
             _playerTransform = playerTransform;
         }
     }
 
-    protected override void Update()
-    {
-        if (Time.time - lastAttackTimestamp > comboInputWindow)
-        {
-            ExitCombo();
-        }
-        
-        if (attackCooldown > 0)
-        {
-            attackCooldown -= Time.deltaTime;
-        }
-    }
-
-    public override void TryAttack()
-    {
-        if (attackSequence.TryGetValue(_currentComboCount, out var currentAttack))
-        {
-            if (CanPerformAttack())
-            {
-                StartCoroutine(PerformAttack(currentAttack.startAttackDelay, currentAttack.hitDelay, currentAttack));
-            }
-            else if (!IsPlayerInRange(_currentAttackConfig.attackDistance))
-            {
-                animator.ResetTrigger(currentAttack.nameTrigger);
-                _exitCoroutine = StartCoroutine(ExitComboCoroutine());
-            }
-        }
-        
-        ExitCombo();
-    }
-
-    protected override bool BeginAttack(AnimAttackSettings attackSettings)
+    public override bool BeginAttack(AnimAttackSettings attackSettings)
     {
         if (attackSettings == null) return false;
 
         float x = spriteRenderer.flipX ? 0 : 1;
-
-        _currentComboCount++;
         
         PlayAttackAnimation(attackSettings, x);
         
         return true;
     }
 
-    protected override bool ExecuteHit()
+    public override bool ExecuteHit()
     {
         GameObject hitObject = null;
         
@@ -115,22 +68,15 @@ public class SlimeBaseAttack : EnemyAttackBase
         return hitSuccess;
     }
 
-    protected override void EndAttack()
+    public override void EndAttack()
     {
-        _exitCoroutine = StartCoroutine(ExitComboCoroutine());
+        
+        
+        if (_exitCoroutine == null) 
+            _exitCoroutine = StartCoroutine(ExitComboCoroutine());
     }
 
-    private void ExitCombo()
-    {
-        if (_currentComboCount >= _maxComboCount)
-        {
-            if (_exitCoroutine == null)
-            {
-                Debug.Log("Reset combo");
-                _exitCoroutine = StartCoroutine(ExitComboCoroutine());
-            }
-        }
-    }
+    public override bool IsTargetInRange() => IsDistanceLess(attackConfig.GetAttackConfig().attackDistance);
 
     private IEnumerator ExitComboCoroutine()
     {
@@ -144,12 +90,6 @@ public class SlimeBaseAttack : EnemyAttackBase
         }
         
         ExitAttack();
-    }
-
-    private bool CanPerformAttack()
-    {
-        return attackCooldown <= 0 && IsPlayerInRange(_currentAttackConfig.attackDistance) &&
-               _stateController.CanAttack() && _currentComboCount < _maxComboCount;
     }
     
     #if UNITY_EDITOR

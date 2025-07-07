@@ -9,7 +9,5 @@ namespace Actors.Enemy.Data.Scripts
     public abstract class MonsterScrObj: ScriptableObject
     {
         public abstract EnemyConfig GetConfig();
-
-        public abstract List<AttackConfig> GetAttackConfig();
     }
 }

@@ -16,24 +16,22 @@ namespace Actors.Enemy.Monsters.Slime
     public class SlimeJumpAttack : EnemyAttackBase
     {
         [SerializeField] private Transform slimeTransform;
+        [SerializeField] private AttackConfig attackConfig;
         [SerializeField] private float jumpOffset;
 
         private SlimeConfig slimeConfig;
         private SlimeShield slimeShield;
-
-        private Coroutine jumpCoroutine;
+        
         private Sequence jumpSequence;
 
-        public void Initialize(EnemyDamage damageSys,
-            AttackConfig attackConfig, SlimeConfig config, StateController stateCtrl,
+        public void Initialize(EnemyDamage damageSys, SlimeConfig config, StateController attackStateCtrl,
             Transform playerTrans)
         {
-            InitializeComponents(damageSys, stateCtrl);
+            InitializeComponents(damageSys, attackStateCtrl);
 
-            if (config != null || attackConfig != null || playerTrans != null)
+            if (config != null || playerTrans != null)
             {
-                slimeConfig = config;
-                _currentAttackConfig = attackConfig;
+                slimeConfig = config; 
                 _playerTransform = playerTrans;
             }
 
@@ -41,16 +39,7 @@ namespace Actors.Enemy.Monsters.Slime
                 slimeShield = new SlimeShield(slimeConfig.startShield);
         }
 
-        public override void TryAttack()
-        {
-            if (_stateController.CanAttack() && jumpCoroutine == null && attackCooldown <= 0)
-            {
-                Debug.Log("Jump");
-                jumpCoroutine = StartCoroutine(PerformAttack(slimeConfig.jumpTime, slimeConfig.delayAfterJump, null));
-            }
-        }
-
-        protected override bool BeginAttack(AnimAttackSettings attackSettings)
+        public override bool BeginAttack(AnimAttackSettings attackSettings)
         {
             try
             {
@@ -78,7 +67,7 @@ namespace Actors.Enemy.Monsters.Slime
             }
         }
 
-        protected override bool ExecuteHit()
+        public override bool ExecuteHit()
         {
             try
             {
@@ -99,12 +88,16 @@ namespace Actors.Enemy.Monsters.Slime
             }
         }
 
-        protected override void EndAttack()
+        public override void EndAttack()
         {
             ResetAttackCooldown(_currentAttackConfig.cooldownAttack);
             _stateController.Jump(false, false);
             slimeShield.DamageAfterJump(slimeConfig.damageOutJump);
-            jumpCoroutine = null;
+        }
+
+        public override bool IsTargetInRange()
+        {
+            return true;
         }
 
         private void OnDisable()

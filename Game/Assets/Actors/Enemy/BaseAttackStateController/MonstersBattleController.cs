@@ -1,5 +1,6 @@
 using System;
 using Actors.Enemy.Data.Scripts;
+using Actors.Enemy.Monsters.Slime;
 using Actors.Enemy.Movement;
 using Actors.Enemy.Stats.Scripts;
 using UnityEngine;
@@ -10,12 +11,15 @@ namespace Actors.Enemy.Monsters.AbstractEnemy
     public abstract class MonstersBattleController : MonoBehaviour
     {
         [SerializeField] protected SpriteRenderer spriteRenderer;
-        [SerializeField] protected EnemyMove enemyMove;
         [SerializeField] protected EnemyData enemyData;
 
         protected MonsterScrObj MonsterScrObj;
-        
         protected Transform PlayerTransform;
+        protected StateController StateController;
+        protected AttackAction AttackAction;
+        
+        protected bool IsHaveState;
+        protected bool IsInitialize;
 
         public virtual void Initialize()
         {
@@ -26,13 +30,16 @@ namespace Actors.Enemy.Monsters.AbstractEnemy
             }
 
             MonsterScrObj = enemyData.GetEnemyScrObj();
+            StateController = enemyData.GetStateController();
+            AttackAction = new AttackAction(this);
         }
+
+        protected abstract void FixedUpdate();
         
         protected bool OnValidateComponents()
         {
             
             if (spriteRenderer == null) spriteRenderer = GetComponent<SpriteRenderer>();
-            if (enemyMove == null) enemyMove = GetComponentInChildren<EnemyMove>();
             if (enemyData == null) enemyData = GetComponent<EnemyData>();
             
 
@@ -41,16 +48,15 @@ namespace Actors.Enemy.Monsters.AbstractEnemy
             
             return true;
         }
-        
         protected void RotateMonster(SpriteController spriteController)
         {
             Vector2 rotateVector2 =  (PlayerTransform.position - transform.position).normalized;
             spriteController.SetFlipState(rotateVector2);
         }
         
-        protected bool CheckDistance(float distance)
+        public void ChangeAttackState(bool state)
         {
-            return Vector2.Distance(transform.position, PlayerTransform.position) < distance ;
+            IsHaveState = state;
         }
     }
 }
