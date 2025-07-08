@@ -24,7 +24,6 @@ namespace Actors.Enemy.Data.Scripts
     public class AnimAttackSettings
     {
         [Header("Anim settings")]
-        public string nameTriggers;
         public string nameTrigger;
         public int countInQueue;
         

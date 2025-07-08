@@ -38,7 +38,6 @@ namespace Actors.Enemy.Monsters.AbstractEnemy
         
         protected bool OnValidateComponents()
         {
-            
             if (spriteRenderer == null) spriteRenderer = GetComponent<SpriteRenderer>();
             if (enemyData == null) enemyData = GetComponent<EnemyData>();
             

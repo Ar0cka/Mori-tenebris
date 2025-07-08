@@ -2139,7 +2139,7 @@ MonoBehaviour:
   rb2D: {fileID: 1481467981}
   spriteController: {fileID: 455578824}
   switchNodeDistance: 0.1
-  delayForRequestPath: 1
+  delayForRequestPath: 0.1
   stopDistance: 1.3
 --- !u!1 &471346330
 GameObject:
@@ -8082,6 +8082,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 1481467978}
   hitOrigin: {fileID: 249182062}
   attackRadius: 0.31
+  attackConfig: {fileID: 11400000, guid: 7b0a4082eda214f44b7c3c7bde89dff0, type: 2}
   attackName: Kus
   attackExitDelay: 3
   comboInputWindow: 3
@@ -8104,6 +8105,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 1481467978}
   hitOrigin: {fileID: 803194353}
   attackRadius: 0.6
+  attackConfig: {fileID: 11400000, guid: 61cabdc7d47dcae4f8a1f5572013d5b1, type: 2}
   attackName: Jump
   attackExitDelay: 1
   comboInputWindow: 1
@@ -8111,6 +8113,8 @@ MonoBehaviour:
   - Player
   slimeTransform: {fileID: 1481467979}
   jumpOffset: 1
+  minJumpDistance: 3
+  maxJumpDistance: 7
 --- !u!1 &1304137580 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7092508000356838881, guid: 57149dacf4a14374dbeff5f30c6f4d2c, type: 3}
@@ -8388,6 +8392,7 @@ MonoBehaviour:
   hitLogText: {fileID: 1335711006}
   logPrefab: {fileID: 1335711003}
   logPosition: {fileID: 1192111897}
+  flyDistance: 0
   lifeTime: 0.3
 --- !u!114 &1335711006
 MonoBehaviour:
@@ -9214,19 +9219,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1481467976}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08d99cbe0b2749d9a42d09709edf17d8, type: 3}
+  m_Script: {fileID: 11500000, guid: bf89b98fe59645c7bc943ed1272cc1d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 1481467978}
-  enemyMove: {fileID: 455578825}
   enemyData: {fileID: 1481467982}
-  slimeSpriteConroller: {fileID: 455578824}
   slimeBaseAttack: {fileID: 1276774234}
   slimeJumpAttack: {fileID: 1276774235}
-  cooldown: 3
-  baseAttackDistance: 1.3
-  jumpMax: 6
-  jumpMin: 4
 --- !u!114 &1481467984
 MonoBehaviour:
   m_ObjectHideFlags: 0

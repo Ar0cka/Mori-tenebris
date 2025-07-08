@@ -16,58 +16,63 @@ namespace Actors.Enemy.Monsters.Slime
     public class SlimeJumpAttack : EnemyAttackBase
     {
         [SerializeField] private Transform slimeTransform;
-        [SerializeField] private AttackConfig attackConfig;
         [SerializeField] private float jumpOffset;
+        [SerializeField] private float minJumpDistance;
+        [SerializeField] private float maxJumpDistance;
 
-        private SlimeConfig slimeConfig;
-        private SlimeShield slimeShield;
+        private SlimeConfig _slimeConfig;
+        private SlimeShield _slimeShield;
         
-        private Sequence jumpSequence;
+        private Sequence _jumpSequence;
 
         public void Initialize(EnemyDamage damageSys, SlimeConfig config, StateController attackStateCtrl,
             Transform playerTrans)
         {
-            InitializeComponents(damageSys, attackStateCtrl);
+            InitializeComponents(damageSys, attackStateCtrl, playerTrans);
 
             if (config != null || playerTrans != null)
             {
-                slimeConfig = config; 
+                _slimeConfig = config; 
                 _playerTransform = playerTrans;
             }
 
-            if (slimeConfig != null)
-                slimeShield = new SlimeShield(slimeConfig.startShield);
+            if (_slimeConfig != null){
+                _slimeShield = new SlimeShield(_slimeConfig.startShield);
+                MaxCountAttack = _slimeConfig.jumpNums;
+            }
         }
 
-        public override bool BeginAttack(AnimAttackSettings attackSettings)
+        public override float BeginAttack()
         {
+            Debug.Log($"Begin attack jump");
+            
             try
             {
                 _damageSystem.DamageUpdate(_currentAttackConfig);
 
-                jumpSequence?.Kill();
+                _jumpSequence?.Kill();
 
                 _stateController.Jump(true, true);
 
                 Vector3 targetPosition = _playerTransform.position;
 
-                jumpSequence = DOTween.Sequence()
+                _jumpSequence = DOTween.Sequence()
                     .Append(slimeTransform
-                        .DOJump(targetPosition, slimeConfig.jumpForce, slimeConfig.jumpNums, slimeConfig.jumpTime)
+                        .DOJump(targetPosition, _slimeConfig.jumpForce, _slimeConfig.jumpNums, _slimeConfig.jumpTime)
                         .SetEase(Ease.Linear))
-                    .Join(transform.DOScaleY(0.7f, slimeConfig.jumpTime).SetLoops(2, LoopType.Yoyo)
+                    .Join(transform.DOScaleY(0.7f, _slimeConfig.jumpTime).SetLoops(2, LoopType.Yoyo)
                         .SetEase(Ease.OutBack));
 
-                return true;
+                return _slimeConfig.jumpTime;
             }
             catch (Exception e)
             {
                 Debug.LogError(e);
-                return false;
+                return 0;
             }
         }
 
-        public override bool ExecuteHit()
+        public override float ExecuteHit()
         {
             try
             {
@@ -79,30 +84,34 @@ namespace Actors.Enemy.Monsters.Slime
                     playerTakeDamage?.TakeHit(_damageSystem.Damage, _damageSystem.DamageType);
                 }
 
-                return true;
+                return _slimeConfig.delayAfterJump;
             }
             catch (Exception e)
             {
                 Debug.LogError(e);
-                return false;
+                return 0;
             }
         }
 
-        public override void EndAttack()
+        public override IEnumerator ExitComboCoroutine()
+        {
+            yield return new WaitForEndOfFrame();
+        }
+        
+        public override bool EndAttack()
         {
             ResetAttackCooldown(_currentAttackConfig.cooldownAttack);
             _stateController.Jump(false, false);
-            slimeShield.DamageAfterJump(slimeConfig.damageOutJump);
-        }
-
-        public override bool IsTargetInRange()
-        {
+            _slimeShield.DamageAfterJump(_slimeConfig.damageOutJump);
+            
             return true;
         }
 
+        public override bool IsTargetInRange() => IsDistanceInRange(minJumpDistance, maxJumpDistance);
+
         private void OnDisable()
         {
-            jumpSequence?.Kill();
+            _jumpSequence?.Kill();
         }
 
 #if UNITY_EDITOR

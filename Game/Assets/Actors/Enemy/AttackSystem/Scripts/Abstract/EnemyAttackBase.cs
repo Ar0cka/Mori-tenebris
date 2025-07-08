@@ -24,16 +24,17 @@ namespace Actors.Enemy.AttackSystem.Scripts
         [Header("Settings")] 
         [SerializeField] protected string attackName;
         [SerializeField] protected float attackExitDelay;
-        [SerializeField] protected float comboInputWindow;
+        [Min(0)][field:SerializeField] public float comboInputWindow;
         [SerializeField] protected List<string> hittableTags;
+
+        protected int MaxCountAttack;
+        protected int CurrentCountAttack;
 
         protected EnemyDamage _damageSystem;
         protected AttackConfig _currentAttackConfig;
         protected StateController _stateController;
         protected Coroutine _exitCoroutine;
         protected Transform _playerTransform;
-
-        private float _lastClick;
 
         public bool IsOnCooldown => attackCooldown > 0;
 
@@ -45,12 +46,13 @@ namespace Actors.Enemy.AttackSystem.Scripts
         
         #region Initialization
 
-        protected void InitializeComponents(EnemyDamage damageSys, StateController stateCtrl)
+        protected void InitializeComponents(EnemyDamage damageSys, StateController stateCtrl, Transform playerTransform)
         {
             if (animator == null) animator = GetComponent<Animator>();
 
             if (damageSys != null) _damageSystem = damageSys;
             if (stateCtrl != null) _stateController = stateCtrl;
+            if (playerTransform == null) _playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
 
             if (animator == null && attackConfig == null)
             {
@@ -62,6 +64,7 @@ namespace Actors.Enemy.AttackSystem.Scripts
             }
 
             _currentAttackConfig = attackConfig.GetAttackConfig();
+            _playerTransform = playerTransform;
         }
         
         #endregion
@@ -100,18 +103,14 @@ namespace Actors.Enemy.AttackSystem.Scripts
             attackCooldown = cooldown;
         }
         
-        protected void ExitAttack()
-        {
-            _stateController.ChangeStateAttack(false);
-            _exitCoroutine = null;
-        }
+        public abstract IEnumerator ExitComboCoroutine();
 
         #endregion
         
         #region Abstract Methods
-        public abstract bool BeginAttack(AnimAttackSettings animAttack);
-        public abstract bool ExecuteHit();
-        public abstract void EndAttack();
+        public abstract float BeginAttack();
+        public abstract float ExecuteHit();
+        public abstract bool EndAttack();
         public abstract bool IsTargetInRange();
         
         #endregion
@@ -171,7 +170,7 @@ namespace Actors.Enemy.AttackSystem.Scripts
         protected bool IsDistanceInRange(float distanceMin, float distanceMax)
         {
             float dist = GetPlayerDistance();
-            return dist >= distanceMin && dist <= distanceMax;
+            return dist > distanceMin && dist <= distanceMax;
         }
         protected float GetPlayerDistance()
         {
@@ -179,20 +178,33 @@ namespace Actors.Enemy.AttackSystem.Scripts
         }
 
         #endregion
-
-        #region ControllAttackLogic
-
-        public void UpdateInputWindow(float inputWindow)
+        
+        #region ExitFromCombo
+        
+        protected void ExitAttack()
         {
-            if (Time.time - _lastClick > comboInputWindow)
-                ExitAttack();
+            _stateController.ChangeStateAttack(false);
+            _exitCoroutine = null;
         }
 
-        public void SetLastClick()
+        protected IEnumerator ExitFromComboCoroutine()
         {
-            _lastClick = Time.time;
-        }
+            if (_exitCoroutine != null) yield break;
 
+            CurrentCountAttack = 0;
+            
+            ResetAttackCooldown(_currentAttackConfig.cooldownAttack);
+        
+            yield return new WaitForSeconds(attackExitDelay);
+        
+            foreach (var attackEntry in _currentAttackConfig.animAttackSettings)
+            {
+                animator.ResetTrigger(attackEntry.nameTrigger);
+            }
+        
+            ExitAttack();
+        }
+        
         #endregion
     }
 }

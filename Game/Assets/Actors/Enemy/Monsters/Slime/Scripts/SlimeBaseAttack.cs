@@ -10,6 +10,7 @@ using Enemy.StatSystems.DamageSystem;
 using HitChecker;
 using NegativeEffects;
 using PlayerNameSpace;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SlimeBaseAttack : EnemyAttackBase
@@ -19,7 +20,7 @@ public class SlimeBaseAttack : EnemyAttackBase
     
     public void InitializeAttack(EnemyDamage damageSystem, StateController stateController, Transform playerTransform)
     {
-        InitializeComponents(damageSystem, stateController);
+        InitializeComponents(damageSystem, stateController, playerTransform);
 
         if (_currentAttackConfig.nameAttack == attackName)
         {
@@ -31,23 +32,19 @@ public class SlimeBaseAttack : EnemyAttackBase
             {
                 attackSequence.TryAdd(attack.countInQueue, attack);
             }
-            
-            _playerTransform = playerTransform;
         }
     }
 
-    public override bool BeginAttack(AnimAttackSettings attackSettings)
+    public override float BeginAttack()
     {
-        if (attackSettings == null) return false;
-
         float x = spriteRenderer.flipX ? 0 : 1;
         
-        PlayAttackAnimation(attackSettings, x);
+        PlayAttackAnimation(attackSequence[CurrentCountAttack], x);
         
-        return true;
+        return attackSequence[CurrentCountAttack].startAttackDelay;
     }
 
-    public override bool ExecuteHit()
+    public override float ExecuteHit()
     {
         GameObject hitObject = null;
         
@@ -59,37 +56,35 @@ public class SlimeBaseAttack : EnemyAttackBase
                 break;
         }
 
-        if (hitObject == null) return false;
+        if (hitObject == null) return _currentAttackConfig.animAttackSettings[CurrentCountAttack].hitDelay;
         
         ITakeDamage takeDamage = hitObject.GetComponentInChildren<ITakeDamage>();
         
-        var hitSuccess = ApplyDamageWithEffect(takeDamage, poisonEffect);
+        ApplyDamageWithEffect(takeDamage, poisonEffect);
         
-        return hitSuccess;
+        return attackSequence[CurrentCountAttack].hitDelay;
     }
 
-    public override void EndAttack()
+    public override bool EndAttack()
     {
+        CurrentCountAttack++;
         
+        if (CurrentCountAttack < MaxCountAttack)
+        {
+            return false;
+        }
         
         if (_exitCoroutine == null) 
-            _exitCoroutine = StartCoroutine(ExitComboCoroutine());
+            StartCoroutine(ExitComboCoroutine());
+        
+        return true;
     }
 
     public override bool IsTargetInRange() => IsDistanceLess(attackConfig.GetAttackConfig().attackDistance);
 
-    private IEnumerator ExitComboCoroutine()
+    public override IEnumerator ExitComboCoroutine()
     {
-        ResetAttackCooldown(_currentAttackConfig.cooldownAttack);
-        
-        yield return new WaitForSeconds(attackExitDelay);
-        
-        foreach (var attackEntry in attackSequence)
-        {
-            animator.ResetTrigger(attackEntry.Value.nameTrigger);
-        }
-        
-        ExitAttack();
+        yield return StartCoroutine(ExitFromComboCoroutine());
     }
     
     #if UNITY_EDITOR
