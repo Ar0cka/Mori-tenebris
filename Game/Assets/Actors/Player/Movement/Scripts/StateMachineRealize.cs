@@ -39,6 +39,8 @@ public class StateMachineRealize : MonoBehaviour
         stateMachine.ChangeState<IdleState>();
         
         _isInitialized = true;
+        
+        Debug.Log("Initialize statemachine");
     }
 
     private void Update()

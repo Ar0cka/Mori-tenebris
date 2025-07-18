@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Actors.Player.AttackSystem;
 using DG.Tweening;
 using EventBusNamespace;
 using Systems.SpawnMonsterSystem;
@@ -13,8 +14,8 @@ using UnityEngine.Serialization;
 public class LogController : MonoBehaviour
 {
     [Header("Components")] 
-    [SerializeField] private SpawnObject spawnObject;
     [SerializeField] private Transform startPoint;
+    [FormerlySerializedAs("_spawnObject")] [SerializeField] private SpawnObject spawnObject;
     
     [Header("Pool settings")]
     [SerializeField] private PrefabSpawnSettings spawnSettings;
@@ -36,13 +37,13 @@ public class LogController : MonoBehaviour
     {
         _showLog = text => ShowText(text.MessageText, text.LogType);
         EventBus.Subscribe(_showLog);
-
+        
         _pool = new ObjectPool(spawnSettings, spawnObject, startPoolCapacity);
     }
 
     private void ShowText(string inputText, CustomLogType logType = CustomLogType.Message)
     {
-        if (_activeMessageCount >= maxCount || _currentLog == inputText) return;
+        if (_activeMessageCount >= maxCount || _currentLog == inputText || PlayerStates.IsAttacking) return;
         
         GameObject item = _pool.Get();
 

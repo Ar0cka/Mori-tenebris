@@ -14,6 +14,22 @@ namespace UI
 
         public ObjectPool(PrefabSpawnSettings spawnSettings, SpawnObject spawnObject, int startPoolCapacity)
         {
+            if (spawnObject == null || spawnSettings == null)
+            {
+                #if UNITY_EDITOR 
+                if (spawnObject == null)
+                {
+                    Debug.LogWarning("Spawn Object is null.");
+                }
+
+                if (spawnSettings == null)
+                {
+                    Debug.LogWarning("Spawn Settings is null.");
+                }
+                #endif // Logs
+                return;
+            }
+            
             _spawnSettings = spawnSettings;
             _spawnObject = spawnObject;
             _pool = spawnObject.Spawn(_spawnSettings, startPoolCapacity);

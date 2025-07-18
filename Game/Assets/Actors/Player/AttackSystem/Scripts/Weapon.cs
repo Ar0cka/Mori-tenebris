@@ -75,7 +75,7 @@ namespace Actors.Player.AttackSystem.Scripts
 
         private void InputLogic()
         {
-            if (EventSystem.current.IsPointerOverGameObject()) return;
+            if (EventSystem.current !=null && EventSystem.current.IsPointerOverGameObject()) return;
 
             if (Input.GetMouseButtonDown(0) && Cooldown > 0)
             {
