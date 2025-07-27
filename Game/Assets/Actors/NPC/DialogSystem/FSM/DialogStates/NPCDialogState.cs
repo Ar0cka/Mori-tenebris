@@ -1,18 +1,15 @@
 using System;
 using Actors.NPC.DialogSystem.DataScripts;
 using Actors.NPC.DialogSystem.DialogStates;
+using Actors.NPC.DialogSystem.TestUI;
 
 namespace Actors.NPC.DialogSystem
 {
     public class NPCDialogState : DialogState
     {
-        private Action OnClick;
-        
-        public NPCDialogState(DialogFSM fsm, Action<string> sendTextDatAction, Action onClick) : base(fsm)
+        public NPCDialogState(DialogFSM stateMachine) : base(stateMachine)
         {
-            Fsm = fsm;
-            SendDialogData = sendTextDatAction;
-            OnClick = onClick;
+            Fsm = stateMachine;
         }
 
         public override void Enter(DialogNode node)
@@ -22,7 +19,7 @@ namespace Actors.NPC.DialogSystem
             DialogTimeCode = node.npcDialogData.timeCode;
             
             SendDialogEvent(node.npcDialogData.text);
-            OnClick += MouseClicked;
+            Fsm.OnClick += MouseClicked;
         }
         
         private void MouseClicked()
@@ -40,7 +37,7 @@ namespace Actors.NPC.DialogSystem
         public override void Exit()
         {
             base.Exit();
-            OnClick -= MouseClicked;
+            Fsm.OnClick -= MouseClicked;
         }
     }
 }

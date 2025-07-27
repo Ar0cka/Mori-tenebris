@@ -10,14 +10,20 @@ namespace Actors.NPC.DialogSystem
     {
         private DialogState _currentState;
         private Dictionary<Type, DialogState> _states = new Dictionary<Type, DialogState>();
+        
+        public Action<string> OnSendActorText;
+        public Action<List<DialogNode>> OnSendDialogNodes;
+        public Action<DialogNode> OnStartDialog;
+        public Action OnClick;
 
-        public void EnterToIdleState(Action<DialogNode> callback)
+
+        public void EnterToIdleState()
         {
             var idleState = _states[typeof(IdleDialogState)];
 
             if (idleState is IdleDialogState idleDialogState)
             {
-                idleDialogState.EnterToIdle(callback);
+                idleDialogState.EnterToIdle();
                 _currentState = idleDialogState;
             }
         }
@@ -43,7 +49,7 @@ namespace Actors.NPC.DialogSystem
 
         public void Update()
         {
-            _currentState?.FixedUpdate();
+            _currentState?.Update();
         }
     }
 }

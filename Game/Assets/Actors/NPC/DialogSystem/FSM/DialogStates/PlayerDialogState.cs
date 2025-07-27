@@ -1,19 +1,15 @@
 using System;
 using Actors.NPC.DialogSystem.DataScripts;
+using Actors.NPC.DialogSystem.TestUI;
 using UnityEngine;
 
 namespace Actors.NPC.DialogSystem.DialogStates
 {
     public class PlayerDialogState : DialogState
     {
-        protected Action OnClick;
-        private bool _isDone;
-        
-        public PlayerDialogState(DialogFSM fsm, Action<string> sendTextDatAction, Action onClick) : base(fsm)
+        public PlayerDialogState(DialogFSM stateMachine) : base(stateMachine)
         {
-            Fsm = fsm;
-            SendDialogData = sendTextDatAction;
-            OnClick = onClick;
+            Fsm = stateMachine;
         }
 
         public override void Enter(DialogNode node)
@@ -23,31 +19,30 @@ namespace Actors.NPC.DialogSystem.DialogStates
             DialogTimeCode = node.playerDialogData.timeCode;
             
             SendDialogEvent(CurrentDialogNode.playerDialogData.text);
-            OnClick += MouseClicked;
+            Fsm.OnClick += MouseClicked;
         }
 
-        public override void FixedUpdate()
+        public override void Update()
         {
-            if (!_isDone) 
-                base.FixedUpdate(); //Проверка TimesCodes
+            if (!IsCompleted) 
+                base.Update(); //Проверка TimesCodes
         }
 
         private void MouseClicked()
         {
-            if (!_isDone)
+            if (!IsCompleted)
                 Complete();
         }
 
         protected override void Complete()
         {
-            _isDone = true;
             ChangeDialogState<NPCDialogState>();
         }
 
         public override void Exit()
         {
             base.Exit();
-            OnClick -= MouseClicked;
+            Fsm.OnClick -= MouseClicked;
         }
     }
 }

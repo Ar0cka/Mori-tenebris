@@ -1,11 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Actors.NPC.DialogSystem.TestUI;
 using DG.Tweening;
 using UnityEngine;
 
 public class TriggerControllerForNpc : MonoBehaviour
 {
-    //Ссылка на контроллер диалога
+    [SerializeField] private TestDialogUI testDialogUI;
 
     private bool _playerInTrigger;
     private Sequence _messageSequence;
@@ -22,6 +24,21 @@ public class TriggerControllerForNpc : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             _playerInTrigger = false;
+        }
+    }
+
+    private void Update()
+    {
+        if (!_playerInTrigger) return;
+        
+        InputLogic();
+    }
+
+    private void InputLogic()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            testDialogUI.StartDialog();
         }
     }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Actors.NPC.DialogSystem;
 using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
 using NegativeEffects;
 using PlayerNameSpace;
@@ -22,6 +23,7 @@ public class PlayerBootstrap : MonoBehaviour
     [SerializeField] private PlayerHealthBar playerHealthBar;
     [SerializeField] private PlayerGeterStats playerGetStats;
     [SerializeField] private HitLog hitLog;
+    [SerializeField] private DialogFsmRealize dialogFsm;
     
     [Header("Inventory")]
     [SerializeField] private Transform slotContent;
@@ -62,6 +64,8 @@ public class PlayerBootstrap : MonoBehaviour
             
             
         _inventoryLogic.Initialize(slotContent, inventoryConfig, equipSlots);
+        
+        dialogFsm.Initialize();
         
         #region UI
             

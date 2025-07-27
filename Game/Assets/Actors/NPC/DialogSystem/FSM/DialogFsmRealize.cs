@@ -9,21 +9,18 @@ namespace Actors.NPC.DialogSystem
     public class DialogFsmRealize : MonoBehaviour
     {
         private DialogFSM fsm;
-        private Action<DialogNode> _onStartDialog;
         private bool _isInitialize = false;
 
-        public void Initialize(TestDialogUI ui)
+        public void Initialize()
         {
-            _onStartDialog = ui.OnStartDialog;
-            
             fsm = new DialogFSM();
             
             fsm.AddNewState(new IdleDialogState(fsm));
-            fsm.AddNewState(new PlayerDialogState(fsm, ui.OnSendActorText, ui.OnClick));
-            fsm.AddNewState(new NPCDialogState(fsm, ui.OnSendActorText, ui.OnClick));
-            fsm.AddNewState(new EndDialogState(fsm, ui.OnSendDialogNodes));
+            fsm.AddNewState(new PlayerDialogState(fsm));
+            fsm.AddNewState(new NPCDialogState(fsm));
+            fsm.AddNewState(new EndDialogState(fsm));
             
-            fsm.EnterToIdleState(_onStartDialog);
+            fsm.EnterToIdleState();
             
             _isInitialize = true;
         }
@@ -34,5 +31,7 @@ namespace Actors.NPC.DialogSystem
             
             fsm.Update();
         }
+
+        public DialogFSM GetDialogFsm() => fsm;
     }
 }

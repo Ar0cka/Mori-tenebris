@@ -1,35 +1,44 @@
 using System;
 using Actors.NPC.DialogSystem.DataScripts;
+using Actors.NPC.DialogSystem.TestUI;
+using UnityEngine;
 
 namespace Actors.NPC.DialogSystem.DialogStates
 {
     public class IdleDialogState : DialogState
     {
-        private Action<DialogNode> _onSelectedData;
-        
         public IdleDialogState(DialogFSM stateMachine) : base(stateMachine)
         {
             Fsm = stateMachine;
         }
-
-        public void EnterToIdle(Action<DialogNode> callback)
+        
+        public void EnterToIdle()
         {
-            _onSelectedData = callback;
-            _onSelectedData += ChangeRunningState;
+            Fsm.OnStartDialog += ChangeRunningState;
+            Debug.Log("Enter to idle");
         }
 
-        public override void FixedUpdate()
+        public override void Update()
         {
-            if (IsEnterToState)
-            {
-                Fsm.ChangeState<PlayerDialogState>(CurrentDialogNode);
-            }
+           
         }
 
         private void ChangeRunningState(DialogNode dialogData)
         {
-            IsEnterToState = true;
             CurrentDialogNode = dialogData;
+
+            if (CurrentDialogNode == null)
+            {
+                Debug.Log("Current dialog node is null");
+            }
+            
+            Fsm.ChangeState<PlayerDialogState>(CurrentDialogNode);
+        }
+
+        public override void Exit()
+        {
+            base.Exit();
+            Fsm.OnStartDialog -= ChangeRunningState;
         }
     }
 }

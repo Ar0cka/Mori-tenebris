@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Actors.NPC.DialogSystem.DataScripts;
+using Actors.NPC.DialogSystem.TestUI;
 using UnityEngine;
 
 namespace Actors.NPC.DialogSystem
@@ -10,9 +11,6 @@ namespace Actors.NPC.DialogSystem
         protected DialogNode CurrentDialogNode;
         protected bool IsEnterToState = false;
         protected bool IsCompleted = false;
-
-        protected Action<string> SendDialogData;
-        protected Action<List<DialogNode>> SendNextDialogNodes;
 
         protected float DialogTimeCode;
 
@@ -28,11 +26,11 @@ namespace Actors.NPC.DialogSystem
             IsEnterToState = true;
         }
 
-        public virtual void FixedUpdate()
+        public virtual void Update()
         {
             if (!IsEnterToState || IsCompleted) return;
             
-            DialogTimeCode -= Time.fixedDeltaTime;
+            DialogTimeCode -= Time.deltaTime;
             if (DialogTimeCode <= 0)
                 Complete();
         }
@@ -41,16 +39,17 @@ namespace Actors.NPC.DialogSystem
         {
             IsEnterToState = false;
             CurrentDialogNode = null;
+            IsCompleted = false;
         }
 
         protected void SendDialogEvent(string text)
         {
-            SendDialogData?.Invoke(text);
+            Fsm.OnSendActorText?.Invoke(text);
         }
 
         protected void SendDialogsNodes()
         {
-            SendNextDialogNodes?.Invoke(CurrentDialogNode.GetNextNodes());
+            Fsm.OnSendDialogNodes?.Invoke(CurrentDialogNode.GetNextNodes());
         }
 
         protected void ChangeDialogState<T>() where T : DialogState

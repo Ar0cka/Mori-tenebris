@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
 using Actors.NPC.DialogSystem.DataScripts;
+using Actors.NPC.DialogSystem.TestUI;
 
 namespace Actors.NPC.DialogSystem
 {
     public class EndDialogState : DialogState
     {
-        public EndDialogState(DialogFSM fsm, Action<List<DialogNode>> sendDialogsNodes) : base(fsm)
+        public EndDialogState(DialogFSM stateMachine) : base(stateMachine)
         {
-            Fsm = fsm;
-            SendNextDialogNodes = sendDialogsNodes;
+            Fsm = stateMachine;
         }
 
         public override void Enter(DialogNode node)
@@ -19,7 +19,7 @@ namespace Actors.NPC.DialogSystem
             Exit();
         }
 
-        public override void FixedUpdate()
+        public override void Update()
         {
             // Конечное состояния, отключаем базовый FixedUpdate
         }
@@ -28,6 +28,7 @@ namespace Actors.NPC.DialogSystem
         {
             SendDialogsNodes();
             base.Exit();
+            Fsm.EnterToIdleState();
         }
     }
 }
