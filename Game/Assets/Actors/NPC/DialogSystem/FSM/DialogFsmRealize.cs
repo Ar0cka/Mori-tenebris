@@ -1,6 +1,7 @@
 using System;
 using Actors.NPC.DialogSystem.DataScripts;
 using Actors.NPC.DialogSystem.DialogStates;
+using Actors.NPC.DialogSystem.FSM.DialogStates;
 using Actors.NPC.DialogSystem.TestUI;
 using UnityEngine;
 
@@ -15,9 +16,13 @@ namespace Actors.NPC.DialogSystem
         {
             fsm = new DialogFSM();
             
+            fsm.Initialize();
+            
             fsm.AddNewState(new IdleDialogState(fsm));
             fsm.AddNewState(new PlayerDialogState(fsm));
             fsm.AddNewState(new NPCDialogState(fsm));
+            fsm.AddNewState(new OpenNpcPanel(fsm));
+            fsm.AddNewState(new IdlePanelState(fsm));
             fsm.AddNewState(new EndDialogState(fsm));
             
             fsm.EnterToIdleState();

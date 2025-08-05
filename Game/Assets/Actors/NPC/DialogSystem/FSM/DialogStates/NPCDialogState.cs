@@ -16,9 +16,9 @@ namespace Actors.NPC.DialogSystem
         {
             base.Enter(node);
             
-            DialogTimeCode = node.npcDialogData.timeCode;
+            DialogTimeCode = node.NpcDialogData.timeCode;
             
-            SendDialogEvent(node.npcDialogData.text);
+            SendDialogEvent(node.NpcDialogData.text);
             Fsm.OnClick += MouseClicked;
         }
         
@@ -31,7 +31,10 @@ namespace Actors.NPC.DialogSystem
         protected override void Complete()
         {
             base.Complete();
-            ChangeDialogState<EndDialogState>();
+            bool openPanel = CheckAndSwitchOnPanelState();
+            
+            if (!openPanel) 
+                ChangeDialogState<EndDialogState>();
         }
         
         public override void Exit()

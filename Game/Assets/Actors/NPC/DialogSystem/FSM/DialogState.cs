@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Actors.NPC.DialogSystem.DataScripts;
+using Actors.NPC.DialogSystem.FSM.DialogStates;
 using Actors.NPC.DialogSystem.TestUI;
 using UnityEngine;
 
@@ -22,6 +23,12 @@ namespace Actors.NPC.DialogSystem
         
         public virtual void Enter(DialogNode node)
         {
+            if (node == null)
+            {
+                Debug.Log("Enter null node");
+                Fsm.EnterToIdleState();
+            }
+            
             CurrentDialogNode = node;
             IsEnterToState = true;
         }
@@ -41,7 +48,7 @@ namespace Actors.NPC.DialogSystem
             CurrentDialogNode = null;
             IsCompleted = false;
         }
-
+        
         protected void SendDialogEvent(string text)
         {
             Fsm.OnSendActorText?.Invoke(text);
@@ -49,7 +56,8 @@ namespace Actors.NPC.DialogSystem
 
         protected void SendDialogsNodes()
         {
-            Fsm.OnSendDialogNodes?.Invoke(CurrentDialogNode.GetNextNodes());
+            if (CurrentDialogNode != null) 
+                Fsm.OnSendDialogNodes?.Invoke(CurrentDialogNode.GetNextNodes());
         }
 
         protected void ChangeDialogState<T>() where T : DialogState
@@ -60,6 +68,17 @@ namespace Actors.NPC.DialogSystem
         protected virtual void Complete()
         {
             IsCompleted = true;
+        }
+
+        protected bool CheckAndSwitchOnPanelState()
+        {
+            if (CurrentDialogNode != null && CurrentDialogNode.Condition.ActionType == DialogActionType.OpenPanel)
+            {
+                ChangeDialogState<OpenNpcPanel>();
+                return true;
+            }
+
+            return false;
         }
     }
 }

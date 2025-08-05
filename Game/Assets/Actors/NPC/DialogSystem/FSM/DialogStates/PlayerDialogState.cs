@@ -16,9 +16,9 @@ namespace Actors.NPC.DialogSystem.DialogStates
         {
             base.Enter(node);
 
-            DialogTimeCode = node.playerDialogData.timeCode;
+            DialogTimeCode = node.PlayerDialogData.timeCode;
             
-            SendDialogEvent(CurrentDialogNode.playerDialogData.text);
+            SendDialogEvent(CurrentDialogNode.PlayerDialogData.text);
             Fsm.OnClick += MouseClicked;
         }
 

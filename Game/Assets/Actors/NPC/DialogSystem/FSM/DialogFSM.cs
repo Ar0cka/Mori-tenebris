@@ -2,30 +2,43 @@ using System;
 using System.Collections.Generic;
 using Actors.NPC.DialogSystem.DataScripts;
 using Actors.NPC.DialogSystem.DialogStates;
+using Actors.NPC.NpcStateSystem;
 using StateMachin.States;
+using UnityEngine;
 
 namespace Actors.NPC.DialogSystem
 {
-    public class DialogFSM
+    public class DialogFSM : IDisposable
     {
         private DialogState _currentState;
         private Dictionary<Type, DialogState> _states = new Dictionary<Type, DialogState>();
-        
+
+        #region events
+
         public Action<string> OnSendActorText;
         public Action<List<DialogNode>> OnSendDialogNodes;
         public Action<DialogNode> OnStartDialog;
+        public Action OnExitFromDialog;
+        public Action<SpecialPanelType> OnOpenSpecialPanel;
+        public Action OnClosePanel;
         public Action OnClick;
 
+        #endregion
+        
+        private bool isEnterToIdle = false;
 
+        public void Initialize()
+        {
+            OnExitFromDialog += EnterToIdleState;
+        }
+        
         public void EnterToIdleState()
         {
-            var idleState = _states[typeof(IdleDialogState)];
-
-            if (idleState is IdleDialogState idleDialogState)
-            {
-                idleDialogState.EnterToIdle();
-                _currentState = idleDialogState;
-            }
+            if (isEnterToIdle) return;
+            
+            isEnterToIdle = true;
+            
+            ChangeState<IdleDialogState>();
         }
 
         public void AddNewState(DialogState dialogState)
@@ -45,11 +58,25 @@ namespace Actors.NPC.DialogSystem
                 _currentState = state;
                 state.Enter(dialogNode);
             }
+            else
+            {
+                Debug.Log("Dont find this state");
+            }
         }
 
         public void Update()
         {
             _currentState?.Update();
+        }
+
+        public void ExitFromIdleState()
+        {
+            isEnterToIdle = false;
+        }
+        
+        public void Dispose()
+        {
+            OnExitFromDialog -= EnterToIdleState;
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using Actors.NPC.DialogSystem.DataScripts;
 using TMPro;
 using UI;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -18,17 +19,26 @@ namespace Actors.NPC.DialogSystem.TestUI
         [SerializeField] private GameObject textDialogPrefab;
         [SerializeField] private Transform textDialogParent;
         
-        [SerializeField] private DialogFsmRealize dialogFsmRealize;
         private DialogFSM _dialogFSM;
+
+        private DialogObjectSettings _exitButtonSettings = null;
         
         private List<DialogObjectSettings> _dialogTextObjList;
         private DialogNode _currentDialogNode;
         
         private bool _isInitialize;
 
-        public void Initialize() //Добавить в Bootstrap
+        public void Initialize(DialogFSM dialogFsm) //Добавить в Bootstrap
         {
-            _dialogFSM = dialogFsmRealize.GetDialogFsm();
+            if (!ValidComponents() || dialogFsm == null)
+            {
+                Debug.Log("Error initialize dialog ui system");
+                enabled = false;
+                return;
+            }
+            
+            _dialogFSM = dialogFsm;
+            
             _dialogTextObjList = new List<DialogObjectSettings>();
             
             for (int i = 0; i < maxCountDialogText; i++)
@@ -43,6 +53,8 @@ namespace Actors.NPC.DialogSystem.TestUI
                 _dialogTextObjList.Add(dialogTestObj);
             }
             
+            SpawnExitButton();
+            
             _dialogFSM.OnSendActorText += TakeCurrentDialogText;
             _dialogFSM.OnSendDialogNodes += NextDialogList;
 
@@ -52,13 +64,17 @@ namespace Actors.NPC.DialogSystem.TestUI
         }
         public void StartDialog()
         {
-            if (!_isInitialize)
-                Initialize();
-            
             if (!dialogPanel.activeInHierarchy)
                 dialogPanel.SetActive(true);
             
             _dialogFSM.OnStartDialog?.Invoke(_currentDialogNode);
+        }
+        public void ExitFromDialogMenu()
+        {
+            OffAllDialogText();
+            dialogPanel.SetActive(false);
+            _dialogFSM.OnExitFromDialog?.Invoke();
+            _currentDialogNode = dialogNodeScrObj.GetCurrentDialogNode();
         }
         private void TakeCurrentDialogText(string text)
         {
@@ -70,9 +86,21 @@ namespace Actors.NPC.DialogSystem.TestUI
             dialogObjectSettings.Prefab.SetActive(true);
             dialogObjectSettings.TextMeshProUGUI.text = text;
         }
+
+        private void SpawnExitButton()
+        {
+            var item = Instantiate(textDialogPrefab, textDialogParent);
+            _exitButtonSettings = new DialogObjectSettings(item, item.GetComponent<TextMeshProUGUI>(), item.GetComponent<Button>());
+            _exitButtonSettings.Button.onClick.AddListener(ExitFromDialogMenu);
+            _exitButtonSettings.TextMeshProUGUI.text = "Exit";
+            _exitButtonSettings.Prefab.SetActive(true);
+        }
+        
         private void NextDialogList(List<DialogNode> dialogList)
         {
             OffAllDialogText();
+
+            if (dialogList.Count <= 0) return;
 
             for (int i = 0; i < dialogList.Count; i++)
             {
@@ -80,7 +108,7 @@ namespace Actors.NPC.DialogSystem.TestUI
                 DialogNode currentNode = dialogList[i];
                 
                 dialogTextObj.Prefab.SetActive(true);
-                dialogTextObj.TextMeshProUGUI.text = currentNode.playerDialogData.text;
+                dialogTextObj.TextMeshProUGUI.text = currentNode.PlayerDialogData.text;
 
                 Button currentButton = dialogTextObj.Button;
                 
@@ -98,11 +126,28 @@ namespace Actors.NPC.DialogSystem.TestUI
         }
         private void OffAllDialogText()
         {
+            if (_dialogTextObjList.Count == 0) return;
+            
             foreach (var item in _dialogTextObjList)
             {
                 item.Prefab.SetActive(false);
                 item.TextMeshProUGUI.text = "";
             }
+        }   
+        private bool ValidComponents()
+        {
+            return dialogPanel != null || textDialogPrefab != null || textDialogParent != null ||
+                   dialogNodeScrObj != null;
+        }
+
+        private void OnApplicationQuit()
+        {
+            foreach (var item in _dialogTextObjList)
+            {
+                Destroy(item.Prefab);
+            }
+            
+            Destroy(_exitButtonSettings.Prefab);
         }
     }
 

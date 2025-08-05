@@ -15,7 +15,11 @@ namespace Actors.NPC.DialogSystem.DialogStates
         public void EnterToIdle()
         {
             Fsm.OnStartDialog += ChangeRunningState;
-            Debug.Log("Enter to idle");
+        }
+
+        public override void Enter(DialogNode node)
+        {
+            EnterToIdle();
         }
 
         public override void Update()
@@ -39,6 +43,7 @@ namespace Actors.NPC.DialogSystem.DialogStates
         {
             base.Exit();
             Fsm.OnStartDialog -= ChangeRunningState;
+            Fsm.ExitFromIdleState();
         }
     }
 }
