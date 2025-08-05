@@ -25,8 +25,6 @@ namespace Actors.NPC.DialogSystem.TestUI
         
         private List<DialogObjectSettings> _dialogTextObjList;
         private DialogNode _currentDialogNode;
-        
-        private bool _isInitialize;
 
         public void Initialize(DialogFSM dialogFsm) //Добавить в Bootstrap
         {
@@ -58,9 +56,7 @@ namespace Actors.NPC.DialogSystem.TestUI
             _dialogFSM.OnSendActorText += TakeCurrentDialogText;
             _dialogFSM.OnSendDialogNodes += NextDialogList;
 
-            _currentDialogNode = dialogNodeScrObj.GetCurrentDialogNode();
-
-            _isInitialize = true;
+            //_currentDialogNode = dialogNodeScrObj.GetCurrentDialogNode();
         }
         public void StartDialog()
         {
@@ -74,7 +70,7 @@ namespace Actors.NPC.DialogSystem.TestUI
             OffAllDialogText();
             dialogPanel.SetActive(false);
             _dialogFSM.OnExitFromDialog?.Invoke();
-            _currentDialogNode = dialogNodeScrObj.GetCurrentDialogNode();
+            //_currentDialogNode = dialogNodeScrObj.GetCurrentDialogNode();
         }
         private void TakeCurrentDialogText(string text)
         {

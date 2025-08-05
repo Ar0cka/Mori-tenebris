@@ -8,13 +8,14 @@ namespace Actors.NPC.DialogSystem.DataScripts
 
     public enum ConditionType
     {
+        Default,
         Quest,
         Aggressive,
         Friendly,
-        Default,
     }
     public enum DialogActionType
     {
+        None,
         OpenPanel,
         Dialog,
         Quest

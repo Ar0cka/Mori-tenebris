@@ -15,29 +15,26 @@ namespace Actors.NPC.DialogSystem.DataScripts
         public NpcReputationEnum dialogReputation;
     }
     
-    [Serializable]
     public class DialogNode
     {
-        [field:SerializeField] public DialogData NpcDialogData { get; private set; }
-        [field:SerializeField] public DialogData PlayerDialogData { get; private set; }
-        [field:SerializeField] public DialogCondition Condition { get; private set; }
-        [field:SerializeField] public DialogSpecialPanelSettings SpecialPanelSettings { get; private set; }
-        [SerializeField] private List<DialogNode> childrenDialogNodes;
-        
-        public DialogNode GetNextNode(NpcReputationEnum reputationEnum)
-        {
-            for (int i = 0; i < childrenDialogNodes.Count; i++)
-            {
-                if (childrenDialogNodes[i].NpcDialogData.dialogReputation == reputationEnum)
-                {
-                    return childrenDialogNodes[i];
-                }
-            }
-            
-            return childrenDialogNodes.First();
-        }
+        public DialogData NpcDialogData { get; private set; }
+        public DialogData PlayerDialogData { get; private set; }
+        public DialogCondition Condition { get; private set; }
+        public DialogSpecialPanelSettings SpecialPanelSettings { get; private set; }
 
-        public List<DialogNode> GetNextNodes() => childrenDialogNodes;
+        private List<DialogNode> _childreNodes;
+    }
+
+    [Serializable]
+    public class DialogNodeForGraph
+    {
+        public string guid;
+        public DialogData npcData;
+        public DialogData playerData;
+        public DialogCondition condition;
+        public DialogSpecialPanelSettings panelSettings;
+        public Vector2 position;
+        public List<string> childrenGuids;
     }
 
     [Serializable]

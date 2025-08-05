@@ -56,8 +56,8 @@ namespace Actors.NPC.DialogSystem
 
         protected void SendDialogsNodes()
         {
-            if (CurrentDialogNode != null) 
-                Fsm.OnSendDialogNodes?.Invoke(CurrentDialogNode.GetNextNodes());
+            //if (CurrentDialogNode != null) 
+                //Fsm.OnSendDialogNodes?.Invoke(CurrentDialogNode);
         }
 
         protected void ChangeDialogState<T>() where T : DialogState
