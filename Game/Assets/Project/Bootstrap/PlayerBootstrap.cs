@@ -24,8 +24,6 @@ public class PlayerBootstrap : MonoBehaviour
     [SerializeField] private PlayerHealthBar playerHealthBar;
     [SerializeField] private PlayerGeterStats playerGetStats;
     [SerializeField] private HitLog hitLog;
-    [SerializeField] private DialogFsmRealize dialogFsm;
-    [SerializeField] private TestDialogUI testDialogUI;
     
     [Header("Inventory")]
     [SerializeField] private Transform slotContent;
@@ -72,11 +70,9 @@ public class PlayerBootstrap : MonoBehaviour
         Check(nameof(playerHealthBar), playerHealthBar);
         Check(nameof(playerGetStats), playerGetStats);
         Check(nameof(hitLog), hitLog);
-        Check(nameof(dialogFsm), dialogFsm);
         Check(nameof(slotContent), slotContent);
         Check(nameof(inventoryConfig), inventoryConfig);
         Check(nameof(equipSlots), equipSlots);
-        Check(nameof(testDialogUI), testDialogUI);
 
         // Injected fields
         Check(nameof(_playerData), _playerData);
@@ -92,9 +88,9 @@ public class PlayerBootstrap : MonoBehaviour
     private void SpawnPlayer()
     {
         playerHealthBar.Init();
-            
+
         _playerData.Initialize();
-            
+
         #region Stats
 
         _armour.Initialize();
@@ -103,34 +99,20 @@ public class PlayerBootstrap : MonoBehaviour
         _damageSystem.Initialize();
         playerGetStats.Init();
         hitLog.Initialize();
-            
+
         #endregion
-            
+
         stateMachineRealize.Initialize(_stamina);
         passiveRegenerationStats.Initialize();
-        
+
         _inventoryLogic.Initialize(slotContent, inventoryConfig, equipSlots);
-        
-        InitDialogSystem();
-        
+
         #region UI
-            
+
         playerUIManager.Initialize();
         playerLogController.Initialize();
         effectUIController.Init();
 
         #endregion
-    }
-
-    private void InitDialogSystem()
-    {
-        dialogFsm.Initialize();
-        testDialogUI.Initialize(dialogFsm.GetDialogFsm());
-        testDialogUI.ExitFromDialogMenu();
-    }
-
-    private void OnApplicationQuit()
-    {
-        dialogFsm.GetDialogFsm().Dispose();
     }
 }

@@ -15,6 +15,8 @@ namespace Actors.NPC.DialogSystem.DialogStates
         public void EnterToIdle()
         {
             Fsm.OnStartDialog += ChangeRunningState;
+            
+            Debug.Log("EnterToIdle");
         }
 
         public override void Enter(DialogNode node)
@@ -29,6 +31,8 @@ namespace Actors.NPC.DialogSystem.DialogStates
 
         private void ChangeRunningState(DialogNode dialogData)
         {
+            Debug.Log("Starting Dialog State");
+            
             CurrentDialogNode = dialogData;
 
             if (CurrentDialogNode == null)

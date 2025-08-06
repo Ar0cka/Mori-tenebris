@@ -16,7 +16,11 @@ namespace Actors.NPC.DialogSystem.DialogStates
         {
             base.Enter(node);
 
+            Debug.Log("Enter to player dialog");
+            
             DialogTimeCode = node.PlayerDialogData.timeCode;
+            
+            Debug.Log("send player text = " + node.PlayerDialogData.text);
             
             SendDialogEvent(CurrentDialogNode.PlayerDialogData.text);
             Fsm.OnClick += MouseClicked;

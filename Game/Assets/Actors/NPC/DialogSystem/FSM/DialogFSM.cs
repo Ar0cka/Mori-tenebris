@@ -17,7 +17,7 @@ namespace Actors.NPC.DialogSystem
 
         public Action<string> OnSendActorText;
         public Action<List<DialogNode>> OnSendDialogNodes;
-        public Action<DialogNode> OnStartDialog;
+        public Action<DialogNode>OnStartDialog;
         public Action OnExitFromDialog;
         public Action<SpecialPanelType> OnOpenSpecialPanel;
         public Action OnClosePanel;

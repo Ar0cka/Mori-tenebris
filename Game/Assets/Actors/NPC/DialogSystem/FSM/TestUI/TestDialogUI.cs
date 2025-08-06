@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Actors.NPC.DialogSystem.DataScripts;
+using Actors.NPC.NpcTools;
 using TMPro;
 using UI;
 using Unity.VisualScripting;
@@ -13,7 +14,6 @@ namespace Actors.NPC.DialogSystem.TestUI
 {
     public class TestDialogUI : MonoBehaviour
     {
-        [SerializeField] private DialogNodeScrObj dialogNodeScrObj;
         [SerializeField] private int maxCountDialogText;
         [SerializeField] private GameObject dialogPanel;
         [SerializeField] private GameObject textDialogPrefab;
@@ -25,8 +25,10 @@ namespace Actors.NPC.DialogSystem.TestUI
         
         private List<DialogObjectSettings> _dialogTextObjList;
         private DialogNode _currentDialogNode;
+        
+        private DialogNodeScrObj _currentDialogNodeScrObj;
 
-        public void Initialize(DialogFSM dialogFsm) //Добавить в Bootstrap
+        public void Initialize(DialogFSM dialogFsm, DialogNodeScrObj startDialogConfig) //Добавить в Bootstrap
         {
             if (!ValidComponents() || dialogFsm == null)
             {
@@ -56,7 +58,9 @@ namespace Actors.NPC.DialogSystem.TestUI
             _dialogFSM.OnSendActorText += TakeCurrentDialogText;
             _dialogFSM.OnSendDialogNodes += NextDialogList;
 
-            //_currentDialogNode = dialogNodeScrObj.GetCurrentDialogNode();
+            _currentDialogNodeScrObj = startDialogConfig;
+            
+            _currentDialogNode = ConvertDialogNode.GetDialogsNodeFromScrObj(_currentDialogNodeScrObj).First();
         }
         public void StartDialog()
         {
@@ -70,7 +74,6 @@ namespace Actors.NPC.DialogSystem.TestUI
             OffAllDialogText();
             dialogPanel.SetActive(false);
             _dialogFSM.OnExitFromDialog?.Invoke();
-            //_currentDialogNode = dialogNodeScrObj.GetCurrentDialogNode();
         }
         private void TakeCurrentDialogText(string text)
         {
@@ -132,8 +135,7 @@ namespace Actors.NPC.DialogSystem.TestUI
         }   
         private bool ValidComponents()
         {
-            return dialogPanel != null || textDialogPrefab != null || textDialogParent != null ||
-                   dialogNodeScrObj != null;
+            return dialogPanel != null || textDialogPrefab != null || textDialogParent != null;
         }
 
         private void OnApplicationQuit()

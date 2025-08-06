@@ -15,7 +15,7 @@ namespace Actors.NPC.DialogSystem.DataScripts
     }
     public enum DialogActionType
     {
-        None,
+        Default,
         OpenPanel,
         Dialog,
         Quest

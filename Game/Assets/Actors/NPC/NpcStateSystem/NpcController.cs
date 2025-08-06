@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Actors.NPC.DialogSystem.DataScripts;
 using Actors.NPC.NpcStateSystem;
+using Actors.NPC.NpcTools;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -17,7 +18,7 @@ namespace Actors.NPC.DialogSystem
         public void InitializeNpcSystems()
         {
             _npcRepSystem = new NpcRepSystem();
-            _npcRepSystem.InitializeStats(npcContext.ReputationData);
+            _npcRepSystem.InitializeStats(npcContext.ReputationData); 
         }
         
         public IReputationOperations GetNpcRepSystem() => _npcRepSystem;

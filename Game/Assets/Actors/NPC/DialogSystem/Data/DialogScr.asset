@@ -13,32 +13,47 @@ MonoBehaviour:
   m_Name: DialogScr
   m_EditorClassIdentifier: 
   dialogNode:
-  - guid: 719c1d0b-92f0-48b4-9727-8648841487ff
-    npcData:
-      text: "\u041F\u0440\u0438\u0432\u0435\u0442, \u0434\u0430!"
-      timeCode: 0
-      dialogReputation: 0
-    playerData:
-      text: "\u041F\u0440\u0438\u0432\u0435\u0442, \u043C\u043E\u0436\u0435\u0448\u044C
-        \u043F\u043E\u043C\u043E\u0447\u044C?"
-      timeCode: 0
-      dialogReputation: 0
-    panelSettings:
-      specialPanelType: 2
-    position: {x: 290, y: -34}
-    childrenGuids: []
   - guid: 78cc2199-d2aa-4a43-af4e-bd8007db32ec
+    isStart: 0
     npcData:
-      text: "\u0414\u0430, \u0441 \u0443\u0434\u043E\u0432\u043E\u043B\u044C\u0441\u0442\u0432\u0438\u0435\u043C
-        \u0437\u0430 \u0432\u0430\u0448\u0438 \u0434\u0435\u043D\u044C\u0433\u0438"
-      timeCode: 0
-      dialogReputation: 0
+      text: Yea, your money = my work
+      timeCode: 2
+      dialogReputation: 2
     playerData:
-      text: "\u041F\u043E\u0447\u0438\u043D\u0438\u0448\u044C \u043C\u043D\u0435
-        \u0441\u043D\u0430\u0440\u044F\u0436\u0435\u043D\u0438\u0435"
-      timeCode: 0
+      text: Can yu repair my set
+      timeCode: 2
       dialogReputation: 0
     panelSettings:
       specialPanelType: 2
-    position: {x: 73, y: 206}
+    position: {x: -234, y: 2}
+    childrenGuids: []
+  - guid: 719c1d0b-92f0-48b4-9727-8648841487ff
+    isStart: 1
+    npcData:
+      text: Hello, yes
+      timeCode: 3
+      dialogReputation: 2
+    playerData:
+      text: Hi, can you help me?
+      timeCode: 3
+      dialogReputation: 2
+    panelSettings:
+      specialPanelType: 2
+    position: {x: 111, y: -331}
+    childrenGuids:
+    - 1bc19ebd-0e31-4839-b6e8-5847d73cf060
+    - 78cc2199-d2aa-4a43-af4e-bd8007db32ec
+  - guid: 1bc19ebd-0e31-4839-b6e8-5847d73cf060
+    isStart: 0
+    npcData:
+      text: Yea, i have quests for you
+      timeCode: 3
+      dialogReputation: 2
+    playerData:
+      text: Have you quest for me?
+      timeCode: 3
+      dialogReputation: 2
+    panelSettings:
+      specialPanelType: 0
+    position: {x: 145, y: 2}
     childrenGuids: []

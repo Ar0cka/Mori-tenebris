@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using System.Reflection;
 using Actors.NPC.DialogSystem;
+using Actors.NPC.DialogSystem.DataScripts;
+using Actors.NPC.DialogSystem.TestUI;
 using UnityEngine;
 
 namespace Actors.NPC
@@ -9,6 +11,9 @@ namespace Actors.NPC
     public class NpcBootstrap : MonoBehaviour
     {
         [SerializeField] private NpcController npcController;
+        [SerializeField] private DialogFsmRealize dialogFsmRealize;
+        [SerializeField] private TestDialogUI testDialogUI; //TO DO: Заменить на конкертную реализацию диалоговой панели (она будет общая)
+        [SerializeField] private DialogNodeScrObj startDialogNodeScrObj;
 
         private void Awake()
         {
@@ -24,6 +29,8 @@ namespace Actors.NPC
         private void Init()
         {
             npcController.InitializeNpcSystems();
+            dialogFsmRealize.Initialize();
+            testDialogUI.Initialize(dialogFsmRealize.GetDialogFsm(), startDialogNodeScrObj);
         }
 
         private bool CheckValidity()

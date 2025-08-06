@@ -35,8 +35,10 @@ namespace Editor.TreeView
 
                     if (fromNode != null && toNode != null)
                     {
-                        if (!fromNode.dialogNodeData.childrenGuids.Contains(toNode.dialogNodeData.guid));
-                        fromNode.dialogNodeData.childrenGuids.Add(toNode.dialogNodeData.guid);
+                        if (!fromNode.dialogNodeData.childrenGuids.Contains(toNode.dialogNodeData.guid))
+                        {
+                            fromNode.dialogNodeData.childrenGuids.Add(toNode.dialogNodeData.guid);
+                        }
                     }
                 }
             }

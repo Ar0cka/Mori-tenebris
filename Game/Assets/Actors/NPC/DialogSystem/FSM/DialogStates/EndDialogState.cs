@@ -15,7 +15,6 @@ namespace Actors.NPC.DialogSystem
         public override void Enter(DialogNode node)
         {
             base.Enter(node);
-            SendDialogEvent("Диалог завершён.");
             Exit();
         }
 

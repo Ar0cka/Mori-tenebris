@@ -20,7 +20,7 @@ namespace Editor.TreeView
             this.dialogNodeData = dialogNodeData;
             guid = dialogNodeData.guid;
 
-            title = dialogNodeData.npcData.text;
+            title = dialogNodeData.playerData.text;
             
             BuildNodeUI(dialogNodeData);
             
@@ -43,6 +43,12 @@ namespace Editor.TreeView
         private void BuildNodeUI(DialogNodeForGraph data)
         {
             // --- NPC Text ---
+            var npcFoldout = new Foldout
+            {
+                text = "Npc Dialog",
+                value = true
+            };
+            
             var npcTextField = new TextField("NPC Text")
             {
                 value = data.npcData?.text ?? ""
@@ -51,9 +57,26 @@ namespace Editor.TreeView
             {
                 data.npcData.text = evt.newValue;
             });
-            mainContainer.Add(npcTextField);
+            npcFoldout.Add(npcTextField);
+
+            var npcTimeCode = new TextField("NPC Time Code")
+            {
+                value = data.npcData?.timeCode.ToString() ?? ""
+            };
+            npcTimeCode.RegisterValueChangedCallback(evt =>
+            {
+                data.npcData.timeCode = int.Parse(evt.newValue);
+            });
+            npcFoldout.Add(npcTimeCode);
+            mainContainer.Add(npcFoldout);
 
             // --- Player Text ---
+            var playerFoldout = new Foldout
+            {
+                text = "Player Dialog",
+                value = true
+            };
+            
             var playerTextField = new TextField("Player Text")
             {
                 value = data.playerData?.text ?? ""
@@ -62,7 +85,18 @@ namespace Editor.TreeView
             {
                 data.playerData.text = evt.newValue;
             });
-            mainContainer.Add(playerTextField);
+            playerFoldout.Add(playerTextField);
+
+            var playerTimeCode = new TextField("Player Text Time Code")
+            {
+                value = data.playerData?.timeCode.ToString() ?? ""
+            };
+            playerTimeCode.RegisterValueChangedCallback(evt =>
+            {
+                data.playerData.timeCode = int.Parse(evt.newValue);
+            });
+            playerFoldout.Add(playerTimeCode);
+            mainContainer.Add(playerFoldout);
 
             // --- Condition Fields ---
             if (data.condition == null)
