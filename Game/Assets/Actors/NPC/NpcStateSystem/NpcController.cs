@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using Actors.NPC.DialogSystem.DataScripts;
 using Actors.NPC.NpcStateSystem;
-using Actors.NPC.NpcTools;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Actors.NPC.DialogSystem

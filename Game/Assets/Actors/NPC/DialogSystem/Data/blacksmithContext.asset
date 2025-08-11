@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: blacksmithContext
   m_EditorClassIdentifier: 
   reputationData:
-    reputation: 50
-    friendlyValues: 2
+    reputation: 1
+    friendlyValues: 80
     agressivValues: 2

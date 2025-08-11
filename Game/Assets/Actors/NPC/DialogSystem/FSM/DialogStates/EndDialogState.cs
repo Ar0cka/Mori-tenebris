@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Actors.NPC.DialogSystem.DataScripts;
+using Actors.NPC.DialogSystem.DialogStates;
 using Actors.NPC.DialogSystem.TestUI;
 
 namespace Actors.NPC.DialogSystem
@@ -15,9 +16,15 @@ namespace Actors.NPC.DialogSystem
         public override void Enter(DialogNode node)
         {
             base.Enter(node);
-            Exit();
+            EndAction();
         }
 
+        private void EndAction()
+        {
+            SendDialogsNodes();
+            ChangeDialogState<IdleDialogState>();
+        }
+        
         public override void Update()
         {
             // Конечное состояния, отключаем базовый FixedUpdate
@@ -25,9 +32,7 @@ namespace Actors.NPC.DialogSystem
 
         public override void Exit()
         {
-            SendDialogsNodes();
             base.Exit();
-            Fsm.EnterToIdleState();
         }
     }
 }

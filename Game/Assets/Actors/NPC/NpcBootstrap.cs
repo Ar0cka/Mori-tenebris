@@ -5,6 +5,7 @@ using Actors.NPC.DialogSystem;
 using Actors.NPC.DialogSystem.DataScripts;
 using Actors.NPC.DialogSystem.TestUI;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Actors.NPC
 {
@@ -13,7 +14,7 @@ namespace Actors.NPC
         [SerializeField] private NpcController npcController;
         [SerializeField] private DialogFsmRealize dialogFsmRealize;
         [SerializeField] private TestDialogUI testDialogUI; //TO DO: Заменить на конкертную реализацию диалоговой панели (она будет общая)
-        [SerializeField] private DialogNodeScrObj startDialogNodeScrObj;
+        [FormerlySerializedAs("startDialogNodeScrObj")] [SerializeField] private DialogGraphAsset startDialogGraphAsset;
 
         private void Awake()
         {
@@ -30,7 +31,7 @@ namespace Actors.NPC
         {
             npcController.InitializeNpcSystems();
             dialogFsmRealize.Initialize();
-            testDialogUI.Initialize(dialogFsmRealize.GetDialogFsm(), startDialogNodeScrObj);
+            testDialogUI.Initialize(dialogFsmRealize.GetDialogFsm(), startDialogGraphAsset);
         }
 
         private bool CheckValidity()

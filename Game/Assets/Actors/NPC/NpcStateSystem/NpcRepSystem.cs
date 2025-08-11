@@ -38,6 +38,8 @@ namespace Actors.NPC.NpcStateSystem
             {
                 _npcReputationEnum = NpcReputationEnum.Neutral;
             }
+            
+            Debug.Log($"Current reputation state: {_npcReputationEnum}");
         }
 
         public NpcReputationEnum GetCurrentNpcReputationState()

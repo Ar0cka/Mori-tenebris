@@ -47,7 +47,7 @@ namespace Actors.NPC.DialogSystem.DialogStates
         {
             base.Exit();
             Fsm.OnStartDialog -= ChangeRunningState;
-            Fsm.ExitFromIdleState();
+            Fsm.ExitIdleState();
         }
     }
 }

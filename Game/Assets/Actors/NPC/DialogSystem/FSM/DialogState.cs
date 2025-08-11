@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Actors.NPC.DialogSystem
 {
-    public abstract class DialogState
+    public abstract class DialogState : IDialogState
     {
         protected DialogNode CurrentDialogNode;
         protected bool IsEnterToState = false;
@@ -57,7 +57,7 @@ namespace Actors.NPC.DialogSystem
         protected void SendDialogsNodes()
         {
             if (CurrentDialogNode != null) 
-                Fsm.OnSendDialogNodes?.Invoke(CurrentDialogNode.GetNextList());
+                Fsm.OnSendDialogNodes?.Invoke(CurrentDialogNode.GetNextNodes());
         }
 
         protected void ChangeDialogState<T>() where T : DialogState
@@ -80,5 +80,12 @@ namespace Actors.NPC.DialogSystem
 
             return false;
         }
+    }
+
+    public interface IDialogState
+    {
+        void Enter(DialogNode node);
+        void Update();
+        void Exit();
     }
 }

@@ -35,9 +35,9 @@ namespace Editor.TreeView
 
                     if (fromNode != null && toNode != null)
                     {
-                        if (!fromNode.dialogNodeData.childrenGuids.Contains(toNode.dialogNodeData.guid))
+                        if (!fromNode.SerializedDialogNodeData.childrenGuids.Contains(toNode.SerializedDialogNodeData.id))
                         {
-                            fromNode.dialogNodeData.childrenGuids.Add(toNode.dialogNodeData.guid);
+                            fromNode.SerializedDialogNodeData.childrenGuids.Add(toNode.SerializedDialogNodeData.id);
                         }
                     }
                 }
@@ -46,13 +46,13 @@ namespace Editor.TreeView
             return change;
         }
         
-        public void CreateNewDialogGraph(DialogNodeForGraph nodeData)
+        public void CreateNewDialogGraph(SerializedDialogNode nodeData)
         {
             var node = new DialogNodeView(nodeData);
             AddElement(node);
         }
         
-        public void SaveGraph(DialogNodeScrObj asset)
+        public void SaveGraph(DialogGraphAsset asset)
         {
             asset.dialogNode.Clear();
 
@@ -72,7 +72,7 @@ namespace Editor.TreeView
             AssetDatabase.SaveAssets();
         }
         
-        public void LoadGraph(DialogNodeScrObj asset)
+        public void LoadGraph(DialogGraphAsset asset)
         {
             DeleteElements(graphElements.ToList());
             
@@ -82,12 +82,12 @@ namespace Editor.TreeView
             {
                 var node = new DialogNodeView(data);
                 AddElement(node);
-                nodeLookup[data.guid] = node;
+                nodeLookup[data.id] = node;
             }
             
             foreach (var data in asset.dialogNode)
             {
-                if (!nodeLookup.TryGetValue(data.guid, out var fromNode)) continue;
+                if (!nodeLookup.TryGetValue(data.id, out var fromNode)) continue;
 
                 foreach (var childGuid in data.childrenGuids)
                 {

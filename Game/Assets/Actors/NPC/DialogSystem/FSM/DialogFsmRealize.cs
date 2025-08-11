@@ -9,6 +9,8 @@ namespace Actors.NPC.DialogSystem
 {
     public class DialogFsmRealize : MonoBehaviour
     {
+        [SerializeField] private NpcController npcController;
+        
         private DialogFSM fsm;
         private bool _isInitialize = false;
 
@@ -16,14 +18,12 @@ namespace Actors.NPC.DialogSystem
         {
             fsm = new DialogFSM();
             
-            fsm.Initialize();
-            
-            fsm.AddNewState(new IdleDialogState(fsm));
-            fsm.AddNewState(new PlayerDialogState(fsm));
-            fsm.AddNewState(new NPCDialogState(fsm));
-            fsm.AddNewState(new OpenNpcPanel(fsm));
-            fsm.AddNewState(new IdlePanelState(fsm));
-            fsm.AddNewState(new EndDialogState(fsm));
+            fsm.AddState(new IdleDialogState(fsm));
+            fsm.AddState(new PlayerDialogState(fsm));
+            fsm.AddState(new NPCDialogState(fsm, npcController));
+            fsm.AddState(new OpenNpcPanel(fsm));
+            fsm.AddState(new IdlePanelState(fsm));
+            fsm.AddState(new EndDialogState(fsm));
             
             fsm.EnterToIdleState();
             

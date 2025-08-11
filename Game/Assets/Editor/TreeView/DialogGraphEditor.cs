@@ -11,7 +11,7 @@ namespace Editor.TreeView
     public class DialogGraphEditor : EditorWindow
     {
         private DialogNodeGraph _dialogNodeGraph;
-        private DialogNodeScrObj _asset;
+        private DialogGraphAsset _asset;
 
         [MenuItem("CustomTools/Graph/Dialog Editor")]
         public static void Open()
@@ -46,11 +46,11 @@ namespace Editor.TreeView
             
             var nodeCreateButton = new Button(() =>
             {
-                var node = new DialogNodeForGraph
+                var node = new SerializedDialogNode
                 {
-                    guid = Guid.NewGuid().ToString(),
-                    npcData = new DialogData(),
-                    playerData = new DialogData(),
+                    id = Guid.NewGuid().ToString(),
+                    npcDialog = new List<DialogData>(),
+                    playerDialog = new DialogData(),
                     condition = null,
                     panelSettings = null,
                     position = new Vector2(100, 100),
@@ -69,11 +69,11 @@ namespace Editor.TreeView
 
             var assetField = new ObjectField("Graph Asset")
             {
-                objectType = typeof(DialogNodeScrObj),
+                objectType = typeof(DialogGraphAsset),
             };
             assetField.RegisterValueChangedCallback(evt =>
             {
-                _asset = evt.newValue as DialogNodeScrObj;
+                _asset = evt.newValue as DialogGraphAsset;
             });
             
             toolbar.Add(nodeCreateButton);

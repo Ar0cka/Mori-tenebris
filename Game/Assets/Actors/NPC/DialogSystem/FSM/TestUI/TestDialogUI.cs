@@ -1,165 +1,238 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Actors.NPC.DialogSystem.DataScripts;
 using Actors.NPC.NpcTools;
 using TMPro;
-using UI;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Actors.NPC.DialogSystem.TestUI
 {
+    /// <summary>
+    /// Test UI controller for dialog system.
+    /// Manages dialog text display, player choices, and dialog flow control.
+    /// </summary>
     public class TestDialogUI : MonoBehaviour
     {
-        [SerializeField] private int maxCountDialogText;
+        [SerializeField] private int maxDialogTextCount = 5;
         [SerializeField] private GameObject dialogPanel;
-        [SerializeField] private GameObject textDialogPrefab;
-        [SerializeField] private Transform textDialogParent;
-        
-        private DialogFSM _dialogFSM;
+        [SerializeField] private GameObject dialogTextPrefab;
+        [SerializeField] private Transform dialogTextParent;
 
+        private DialogFSM _dialogFsm;
         private DialogObjectSettings _exitButtonSettings = null;
-        
-        private List<DialogObjectSettings> _dialogTextObjList;
+        private List<DialogObjectSettings> _dialogTextObjects;
         private DialogNode _currentDialogNode;
-        
-        private DialogNodeScrObj _currentDialogNodeScrObj;
+        private DialogNode _startDialogNode;
+        private DialogGraphAsset _currentDialogGraphAsset;
 
-        public void Initialize(DialogFSM dialogFsm, DialogNodeScrObj startDialogConfig) //Добавить в Bootstrap
+        /// <summary>
+        /// Initializes the dialog UI with the dialog FSM and the starting dialog graph asset.
+        /// Should be called once during bootstrap or setup.
+        /// </summary>
+        /// <param name="dialogFsm">Dialog finite state machine instance.</param>
+        /// <param name="startDialogConfig">Starting dialog graph asset.</param>
+        public void Initialize(DialogFSM dialogFsm, DialogGraphAsset startDialogConfig)
         {
-            if (!ValidComponents() || dialogFsm == null)
+            if (!AreComponentsValid() || dialogFsm == null)
             {
-                Debug.Log("Error initialize dialog ui system");
+                Debug.LogError("Dialog UI initialization failed: Missing components or null FSM.");
                 enabled = false;
                 return;
             }
-            
-            _dialogFSM = dialogFsm;
-            
-            _dialogTextObjList = new List<DialogObjectSettings>();
-            
-            for (int i = 0; i < maxCountDialogText; i++)
-            {
-                var item = Instantiate(textDialogPrefab, textDialogParent);
-                
-                DialogObjectSettings dialogTestObj =
-                    new DialogObjectSettings(item, item.GetComponent<TextMeshProUGUI>(), item.GetComponent<Button>());
-                
-                item.SetActive(false);
-                
-                _dialogTextObjList.Add(dialogTestObj);
-            }
-            
-            SpawnExitButton();
-            
-            _dialogFSM.OnSendActorText += TakeCurrentDialogText;
-            _dialogFSM.OnSendDialogNodes += NextDialogList;
 
-            _currentDialogNodeScrObj = startDialogConfig;
-            
-            _currentDialogNode = ConvertDialogNode.GetDialogsNodeFromScrObj(_currentDialogNodeScrObj).First();
+            _dialogFsm = dialogFsm;
+
+            // Prepare pool of dialog text UI objects
+            _dialogTextObjects = new List<DialogObjectSettings>();
+
+            for (int i = 0; i < maxDialogTextCount; i++)
+            {
+                var instance = Instantiate(dialogTextPrefab, dialogTextParent);
+
+                var dialogObject = new DialogObjectSettings(
+                    instance,
+                    instance.GetComponent<TextMeshProUGUI>(),
+                    instance.GetComponent<Button>());
+
+                instance.SetActive(false);
+                _dialogTextObjects.Add(dialogObject);
+            }
+
+            SpawnExitButton();
+
+            // Subscribe to FSM events
+            _dialogFsm.OnSendActorText += DisplayDialogText;
+            _dialogFsm.OnSendDialogNodes += DisplayDialogOptions;
+
+            _currentDialogGraphAsset = startDialogConfig;
+
+            // Convert dialog graph asset to runtime dialog nodes and pick the first node to start
+            _startDialogNode = DialogNodeConverter.ConvertFromAsset(_currentDialogGraphAsset).First();
+            _currentDialogNode = _startDialogNode;
         }
+
+        /// <summary>
+        /// Starts the dialog by activating the dialog panel and invoking the FSM start event.
+        /// </summary>
         public void StartDialog()
         {
             if (!dialogPanel.activeInHierarchy)
                 dialogPanel.SetActive(true);
+
+            Debug.Log("Current player dialog node = " + _currentDialogNode.PlayerDialogData.text
+            + $"Current child count = {_currentDialogNode.GetNextNodes()?.Count}");
             
-            _dialogFSM.OnStartDialog?.Invoke(_currentDialogNode);
+            _dialogFsm.OnStartDialog?.Invoke(_currentDialogNode);
         }
+
+        /// <summary>
+        /// Handles exiting the dialog menu, clears UI and notifies FSM.
+        /// </summary>
         public void ExitFromDialogMenu()
         {
-            OffAllDialogText();
+            ClearAllDialogText();
             dialogPanel.SetActive(false);
-            _dialogFSM.OnExitFromDialog?.Invoke();
+            _dialogFsm.OnExitFromDialog?.Invoke();
+            _currentDialogNode = _startDialogNode;
         }
-        private void TakeCurrentDialogText(string text)
+
+        /// <summary>
+        /// Displays a single dialog text line (NPC or player) on the UI.
+        /// </summary>
+        /// <param name="text">The text to display.</param>
+        private void DisplayDialogText(string text)
         {
-            OffAllDialogText();
-            
-            DialogObjectSettings dialogObjectSettings =
-                _dialogTextObjList.First(x => x.Prefab.activeInHierarchy == false);
+            ClearAllDialogText();
 
-            dialogObjectSettings.Prefab.SetActive(true);
-            dialogObjectSettings.TextMeshProUGUI.text = text;
+            // Find the first inactive dialog text UI object
+            var dialogObject = _dialogTextObjects.FirstOrDefault(x => !x.Prefab.activeInHierarchy);
+            if (dialogObject == null)
+            {
+                Debug.LogWarning("No available dialog text UI objects to display text.");
+                return;
+            }
+            
+            dialogObject.Button.interactable = false;
+            dialogObject.Prefab.SetActive(true);
+            dialogObject.TextMeshProUGUI.text = text;
         }
 
+        /// <summary>
+        /// Spawns and configures the exit button for the dialog UI.
+        /// </summary>
         private void SpawnExitButton()
         {
-            var item = Instantiate(textDialogPrefab, textDialogParent);
-            _exitButtonSettings = new DialogObjectSettings(item, item.GetComponent<TextMeshProUGUI>(), item.GetComponent<Button>());
+            var instance = Instantiate(dialogTextPrefab, dialogTextParent);
+            _exitButtonSettings = new DialogObjectSettings(
+                instance,
+                instance.GetComponent<TextMeshProUGUI>(),
+                instance.GetComponent<Button>());
+
             _exitButtonSettings.Button.onClick.AddListener(ExitFromDialogMenu);
             _exitButtonSettings.TextMeshProUGUI.text = "Exit";
             _exitButtonSettings.Prefab.SetActive(true);
         }
-        
-        private void NextDialogList(List<DialogNode> dialogList)
+
+        /// <summary>
+        /// Displays a list of dialog options (player choices) on the UI.
+        /// </summary>
+        /// <param name="dialogOptions">List of dialog nodes representing player choices.</param>
+        private void DisplayDialogOptions(List<DialogNode> dialogOptions)
         {
-            OffAllDialogText();
+            ClearAllDialogText();
 
-            if (dialogList.Count <= 0) return;
+            if (dialogOptions == null || dialogOptions.Count == 0)
+                return;
 
-            for (int i = 0; i < dialogList.Count; i++)
+            for (int i = 0; i < dialogOptions.Count && i < _dialogTextObjects.Count; i++)
             {
-                DialogObjectSettings dialogTextObj = _dialogTextObjList[i];
-                DialogNode currentNode = dialogList[i];
-                
-                dialogTextObj.Prefab.SetActive(true);
-                dialogTextObj.TextMeshProUGUI.text = currentNode.PlayerDialogData.text;
+                var dialogObject = _dialogTextObjects[i];
+                var dialogNode = dialogOptions[i];
 
-                Button currentButton = dialogTextObj.Button;
-                
-                currentButton.onClick.RemoveAllListeners();
-                currentButton.onClick.AddListener(() => SetNewDialogNode(currentNode));
+                dialogObject.Prefab.SetActive(true);
+                dialogObject.TextMeshProUGUI.text = dialogNode.PlayerDialogData.text;
+
+                var button = dialogObject.Button;
+
+                // Clear existing listeners to avoid stacking
+                button.onClick.RemoveAllListeners();
+
+                // Capture local variable for closure
+                var capturedNode = dialogNode;
+                button.onClick.AddListener(() => SetNewDialogNode(capturedNode));
             }
         }
+
+        /// <summary>
+        /// Sets the current dialog node and restarts the dialog UI for it.
+        /// </summary>
+        /// <param name="dialogNode">The selected dialog node.</param>
         private void SetNewDialogNode(DialogNode dialogNode)
         {
             if (dialogNode == null) return;
-            
+
             _currentDialogNode = dialogNode;
-            
             StartDialog();
         }
-        private void OffAllDialogText()
+
+        /// <summary>
+        /// Deactivates all dialog text UI elements and clears their text.
+        /// </summary>
+        private void ClearAllDialogText()
         {
-            if (_dialogTextObjList.Count == 0) return;
-            
-            foreach (var item in _dialogTextObjList)
+            if (_dialogTextObjects == null || _dialogTextObjects.Count == 0) return;
+
+            foreach (var dialogObject in _dialogTextObjects)
             {
-                item.Prefab.SetActive(false);
-                item.TextMeshProUGUI.text = "";
+                dialogObject.Prefab.SetActive(false);
+                dialogObject.TextMeshProUGUI.text = string.Empty;
+                dialogObject.Button.interactable = true;
             }
-        }   
-        private bool ValidComponents()
-        {
-            return dialogPanel != null || textDialogPrefab != null || textDialogParent != null;
         }
 
+        /// <summary>
+        /// Validates required UI components are assigned.
+        /// </summary>
+        /// <returns>True if all components are valid; otherwise false.</returns>
+        private bool AreComponentsValid()
+        {
+            return dialogPanel != null && dialogTextPrefab != null && dialogTextParent != null;
+        }
+
+        /// <summary>
+        /// Cleanup instantiated UI objects when application quits.
+        /// </summary>
         private void OnApplicationQuit()
         {
-            foreach (var item in _dialogTextObjList)
+            if (_dialogTextObjects != null)
             {
-                Destroy(item.Prefab);
+                foreach (var dialogObject in _dialogTextObjects)
+                {
+                    if (dialogObject.Prefab != null)
+                        Destroy(dialogObject.Prefab);
+                }
             }
-            
-            Destroy(_exitButtonSettings.Prefab);
+
+            if (_exitButtonSettings?.Prefab != null)
+                Destroy(_exitButtonSettings.Prefab);
         }
     }
 
+    /// <summary>
+    /// Wrapper class to store references to UI components for a single dialog text element.
+    /// </summary>
     public class DialogObjectSettings
     {
-        public GameObject Prefab;
-        public TextMeshProUGUI TextMeshProUGUI;
-        public Button Button;
+        public GameObject Prefab { get; }
+        public TextMeshProUGUI TextMeshProUGUI { get; }
+        public Button Button { get; }
 
         public DialogObjectSettings(GameObject prefab, TextMeshProUGUI textMeshProUGUI, Button button)
         {
             Prefab = prefab;
-            if (textMeshProUGUI != null) TextMeshProUGUI = textMeshProUGUI;
-            if (button != null) Button = button;
+            TextMeshProUGUI = textMeshProUGUI;
+            Button = button;
         }
     }
 }

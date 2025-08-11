@@ -13,47 +13,65 @@ MonoBehaviour:
   m_Name: DialogScr
   m_EditorClassIdentifier: 
   dialogNode:
-  - guid: 78cc2199-d2aa-4a43-af4e-bd8007db32ec
-    isStart: 0
-    npcData:
-      text: Yea, your money = my work
-      timeCode: 2
+  - id: 0ce85ed9-bfec-4bb0-947e-1cc0313a8a25
+    isStartNode: 0
+    npcDialog:
+    - text: Yea, go repait your items
+      timeCode: 1
       dialogReputation: 2
-    playerData:
-      text: Can yu repair my set
-      timeCode: 2
+    - text: Ofcorse, go repair
+      timeCode: 1
       dialogReputation: 0
+    - text: Ok, what you need repair?
+      timeCode: 1
+      dialogReputation: 1
+    playerDialog:
+      text: Can you repair my items?
+      timeCode: 1
+      dialogReputation: 2
     panelSettings:
       specialPanelType: 2
-    position: {x: -234, y: 2}
+    position: {x: -466, y: 299}
     childrenGuids: []
-  - guid: 719c1d0b-92f0-48b4-9727-8648841487ff
-    isStart: 1
-    npcData:
-      text: Hello, yes
-      timeCode: 3
+  - id: c7ab0d56-4241-4609-8063-cf42500ee405
+    isStartNode: 0
+    npcDialog:
+    - text: Ok, agressive man...
+      timeCode: 1
       dialogReputation: 2
-    playerData:
-      text: Hi, can you help me?
-      timeCode: 3
+    - text: No, leave animal
+      timeCode: 1
+      dialogReputation: 1
+    - text: Ok, i see you standing in left foot
+      timeCode: 1
+      dialogReputation: 0
+    playerDialog:
+      text: Repair my item
+      timeCode: 1
       dialogReputation: 2
     panelSettings:
       specialPanelType: 2
-    position: {x: 111, y: -331}
+    position: {x: 153, y: 299}
+    childrenGuids: []
+  - id: 531104e2-e3a9-4f49-a2e7-1423b48b87c4
+    isStartNode: 1
+    npcDialog:
+    - text: Hi, what you want?
+      timeCode: 1
+      dialogReputation: 2
+    - text: Hi, what you need?
+      timeCode: 1
+      dialogReputation: 1
+    - text: Hi, my best putnik
+      timeCode: 1
+      dialogReputation: 0
+    playerDialog:
+      text: Hi blacksmith
+      timeCode: 1
+      dialogReputation: 2
+    panelSettings:
+      specialPanelType: 1
+    position: {x: 7, y: -200}
     childrenGuids:
-    - 1bc19ebd-0e31-4839-b6e8-5847d73cf060
-    - 78cc2199-d2aa-4a43-af4e-bd8007db32ec
-  - guid: 1bc19ebd-0e31-4839-b6e8-5847d73cf060
-    isStart: 0
-    npcData:
-      text: Yea, i have quests for you
-      timeCode: 3
-      dialogReputation: 2
-    playerData:
-      text: Have you quest for me?
-      timeCode: 3
-      dialogReputation: 2
-    panelSettings:
-      specialPanelType: 0
-    position: {x: 145, y: 2}
-    childrenGuids: []
+    - 0ce85ed9-bfec-4bb0-947e-1cc0313a8a25
+    - c7ab0d56-4241-4609-8063-cf42500ee405
