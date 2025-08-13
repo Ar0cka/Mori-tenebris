@@ -105,7 +105,7 @@ public class PlayerBootstrap : MonoBehaviour
         stateMachineRealize.Initialize(_stamina);
         passiveRegenerationStats.Initialize();
 
-        _inventoryLogic.Initialize(slotContent, inventoryConfig, equipSlots);
+        _inventoryLogic.BaseInit(slotContent, inventoryConfig, equipSlots);
 
         #region UI
 

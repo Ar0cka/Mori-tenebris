@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Actors.Player.Inventory;
 using Actors.Player.Inventory.Enums;
 using Actors.Player.Inventory.Scripts.EquipSlots;
 using DefaultNamespace.Enums;
@@ -18,7 +19,7 @@ using Zenject;
 
 namespace PlayerNameSpace.Inventory
 {
-    public class InventoryLogic : IInventoryAdder, IInventoryRemove
+    public class InventoryLogic : AbstractInventoryLogic
     {
         [Inject] private ISpawnProjectObject _itemFactory;
 
@@ -31,29 +32,19 @@ namespace PlayerNameSpace.Inventory
         private List<SlotData> slots = new List<SlotData>();
         private Dictionary<EquipItemType, EquipSlotData> _equipSlot = new Dictionary<EquipItemType, EquipSlotData>();
 
-        public void Initialize(Transform slotParent, InventoryScrObj inventoryScrObj, List<GameObject> equipSlots)
+        public override void Initialize(Transform slotParent, InventoryScrObj inventoryScrObj)
         {
-            #region InitializeInventory
+            BaseInit(slotParent, inventoryScrObj);
+        }
 
-            _inventoryScrObj = inventoryScrObj;
-
-            var inventoryData = _inventoryScrObj.InventoryData.Clone();
-
-            _slotPrefab = inventoryData.SlotPrefab;
-            _slotParent = slotParent;
-            _capacityInventory = inventoryData.CountSlots;
-
-            #endregion
-
-            for (int i = 0; i < _capacityInventory; i++)
-            {
-                var prefabSlot = _itemFactory.Create(_slotPrefab, _slotParent);
-                slots.Add(new SlotData(prefabSlot, _itemFactory));
-            }
+        protected override void BaseInit(Transform slotParent, InventoryScrObj inventoryScrObj)
+        {
+            base.BaseInit(slotParent, inventoryScrObj);
 
             #region CreateEquipSlots
 
             var equipSlotType = Enum.GetValues(typeof(EquipItemType));
+            var equipSlots = _inventoryScrObj.equipSlots;
 
             for (int i = 0; i < equipSlots.Count; i++)
             {
@@ -65,79 +56,6 @@ namespace PlayerNameSpace.Inventory
             }
 
             #endregion
-        }
-
-        public void AddItemToInventory(ItemInstance itemInstance, int amount)
-        {
-            if (amount <= 0 || itemInstance == null)
-            {
-                Debug.LogError("item data = " + itemInstance + " amount add " + amount);
-                return;
-            }
-
-            int remainingAmount = amount;
-
-            remainingAmount = AddItem(itemInstance, remainingAmount);
-
-            if (remainingAmount > 0)
-            {
-                remainingAmount = CreateNewStacks(itemInstance, remainingAmount);
-            }
-
-            if (remainingAmount > 0)
-            {
-                Debug.Log($"Inventory full. Couldn't add {remainingAmount} of {itemInstance.itemData.nameItem}");
-            }
-        }
-
-        private int AddItem(ItemInstance itemInstance, int amount)
-        {
-            int remaining = amount;
-
-            foreach (var slot in slots)
-            {
-                if (remaining <= 0) break;
-
-                remaining = slot.AddItem(itemInstance, remaining);
-            }
-
-            return remaining;
-        }
-        
-        private int CreateNewStacks(ItemInstance itemInstance, int amount)
-        {
-            int remaining = amount;
-
-            foreach (var slot in slots)
-            {
-                if (remaining <= 0) break;
-
-                slot.CreateNewItem(itemInstance);
-                remaining = slot.AddItem(itemInstance, remaining);
-            }
-
-            return remaining;
-        }
-
-        public void RemoveItem(ItemInstance itemInstance, int amount)
-        {
-            int remaining = amount;
-
-            foreach (var slot in slots)
-            {
-                if (remaining <= 0)
-                {
-                    Debug.Log("Break");
-                    break;
-                }
-
-                remaining = slot.RemoveItem(itemInstance, remaining);
-            }
-
-            if (remaining > 0)
-            {
-                Debug.Log($"Cant find item in inventory. Couldn't remove item {remaining}");
-            }
         }
 
         public void SelectEquipAction(EquipItemType equipItemType, ItemInstance itemInstance)
