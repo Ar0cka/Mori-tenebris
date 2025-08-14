@@ -1,3 +1,4 @@
+using Actors.Player.Inventory.EquipSlots;
 using Player.Inventory.InventoryInterface;
 using PlayerNameSpace.Inventory;
 using Zenject;
@@ -12,6 +13,9 @@ namespace DefaultNamespace.Zenject.Inventory
             Container.Bind<InventoryLogic>().AsSingle().NonLazy();
             Container.Bind<IInventoryAdder>().To<InventoryLogic>().FromResolve();
             Container.Bind<IInventoryRemove>().To<InventoryLogic>().FromResolve();
+            
+            Container.Bind<PlayerEquipSystem>().AsSingle().NonLazy();
+            Container.Bind<IEquipSlots>().To<PlayerEquipSystem>().FromResolve();
         }
     }
 }

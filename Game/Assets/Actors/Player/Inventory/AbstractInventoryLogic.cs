@@ -4,12 +4,13 @@ using Player.Inventory;
 using Player.Inventory.InventoryInterface;
 using PlayerNameSpace.InventorySystem;
 using UnityEngine;
+using Zenject;
 
 namespace Actors.Player.Inventory
 {
-    public abstract class AbstractInventoryLogic : IInventoryAdder, IInventoryRemove
+    public abstract class AbstractInventoryLogic: IInventoryAdder, IInventoryRemove 
     {
-        protected ISpawnProjectObject ItemFactory;
+        [Inject] protected ISpawnProjectObject ItemFactory;
         
         protected InventoryScrObj InventoryScrObj;
         protected GameObject SlotPrefab;
@@ -17,8 +18,10 @@ namespace Actors.Player.Inventory
         protected int CapacityInventory;
         
         protected List<SlotData> Slots = new List<SlotData>();
-        
-        public abstract void Initialize(Transform slotParent, InventoryScrObj inventoryScrObj);
+        protected Dictionary<ItemInstance, SlotData> SlotData = new();
+
+        public abstract void Initialize<TConfig>(TConfig baseInventoryConfiguration)
+            where TConfig : BaseInventoryInitializeConfiguration;
         
         protected virtual void BaseInit(Transform slotParent, InventoryScrObj inventoryScrObj)
         {
@@ -112,6 +115,19 @@ namespace Actors.Player.Inventory
             {
                 Debug.Log($"Cant find item in inventory. Couldn't remove item {remaining}");
             }
+        }
+
+        public virtual SlotData FindItem(ItemInstance itemInstance)
+        {
+            foreach (var slot in Slots)
+            {
+                if (slot.CheckItemInSlot(itemInstance.itemID))
+                {
+                    return slot;
+                }
+            }
+
+            return null;
         }
     }
 }

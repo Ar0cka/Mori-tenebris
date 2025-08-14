@@ -12,9 +12,9 @@ namespace Actors.NPC.NpcStateSystem.SpecialPanelVariants.Shop
 {
     public class NpcInventory : AbstractInventoryLogic
     {
-        public override void Initialize(Transform slotParent, InventoryScrObj inventoryScrObj)
+        public override void Initialize<TConfig>(TConfig loadConfig)
         {
-            BaseInit(slotParent, inventoryScrObj);
+            BaseInit(loadConfig.SlotParent, loadConfig.InventoryScrObj);
         }
     }
 }

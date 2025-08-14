@@ -17,7 +17,7 @@ MonoBehaviour:
     description: kus and jump
     agressionDistance: 7
     speed: 2
-    hitPoints: 1111
+    hitPoints: 1
     physicArmour: 0
     magicArmour: 0
     maxCountHit: 2
@@ -26,26 +26,6 @@ MonoBehaviour:
     jumpForce: 2
     jumpNums: 0
     jumpTime: 1.5
-    landingBounceHeight: 0.3
-    landingTime: 0.2
     damageOutJump: 2
     startShield: 100
     delayAfterJump: 0.5
-  slimeAttackConfig:
-  - nameAttack: Kus
-    animAttackSettings:
-    - nameTriggers: []
-      nameTrigger: BaseAttack1
-      countInQueue: 0
-      startAttackDelay: 0.2
-      hitDelay: 0.2
-    damageType: 0
-    cooldownAttack: 2
-    damage: 11
-    attackDistance: 1.3
-  - nameAttack: Jump
-    animAttackSettings: []
-    damageType: 0
-    cooldownAttack: 6
-    damage: 21
-    attackDistance: 6

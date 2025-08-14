@@ -88,8 +88,13 @@ namespace Actors.Player.Inventory.Scripts.ItemPanel
             {
                 if (_currentItemInstance.itemData.itemTypes == ItemTypes.Equip)
                 {
-                    _currentAction.EquipItem(_currentItemInstance, _isEquiped);
-                    ClosePanel();
+                    var slot = inventoryLogic.FindItem(_currentItemInstance);
+
+                    if (slot != null)
+                    {
+                        _currentAction.EquipItem(_currentItemInstance, _isEquiped, slot);
+                        ClosePanel();
+                    }
                 }
                 else
                 {

@@ -11,7 +11,7 @@ namespace Player.Inventory
             
         }
 
-        public virtual void EquipItem(ItemInstance itemInstance, bool isEquip)
+        public virtual void EquipItem(ItemInstance itemInstance, bool isEquip, SlotData slotData)
         {
             
         }
