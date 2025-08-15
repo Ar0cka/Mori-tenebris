@@ -17,7 +17,7 @@ namespace Player.Inventory
         [SerializeField] private ItemAction itemAction;
 
         private ItemInstance _itemInstance;
-        public bool _IsEquiped;
+        public bool IsEquiped;
         
         public void InitializeItemSettings(ItemInstance itemInstance)
         {
@@ -29,7 +29,7 @@ namespace Player.Inventory
         {
             if (itemAction == null || _itemInstance == null) return; 
             
-            ItemPanelInstance.OpenPanel(_itemInstance, itemAction, _IsEquiped);
+            ItemPanelInstance.OpenPanel(_itemInstance, itemAction, IsEquiped);
         }
         
         public void UpdateUI(int countItemsInSlot)

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Actors.NPC.DialogSystem;
 using Actors.NPC.DialogSystem.TestUI;
 using Actors.Player.Inventory;
+using Actors.Player.Inventory.EquipSlots;
 using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
 using NegativeEffects;
 using PlayerNameSpace;
@@ -33,6 +34,7 @@ public class PlayerBootstrap : MonoBehaviour
     
     [Inject] private PlayerData _playerData;
     [Inject] private InventoryLogic _inventoryLogic;
+    [Inject] private PlayerEquipSystem _equipSystem;
     [Inject] private Health _health;
     [Inject] private Armour _armour;
     [Inject] private Stamina _stamina;
@@ -106,7 +108,8 @@ public class PlayerBootstrap : MonoBehaviour
         stateMachineRealize.Initialize(_stamina);
         passiveRegenerationStats.Initialize();
 
-        _inventoryLogic.Initialize(new InventoryInitializeConfig(slotContent, inventoryConfig, equipSlots));
+        _inventoryLogic.Initialize(new InventoryInitializeConfig(slotContent, inventoryConfig));
+        _equipSystem.InitializeEquipSlots(equipSlots);
 
         #region UI
 

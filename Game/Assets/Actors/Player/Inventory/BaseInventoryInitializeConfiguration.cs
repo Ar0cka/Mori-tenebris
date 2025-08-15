@@ -17,14 +17,10 @@ namespace Actors.Player.Inventory
 
     public class InventoryInitializeConfig : BaseInventoryInitializeConfiguration
     {
-        public InventoryInitializeConfig(Transform parent, InventoryScrObj inventoryScrObj,
-            List<GameObject> slotContent) : base(parent, inventoryScrObj)
+        public InventoryInitializeConfig(Transform parent, InventoryScrObj inventoryScrObj) : base(parent, inventoryScrObj)
         {
             SlotParent = parent;
             InventoryScrObj = inventoryScrObj;
-            EquipSlotContent = slotContent;
         }
-        
-        public List<GameObject> EquipSlotContent;
     }
 }

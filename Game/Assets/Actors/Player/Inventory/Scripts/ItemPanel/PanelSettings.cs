@@ -1,8 +1,10 @@
 using System;
 using DefaultNamespace.Enums;
 using Enemy;
+using Items.EquipArmour;
 using Player.Inventory;
 using PlayerNameSpace.Inventory;
+using PlayerNameSpace.InventorySystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
@@ -88,11 +90,13 @@ namespace Actors.Player.Inventory.Scripts.ItemPanel
             {
                 if (_currentItemInstance.itemData.itemTypes == ItemTypes.Equip)
                 {
-                    var slot = inventoryLogic.FindItem(_currentItemInstance);
-
-                    if (slot != null)
+                    if (_currentAction is EquipAction equipAction)
                     {
-                        _currentAction.EquipItem(_currentItemInstance, _isEquiped, slot);
+                        SlotData slot = equipAction.IsEquipped
+                            ? inventoryLogic.GetFirstFreeSlot()
+                            : inventoryLogic.GetItemFromInventory(_currentItemInstance);
+                        
+                        equipAction.EquipItem(_currentItemInstance, slot);
                         ClosePanel();
                     }
                 }

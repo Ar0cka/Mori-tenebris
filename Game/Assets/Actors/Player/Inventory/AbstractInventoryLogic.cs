@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using DefaultNamespace.Zenject;
 using Player.Inventory;
 using Player.Inventory.InventoryInterface;
 using PlayerNameSpace.InventorySystem;
+using SlotSystem;
 using UnityEngine;
 using Zenject;
 
@@ -19,6 +21,8 @@ namespace Actors.Player.Inventory
         
         protected List<SlotData> Slots = new List<SlotData>();
         protected Dictionary<ItemInstance, SlotData> SlotData = new();
+        
+        protected Stack<SlotData> SlotStack = new();
 
         public abstract void Initialize<TConfig>(TConfig baseInventoryConfiguration)
             where TConfig : BaseInventoryInitializeConfiguration;
@@ -40,7 +44,14 @@ namespace Actors.Player.Inventory
             for (int i = 0; i < CapacityInventory; i++)
             {
                 var prefabSlot = ItemFactory.Create(SlotPrefab, SlotParent);
-                Slots.Add(new SlotData(prefabSlot, ItemFactory));
+                var slotData = new SlotData(prefabSlot, ItemFactory);
+                Slots.Add(slotData);
+            }
+
+            for (int i = Slots.Count - 1; i >= 0; i--)
+            {
+                var slot = Slots[i];
+                SlotStack.Push(slot);
             }
         }
         
@@ -85,13 +96,12 @@ namespace Actors.Player.Inventory
         {
             int remaining = amount;
 
-            foreach (var slot in Slots)
-            {
-                if (remaining <= 0) break;
+            if (remaining <= 0) return remaining;
+            
+            var slot = SlotStack.Pop();
 
-                slot.CreateNewItem(itemInstance);
-                remaining = slot.AddItem(itemInstance, remaining);
-            }
+            slot.CreateNewItem(itemInstance);
+            remaining = slot.AddItem(itemInstance, remaining);
 
             return remaining;
         }
@@ -109,6 +119,11 @@ namespace Actors.Player.Inventory
                 }
 
                 remaining = slot.RemoveItem(itemInstance, remaining);
+                
+                if (slot.IsEmpty())
+                {
+                    SlotStack.Push(slot);
+                }
             }
 
             if (remaining > 0)
@@ -117,6 +132,16 @@ namespace Actors.Player.Inventory
             }
         }
 
+        public SlotData GetItemFromInventory(ItemInstance itemInstance)
+        {
+            var item = FindItem(itemInstance);
+            
+            if (item == null) return null;
+            
+            SlotStack.Push(item);
+            return item;
+        }
+        
         public virtual SlotData FindItem(ItemInstance itemInstance)
         {
             foreach (var slot in Slots)
@@ -128,6 +153,11 @@ namespace Actors.Player.Inventory
             }
 
             return null;
+        }
+
+        public SlotData GetFirstFreeSlot()
+        {
+            return SlotStack.Pop();
         }
     }
 }

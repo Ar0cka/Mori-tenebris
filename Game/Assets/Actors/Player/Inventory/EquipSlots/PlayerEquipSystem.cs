@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using Actors.Player.Inventory.Enums;
 using Actors.Player.Inventory.Scripts.EquipSlots;
 using Player.Inventory;
+using PlayerNameSpace.Inventory;
 using PlayerNameSpace.InventorySystem;
 using UnityEngine;
+using Zenject;
 
 namespace Actors.Player.Inventory.EquipSlots
 {
     public class PlayerEquipSystem : IEquipSlots
     {
+        [Inject] private InventoryLogic _inventoryLogic;
+        
         private Dictionary<EquipItemType, EquipSlotData> _equipSlot = new();
 
-        private void InitializeEquipSlots(List<GameObject> equipSlots)
+        public void InitializeEquipSlots(List<GameObject> equipSlots)
         {
             if (equipSlots == null) return;
 
@@ -24,9 +28,10 @@ namespace Actors.Player.Inventory.EquipSlots
             {
                 if (equipSlotType.Length <= i) break;
 
-                EquipItemType itemType = (EquipItemType)equipSlotType.GetValue(i);
-
+                var itemType = equipSlots[i].gameObject.GetComponent<SlotType>().EquipItemType;
+                
                 _equipSlot.Add(itemType, new EquipSlotData(itemType, equipSlots[i]));
+                Debug.Log("Equip slot name: " + equipSlots[i].name + "Equip slot type = " + itemType);
             }
 
             #endregion
@@ -36,12 +41,15 @@ namespace Actors.Player.Inventory.EquipSlots
         {
             if (_equipSlot.TryGetValue(equipItemType, out EquipSlotData equipSlotData))
             {
+                Debug.Log("Slot type = " + equipItemType);
                 EquipItem(itemInstance, equipSlotData, slot);
             }
         }
-
+        
         private void EquipItem(ItemInstance itemInstance, EquipSlotData equipSlotData, SlotData slotWithEquipItem)
         {
+            Debug.Log($"Equip Item. item instance type = {itemInstance.itemData.itemTypes}");
+            
             if (slotWithEquipItem.CheckItemInSlot(itemInstance.itemID))
             {
                 var currentItemData = slotWithEquipItem.TakeItemDataFromSlot();
@@ -50,7 +58,7 @@ namespace Actors.Player.Inventory.EquipSlots
                 var item = equipSlotData.EquipItem(currentItemData);
                 var prefab = equipSlotData.EquipItemPrefab(currentItemObject);
 
-                if (item == null) return;
+                if (item == null && prefab == null) return;
                 ChangeItemInSlot(slotWithEquipItem, item, prefab);
             }
         }
