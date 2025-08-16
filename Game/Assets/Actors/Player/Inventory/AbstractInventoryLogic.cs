@@ -23,12 +23,24 @@ namespace Actors.Player.Inventory
         protected Dictionary<ItemInstance, SlotData> SlotData = new();
         
         protected Stack<SlotData> SlotStack = new();
+        protected bool BaseFunctionInit = false;
 
+        public AbstractInventoryLogic(ISpawnProjectObject itemFactory)
+        {
+            ItemFactory = itemFactory;
+        }
+        
         public abstract void Initialize<TConfig>(TConfig baseInventoryConfiguration)
             where TConfig : BaseInventoryInitializeConfiguration;
         
         protected virtual void BaseInit(Transform slotParent, InventoryScrObj inventoryScrObj)
         {
+            if (ItemFactory == null)
+            {
+                Debug.LogError("No ItemFactory provided");
+                return;
+            }
+            
             #region InitializeInventory
 
             InventoryScrObj = inventoryScrObj;
@@ -53,6 +65,8 @@ namespace Actors.Player.Inventory
                 var slot = Slots[i];
                 SlotStack.Push(slot);
             }
+
+            BaseFunctionInit = true;
         }
         
         public virtual void AddItemToInventory(ItemInstance itemInstance, int amount)
@@ -72,9 +86,13 @@ namespace Actors.Player.Inventory
                 remainingAmount = CreateNewStacks(itemInstance, remainingAmount);
             }
 
-            if (remainingAmount > 0)
+            if (remainingAmount > 0 && SlotStack.Count == 0)
             {
                 Debug.Log($"Inventory full. Couldn't add {remainingAmount} of {itemInstance.itemData.nameItem}");
+            }
+            else
+            {
+                AddItemToInventory(itemInstance, remainingAmount);
             }
         }
         

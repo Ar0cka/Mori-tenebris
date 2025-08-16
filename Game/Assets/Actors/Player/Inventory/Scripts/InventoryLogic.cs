@@ -21,8 +21,11 @@ namespace PlayerNameSpace.Inventory
 {
     public class InventoryLogic : AbstractInventoryLogic
     {
-        [Inject] private ISpawnProjectObject _itemFactory;
-
+        public InventoryLogic(ISpawnProjectObject itemFactory) : base(itemFactory)
+        {
+            ItemFactory = itemFactory;
+        }
+        
         private InventoryScrObj _inventoryScrObj;
 
         private GameObject _slotPrefab;

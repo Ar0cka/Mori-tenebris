@@ -4,8 +4,11 @@ using System.Reflection;
 using Actors.NPC.DialogSystem;
 using Actors.NPC.DialogSystem.DataScripts;
 using Actors.NPC.DialogSystem.TestUI;
+using Actors.NPC.NpcStateSystem.SpecialPanelVariants.Shop;
+using Actors.NPC.NpcStateSystem.SpecialPanelVariants.Shop.Data;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Zenject;
 
 namespace Actors.NPC
 {
@@ -16,6 +19,14 @@ namespace Actors.NPC
         [SerializeField] private TestDialogUI testDialogUI; //TO DO: Заменить на конкертную реализацию диалоговой панели (она будет общая)
         [FormerlySerializedAs("startDialogNodeScrObj")] [SerializeField] private DialogGraphAsset startDialogGraphAsset;
 
+        [SerializeField] private Transform slotParent;
+        [SerializeField] private InventoryScrObj inventoryScrObj;
+        [SerializeField] private ShopConfig startShopConfig;
+
+        private NpcInventory _npcInventory;
+
+        [Inject] private DiContainer _diContainer;
+        
         private void Awake()
         {
             if (!CheckValidity())
@@ -25,6 +36,7 @@ namespace Actors.NPC
             }
             
             Init();
+            InitInventoryLogic();
         }
 
         private void Init()
@@ -34,6 +46,12 @@ namespace Actors.NPC
             testDialogUI.Initialize(dialogFsmRealize.GetDialogFsm(), startDialogGraphAsset);
         }
 
+        private void InitInventoryLogic()
+        {
+            _npcInventory = _diContainer.Instantiate<NpcInventory>();
+            _npcInventory.Initialize(new NpcInventoryInitConfig(slotParent, inventoryScrObj, startShopConfig));
+        }
+        
         private bool CheckValidity()
         {
             bool isValid = true;
