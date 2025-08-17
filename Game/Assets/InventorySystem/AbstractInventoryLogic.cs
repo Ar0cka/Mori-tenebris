@@ -56,7 +56,7 @@ namespace Actors.Player.Inventory
             for (int i = 0; i < CapacityInventory; i++)
             {
                 var prefabSlot = ItemFactory.Create(SlotPrefab, SlotParent);
-                var slotData = new SlotData(prefabSlot, ItemFactory);
+                var slotData = new SlotData(prefabSlot, ItemFactory, this);
                 Slots.Add(slotData);
             }
 

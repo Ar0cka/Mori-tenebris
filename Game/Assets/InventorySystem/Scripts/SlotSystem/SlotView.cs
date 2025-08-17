@@ -1,3 +1,4 @@
+using Actors.Player.Inventory;
 using Enemy;
 using DefaultNamespace.Zenject;
 using Player.Inventory;
@@ -20,11 +21,11 @@ namespace SlotSystem
             _itemFactory = itemFactory;
         }
         
-        public void CreateNewItem(ItemInstance itemInstance)
+        public void CreateNewItem(ItemInstance itemInstance, AbstractInventoryLogic currentInventory)
         {
             _itemPrefab = _itemFactory.Create(itemInstance.itemData.prefabItemUI, _slotObject.transform);
             _itemSettings = _itemPrefab.GetComponent<ItemSettings>();
-            _itemSettings.InitializeItemSettings(itemInstance);
+            _itemSettings.InitializeItemSettings(itemInstance, currentInventory);
         }
         
         public void UpdateUI(int currentItemAmount)

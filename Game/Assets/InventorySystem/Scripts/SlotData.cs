@@ -1,4 +1,5 @@
 using System;
+using Actors.Player.Inventory;
 using Enemy;
 using DefaultNamespace.Zenject;
 using Player.Inventory;
@@ -13,10 +14,12 @@ namespace PlayerNameSpace.InventorySystem
     {
         private Slot _slot;
         private SlotView _slotView;
-        public SlotData(GameObject slotPrefab, ISpawnProjectObject spawnProjectObject)
+        private AbstractInventoryLogic _currentInventory;
+        public SlotData(GameObject slotPrefab, ISpawnProjectObject spawnProjectObject, AbstractInventoryLogic currentInventory)
         {
             _slot = new Slot();
             _slotView = new SlotView(slotPrefab, spawnProjectObject);
+            _currentInventory = currentInventory;
         }
 
         public void CreateNewItem(ItemInstance itemData)
@@ -25,7 +28,7 @@ namespace PlayerNameSpace.InventorySystem
 
             if (_slot.CanCreate())
             {
-                _slotView.CreateNewItem(itemData);
+                _slotView.CreateNewItem(itemData, _currentInventory);
                 _slot.CreateNewItem(itemData);
             }
         }
@@ -102,7 +105,7 @@ namespace PlayerNameSpace.InventorySystem
         {
             return _slotView.UnEquipItemObject();
         }
-
+        
         public bool IsEmpty()
         {
             if (!_slot.IsOccupied && !_slotView.HaveItem())

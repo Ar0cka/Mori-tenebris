@@ -35,7 +35,6 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
                 _itemSettings = itemObject.GetComponent<ItemSettings>();
                 itemObject.transform.SetParent(_equipSlotGameObject.transform);
                 itemObject.transform.position = _equipSlotGameObject.transform.position;
-                _itemSettings.IsEquiped = true;
             }
         }
 
@@ -95,7 +94,6 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
             if (_itemPrefab != null)
             {
                 var item = _itemPrefab;
-                _itemSettings.IsEquiped = false;
                 _itemPrefab = null;
                 return item;
             }

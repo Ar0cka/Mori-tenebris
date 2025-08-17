@@ -1,4 +1,5 @@
-using Actors.Player.Inventory.Scripts.ItemPanel;
+using Actors.Player.Inventory;
+using DefaultNamespace;
 using Enemy;
 using Player.Inventory.InventoryInterface;
 using TMPro;
@@ -16,20 +17,23 @@ namespace Player.Inventory
         [SerializeField] private TextMeshProUGUI countUI;
         [SerializeField] private ItemAction itemAction;
 
+        [Inject] private PanelController _panelController;
+
         private ItemInstance _itemInstance;
-        public bool IsEquiped;
+        private AbstractInventoryLogic _currentInventory;
         
-        public void InitializeItemSettings(ItemInstance itemInstance)
+        public void InitializeItemSettings(ItemInstance itemInstance, AbstractInventoryLogic inventoryLogic)
         {
             _itemInstance = itemInstance;
             image.sprite = _itemInstance.itemData.iconItem;
         }
-        
-        public void ActiveItem()
+
+        public ItemInstance GetItemInstance() => _itemInstance;
+        public AbstractInventoryLogic GetCurrentInventory() => _currentInventory;
+
+        public void UiAction()
         {
-            if (itemAction == null || _itemInstance == null) return; 
-            
-            ItemPanelInstance.OpenPanel(_itemInstance, itemAction, IsEquiped);
+            _panelController.OpenPanel(this);
         }
         
         public void UpdateUI(int countItemsInSlot)
