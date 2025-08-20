@@ -21,23 +21,21 @@ namespace PlayerNameSpace.Inventory
 {
     public class InventoryLogic : AbstractInventoryLogic
     {
+        private InventoryScrObj _inventoryScrObj;
+        private GameObject _slotPrefab;
+        private Transform _slotParent;
+        private int _capacityInventory;
+        
         public InventoryLogic(ISpawnProjectObject itemFactory) : base(itemFactory)
         {
             ItemFactory = itemFactory;
         }
-        
-        private InventoryScrObj _inventoryScrObj;
-
-        private GameObject _slotPrefab;
-        private Transform _slotParent;
-        private int _capacityInventory;
-       
 
         public override void Initialize<TConfig>(TConfig loadConfig)
         {
             if (loadConfig is InventoryInitializeConfig inventoryConfig)
             {
-                BaseInit(loadConfig.SlotParent, loadConfig.InventoryScrObj);
+                BaseInit(inventoryConfig.SlotParent, inventoryConfig.InventoryScrObj);
             }
         }
     }

@@ -12,7 +12,7 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
     public class EquipSlotData
     {
         private EquipSlot _equipSlot;
-        private ItemSettings _itemSettings;
+        private ItemUI _itemUI;
         private EquipItemType _equipItemType;
         private GameObject _equipSlotGameObject;
         private SlotView _slotView;
@@ -32,7 +32,7 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
             if (itemObject != null)
             {
                 _itemPrefab = itemObject;
-                _itemSettings = itemObject.GetComponent<ItemSettings>();
+                _itemUI = itemObject.GetComponent<ItemUI>();
                 itemObject.transform.SetParent(_equipSlotGameObject.transform);
                 itemObject.transform.position = _equipSlotGameObject.transform.position;
             }
@@ -101,7 +101,5 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
             Debug.LogError("Dont find item prefab");
             return null;
         }
-        
-        public bool IsEquipped() => _equipSlot.IsEquipped;
     }
 }

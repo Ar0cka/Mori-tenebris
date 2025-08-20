@@ -13,8 +13,8 @@ namespace SlotSystem
         
         private GameObject _slotObject;
         private GameObject _itemPrefab;
-        private ItemSettings _itemSettings;
-
+        private ItemUI _itemUI;
+        
         public SlotView(GameObject slotPrefab, ISpawnProjectObject itemFactory)
         {
             _slotObject = slotPrefab;
@@ -24,19 +24,19 @@ namespace SlotSystem
         public void CreateNewItem(ItemInstance itemInstance, AbstractInventoryLogic currentInventory)
         {
             _itemPrefab = _itemFactory.Create(itemInstance.itemData.prefabItemUI, _slotObject.transform);
-            _itemSettings = _itemPrefab.GetComponent<ItemSettings>();
-            _itemSettings.InitializeItemSettings(itemInstance, currentInventory);
+            _itemUI = _itemPrefab.GetComponent<ItemUI>();
+            _itemUI.InitializeItemSettings(itemInstance, currentInventory);
         }
         
         public void UpdateUI(int currentItemAmount)
         {
-            _itemSettings.UpdateUI(currentItemAmount);
+            _itemUI.UpdateUI(currentItemAmount);
         }
 
-        public void ChangeItem(GameObject itemPrefab, ItemSettings itemSettings)
+        public void ChangeItem(GameObject itemPrefab, ItemUI itemUI)
         {
             _itemPrefab = itemPrefab;
-            _itemSettings = itemSettings;
+            _itemUI = itemUI;
             
             _itemPrefab.transform.SetParent(_slotObject.transform);
             _itemPrefab.transform.position = _slotObject.transform.position;
@@ -46,15 +46,15 @@ namespace SlotSystem
         {
             var equipItem = _itemPrefab;
             _itemPrefab = null;
-            _itemSettings = null;
+            _itemUI = null;
             return equipItem;
         }
         
         public void ClearSlotView()
         {
             _itemPrefab = null;
-            _itemSettings.DeleteObjectFromSlot();
-            _itemSettings = null;
+            _itemUI.DeleteObjectFromSlot();
+            _itemUI = null;
         }
 
         public bool HaveItem()

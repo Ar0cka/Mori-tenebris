@@ -12,7 +12,7 @@ namespace Actors.Player.Inventory
 {
     public abstract class AbstractInventoryLogic: IInventoryAdder, IInventoryRemove 
     {
-        [Inject] protected ISpawnProjectObject ItemFactory;
+        protected ISpawnProjectObject ItemFactory;
         
         protected InventoryScrObj InventoryScrObj;
         protected GameObject SlotPrefab;
@@ -21,13 +21,18 @@ namespace Actors.Player.Inventory
         
         protected List<SlotData> Slots = new List<SlotData>();
         protected Dictionary<ItemInstance, SlotData> SlotData = new();
-        
         protected Stack<SlotData> SlotStack = new();
         protected bool BaseFunctionInit = false;
 
+        [Inject]
         public AbstractInventoryLogic(ISpawnProjectObject itemFactory)
         {
             ItemFactory = itemFactory;
+
+            if (ItemFactory == null)
+            {
+                Debug.LogError("Can't find ItemFactory");
+            }
         }
         
         public abstract void Initialize<TConfig>(TConfig baseInventoryConfiguration)
@@ -73,7 +78,7 @@ namespace Actors.Player.Inventory
         {
             if (amount <= 0 || itemInstance == null)
             {
-                Debug.LogError("item data = " + itemInstance + " amount add " + amount);
+                Debug.Log("item data = " + itemInstance + " amount add " + amount);
                 return;
             }
 
@@ -150,7 +155,7 @@ namespace Actors.Player.Inventory
             }
         }
 
-        public SlotData GetItemFromInventory(ItemInstance itemInstance)
+        public SlotData GetSlotFromInventory(ItemInstance itemInstance)
         {
             var item = FindItem(itemInstance);
             

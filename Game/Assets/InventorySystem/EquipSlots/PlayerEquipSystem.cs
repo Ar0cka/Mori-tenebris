@@ -12,7 +12,7 @@ namespace Actors.Player.Inventory.EquipSlots
 {
     public class PlayerEquipSystem : IEquipSlots
     {
-        [Inject] private InventoryLogic _inventoryLogic;
+        private InventoryLogic _inventoryLogic;
         
         private Dictionary<EquipItemType, EquipSlotData> _equipSlot = new();
 

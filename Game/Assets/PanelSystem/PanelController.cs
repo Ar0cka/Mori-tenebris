@@ -1,4 +1,5 @@
 using Player.Inventory;
+using UnityEngine;
 
 namespace DefaultNamespace
 {
@@ -9,13 +10,14 @@ namespace DefaultNamespace
         public void UpdatePanel(IPanelOpen currentPanel)
         {
             _currentPanel = currentPanel;
+            Debug.Log("PanelController:UpdatePanel");
         }
 
-        public void OpenPanel(ItemSettings itemSettings)
+        public void OpenPanel(ItemUI itemUI)
         {
             if (_currentPanel != null)
             {
-                _currentPanel.Open(itemSettings);
+                _currentPanel.Open(itemUI);
             }
         }
     }

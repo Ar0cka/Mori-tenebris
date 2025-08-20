@@ -17,6 +17,8 @@ namespace PlayerNameSpace.InventorySystem
         private AbstractInventoryLogic _currentInventory;
         public SlotData(GameObject slotPrefab, ISpawnProjectObject spawnProjectObject, AbstractInventoryLogic currentInventory)
         {
+            Debug.Log("Spawn object = " + spawnProjectObject);
+            
             _slot = new Slot();
             _slotView = new SlotView(slotPrefab, spawnProjectObject);
             _currentInventory = currentInventory;
@@ -89,7 +91,7 @@ namespace PlayerNameSpace.InventorySystem
         {
             if (itemPrefab == null) return;
             
-            var itemSetting = itemPrefab.GetComponent<ItemSettings>();
+            var itemSetting = itemPrefab.GetComponent<ItemUI>();
             
             if (itemSetting == null) return;
             

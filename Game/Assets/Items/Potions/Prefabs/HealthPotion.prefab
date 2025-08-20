@@ -125,7 +125,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3387809182930147286}
         m_TargetAssemblyTypeName: Player.Inventory.ItemSettings, Assembly-CSharp
-        m_MethodName: ActiveItem
+        m_MethodName: UiAction
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -150,7 +150,6 @@ MonoBehaviour:
   image: {fileID: 2014082810334073215}
   countUI: {fileID: 481585354586047673}
   itemAction: {fileID: 417103151862974807}
-  _IsEquiped: 0
 --- !u!114 &417103151862974807
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,4 +1,5 @@
 using Actors.Player.Inventory;
+using Actors.Player.Inventory.EquipSlots;
 using DefaultNamespace;
 using Enemy;
 using Player.Inventory.InventoryInterface;
@@ -11,7 +12,7 @@ using Image = UnityEngine.UI.Image;
 
 namespace Player.Inventory
 {
-    public class ItemSettings : MonoBehaviour
+    public class ItemUI : MonoBehaviour
     {
         [SerializeField] private Image image;
         [SerializeField] private TextMeshProUGUI countUI;
@@ -22,15 +23,24 @@ namespace Player.Inventory
         private ItemInstance _itemInstance;
         private AbstractInventoryLogic _currentInventory;
         
+        private IEquipSlots _equipSystem;
+        
         public void InitializeItemSettings(ItemInstance itemInstance, AbstractInventoryLogic inventoryLogic)
         {
             _itemInstance = itemInstance;
             image.sprite = _itemInstance.itemData.iconItem;
+
+            _currentInventory = inventoryLogic;
         }
 
+        public void InitEquipSystem(IEquipSlots equipSystem)
+        {
+            _equipSystem = equipSystem;
+        }
+        
         public ItemInstance GetItemInstance() => _itemInstance;
         public AbstractInventoryLogic GetCurrentInventory() => _currentInventory;
-
+        public ItemAction GetItemAction() => itemAction;
         public void UiAction()
         {
             _panelController.OpenPanel(this);

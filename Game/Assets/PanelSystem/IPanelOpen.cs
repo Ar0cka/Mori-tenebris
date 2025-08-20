@@ -4,7 +4,7 @@ namespace DefaultNamespace
 {
     public interface IPanelOpen
     {
-        void Open(ItemSettings itemSettings);
+        void Open(ItemUI itemUI);
         void Close();
     }
 }

@@ -4,16 +4,8 @@ using UnityEngine;
 
 namespace Player.Inventory
 {
-    public class ItemAction : MonoBehaviour
+    public abstract class ItemAction : MonoBehaviour
     {
-        public virtual void ActionItem(ItemInstance itemInstance)
-        {
-            
-        }
-
-        public virtual void EquipItem(ItemInstance itemInstance, SlotData slotData)
-        {
-            
-        }
+        public abstract int Action(ItemInstance itemInstance);
     }
 }

@@ -5,6 +5,7 @@ using Actors.NPC.DialogSystem;
 using Actors.NPC.DialogSystem.TestUI;
 using Actors.Player.Inventory;
 using Actors.Player.Inventory.EquipSlots;
+using DefaultNamespace.InventoryPanel;
 using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
 using NegativeEffects;
 using PlayerNameSpace;
@@ -28,17 +29,16 @@ public class PlayerBootstrap : MonoBehaviour
     [SerializeField] private HitLog hitLog;
     
     [Header("Inventory")]
-    [SerializeField] private Transform slotContent;
-    [SerializeField] private InventoryScrObj inventoryConfig;
-    [SerializeField] private List<GameObject> equipSlots;
+    [SerializeField] private InventoryPanel inventoryLogic;
     
+    [Inject] private DiContainer _diContainer;
     [Inject] private PlayerData _playerData;
-    [Inject] private InventoryLogic _inventoryLogic;
-    [Inject] private PlayerEquipSystem _equipSystem;
     [Inject] private Health _health;
     [Inject] private Armour _armour;
     [Inject] private Stamina _stamina;
     [Inject] private DamageSystem _damageSystem;
+
+    private bool _valid;
 
     private void Awake()
     {
@@ -53,39 +53,25 @@ public class PlayerBootstrap : MonoBehaviour
     
     private bool ValidateSerializedFields()
     {
-        bool valid = true;
-
-        void Check(string name, object obj)
-        {
-            if (obj == null)
-            {
-                Debug.LogError($"[PlayerBootstrap] Missing reference: {name}");
-                valid = false;
-            }
-        }
 
         // Serialized fields
-        Check(nameof(playerUIManager), playerUIManager);
-        Check(nameof(passiveRegenerationStats), passiveRegenerationStats);
-        Check(nameof(stateMachineRealize), stateMachineRealize);
-        Check(nameof(playerLogController), playerLogController);
-        Check(nameof(effectUIController), effectUIController);
-        Check(nameof(playerHealthBar), playerHealthBar);
-        Check(nameof(playerGetStats), playerGetStats);
-        Check(nameof(hitLog), hitLog);
-        Check(nameof(slotContent), slotContent);
-        Check(nameof(inventoryConfig), inventoryConfig);
-        Check(nameof(equipSlots), equipSlots);
+        Check(nameof(playerUIManager), playerUIManager, out _valid);
+        Check(nameof(passiveRegenerationStats), passiveRegenerationStats, out _valid);
+        Check(nameof(stateMachineRealize), stateMachineRealize, out _valid);
+        Check(nameof(playerLogController), playerLogController, out _valid);
+        Check(nameof(effectUIController), effectUIController, out _valid);
+        Check(nameof(playerHealthBar), playerHealthBar, out _valid);
+        Check(nameof(playerGetStats), playerGetStats, out _valid);
+        Check(nameof(hitLog), hitLog, out _valid);
 
         // Injected fields
-        Check(nameof(_playerData), _playerData);
-        Check(nameof(_inventoryLogic), _inventoryLogic);
-        Check(nameof(_health), _health);
-        Check(nameof(_armour), _armour);
-        Check(nameof(_stamina), _stamina);
-        Check(nameof(_damageSystem), _damageSystem);
+        Check(nameof(_playerData), _playerData, out _valid);
+        Check(nameof(_health), _health, out _valid);
+        Check(nameof(_armour), _armour, out _valid);
+        Check(nameof(_stamina), _stamina, out _valid);
+        Check(nameof(_damageSystem), _damageSystem, out _valid);
 
-        return valid;
+        return _valid;
     }
 
     private void SpawnPlayer()
@@ -107,10 +93,9 @@ public class PlayerBootstrap : MonoBehaviour
 
         stateMachineRealize.Initialize(_stamina);
         passiveRegenerationStats.Initialize();
-
-        _inventoryLogic.Initialize(new InventoryInitializeConfig(slotContent, inventoryConfig));
-        _equipSystem.InitializeEquipSlots(equipSlots);
-
+        
+        InitializeInventory();
+        
         #region UI
 
         playerUIManager.Initialize();
@@ -118,5 +103,21 @@ public class PlayerBootstrap : MonoBehaviour
         effectUIController.Init();
 
         #endregion
+    }
+
+    private void InitializeInventory()
+    {
+        inventoryLogic.Initialize();
+    }
+    
+    private void Check(string objName, object obj, out bool valid)
+    {
+        if (obj == null)
+        {
+            Debug.LogError($"[PlayerBootstrap] Missing reference: {objName}");
+            valid = false;
+        }
+
+        valid = true;
     }
 }

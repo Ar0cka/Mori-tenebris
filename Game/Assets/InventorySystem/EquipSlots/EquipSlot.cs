@@ -10,14 +10,12 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
 {
     public class EquipSlot
     {
-        public bool IsEquipped { get; private set;}
         public EquipItemType TypeItem { get; private set;}
-        
-        public ItemInstance ItemData { get; private set; }
+
+        private ItemInstance _itemInstance;
         
         public EquipSlot(EquipItemType typeItem)
         {
-            IsEquipped = false;
             TypeItem = typeItem;
         }
         
@@ -39,10 +37,13 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
 
             #endregion
             
-            if (ItemData == null)
+            if (_itemInstance == null)
             {
-                IsEquipped = true;
-                ItemData = itemInstance;
+                if (itemInstance.itemData is IEquipable equipable)
+                {
+                    _itemInstance = itemInstance;
+                    equipable.ChangeEquipStatus(true);
+                }
             }
             else
             {
@@ -64,14 +65,17 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
         
         public ItemInstance UnEquipItem(ItemInstance itemInstance)
         {
-            if (ItemData == null || itemInstance == null) return null;
+            if (_itemInstance == null || itemInstance == null) return null;
             
-            var currentItem = ItemData;
+            var currentItem = _itemInstance;
             
-            if (ItemData?.itemID == itemInstance.itemID)
+            if (_itemInstance?.itemID == itemInstance.itemID)
             {
-                IsEquipped = false;
-                ItemData = null;
+                if (itemInstance.itemData is IEquipable equipable)
+                {
+                    equipable.ChangeEquipStatus(false);
+                    _itemInstance = null;
+                }
             }
             
             return currentItem;
@@ -79,9 +83,9 @@ namespace Actors.Player.Inventory.Scripts.EquipSlots
 
         public ItemInstance ChangeItemInSlot(ItemInstance itemData)
         {
-            var returnItem = ItemData;
+            var returnItem = _itemInstance;
             
-            ItemData = itemData;
+            _itemInstance = itemData;
             
             return returnItem;
         }
