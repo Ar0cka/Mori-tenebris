@@ -20,7 +20,7 @@ MonoBehaviour:
     itemTypes: 0
     iconItem: {fileID: 1802275875, guid: 3d3f190d4f38e824385e51c008d7e6bd, type: 3}
     prefabItemUI: {fileID: 6593871118970111117, guid: b2597df903493bd47b6dc3a8e4cafdf1, type: 3}
-    equipItemType: 0
+    _isEquipped: 1
     weaponConfig: {fileID: 11400000, guid: 64dd749a838f6364f8e5ddf927cec936, type: 2}
     damage: 6
     damageType: 0
