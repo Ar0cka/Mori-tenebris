@@ -81,7 +81,7 @@ namespace Actors.Player.Inventory
                 Debug.Log("item data = " + itemInstance + " amount add " + amount);
                 return;
             }
-
+            
             int remainingAmount = amount;
 
             remainingAmount = AddItem(itemInstance, remainingAmount);
@@ -181,6 +181,11 @@ namespace Actors.Player.Inventory
         public SlotData GetFirstFreeSlot()
         {
             return SlotStack.Pop();
+        }
+
+        public bool HaveFreeSlot()
+        {
+            return SlotStack.Count > 0;
         }
     }
 }

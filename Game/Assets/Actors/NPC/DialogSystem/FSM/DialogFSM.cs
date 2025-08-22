@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Actors.NPC.DialogSystem.DataScripts;
 using Actors.NPC.DialogSystem.DialogStates;
-using Actors.NPC.NpcStateSystem;
+using Actors.NPC.SpecialPanel;
 using UnityEngine;
 
 namespace Actors.NPC.DialogSystem

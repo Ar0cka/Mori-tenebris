@@ -16,5 +16,7 @@ namespace Enemy
         
         public Sprite iconItem;
         public GameObject prefabItemUI;
+        
+        public object Clone() => this.MemberwiseClone();
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Actors.Player.Inventory;
 using Actors.Player.Inventory.EquipSlots;
+using DefaultNamespace;
 using DefaultNamespace.Enums;
 using Enemy;
 using Items;
@@ -8,63 +9,58 @@ using Items.EquipArmour.Data;
 using Items.Potions.Scripts;
 using Player.Inventory;
 using PlayerNameSpace.Inventory;
+using Service;
 using UnityEngine;
 using Zenject;
 
-namespace DefaultNamespace.InventoryPanel
+namespace Player.Inventory
 {
-    public class InventoryPanel : MonoBehaviour
+    public class InventoryPanel : BasePanel
     {
         [SerializeField] private List<GameObject> equipSlots;
         [SerializeField] private TakeItemInInventory takeItemInInventory;
         
-        [SerializeField] private GameObject inventoryObject;
-        [SerializeField] private ItemPanelSystem itemPanelSystem;
-        
         [SerializeField] private Transform slotContent;
         [SerializeField] private InventoryScrObj inventoryConfig;
+
+        [SerializeField] private ItemList startItemList;
         
-        [Inject] private PanelController _panelController;
-        [Inject] private ItemRouterService _itemRouterService;
-        [Inject] private DiContainer _diContainer;
+        [Inject] private InventoryFillService _inventoryFillService;
         
-        private AbstractInventoryLogic _inventoryLogic;
-        private PlayerEquipSystem _equipSlots;
+        private PlayerEquipSystem _equipSystem;
 
         public void Initialize()
         {
-            _inventoryLogic = _diContainer.Instantiate<InventoryLogic>();
-            _equipSlots = _diContainer.Instantiate<PlayerEquipSystem>();
+            InventoryLogic = DiContainer.Instantiate<InventoryLogic>();
+            _equipSystem = DiContainer.Instantiate<PlayerEquipSystem>();
             
-            _inventoryLogic.Initialize(new InventoryInitializeConfig(slotContent, inventoryConfig));
-            _equipSlots.InitializeEquipSlots(equipSlots);
-            takeItemInInventory.Initialize(_inventoryLogic);
+            InventoryLogic.Initialize(new InventoryInitializeConfig(slotContent, inventoryConfig));
+            _equipSystem.InitializeEquipSlots(equipSlots);
+            takeItemInInventory.Initialize(InventoryLogic);
+            
+            _inventoryFillService.AddItemFromScrObj(InventoryLogic, startItemList.Items);
         }
 
-        public void ItemRoute(ItemUI itemUI)
+        public override void ItemRouter(ItemUI itemUI)
         {
             var itemInstance = itemUI.GetItemInstance();
             
-            switch (itemInstance.itemData.itemTypes)
+            ItemAction itemAction = itemUI.GetItemAction();
+
+            if (itemAction == null)
             {
-                case ItemTypes.Equip:
-                    _itemRouterService.EquipItem(_inventoryLogic, _equipSlots, itemInstance);
-                    break;
-                case ItemTypes.Collectable: 
-                    int itemUsedCount = itemUI.GetItemAction().Action(itemInstance);
-                    _itemRouterService.RemoveItem(_inventoryLogic, itemInstance, itemUsedCount);
-                    break;
-                default:
-                    Debug.Log("This item not usable");
-                    break;
+                Debug.Log("Not find item action");
+                return;
             }
+            
+            itemUI.GetItemAction().Action(itemInstance, new ItemActionContext(InventoryLogic, _equipSystem, ItemRouterService));
         }
         
         public void OpenInventoryPanel()
         {
             if (!gameObject.activeInHierarchy)
             {
-                _panelController.UpdatePanel(itemPanelSystem);
+                PanelController.UpdatePanel(itemPanelSystem);
                 inventoryObject.SetActive(true);
             }
             else
@@ -72,5 +68,7 @@ namespace DefaultNamespace.InventoryPanel
                 inventoryObject.SetActive(false);
             }
         }
+
+        public AbstractInventoryLogic GetInventoryLogic() => InventoryLogic;
     }
 }

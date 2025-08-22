@@ -1025,6 +1025,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventoryObject: {fileID: 9141579568694429990}
   itemPanelSystem: {fileID: 7465633185360561566}
+  equipSlots:
+  - {fileID: 4605605285490590399}
+  - {fileID: 3564365686487750359}
+  - {fileID: 5563607961495857203}
+  - {fileID: 4785846755595235123}
+  - {fileID: 2784288409086873066}
+  - {fileID: 3269869723974187010}
+  takeItemInInventory: {fileID: 6347296099233698356}
+  slotContent: {fileID: 6260564888108414062}
+  inventoryConfig: {fileID: 11400000, guid: 765f93f580a2c3449b636c8c0b2ea875, type: 2}
+  startItemList: {fileID: 11400000, guid: e4b89a41fd4c5774aa00a26047511313, type: 2}
 --- !u!1 &1435368285202858001
 GameObject:
   m_ObjectHideFlags: 0
@@ -1480,15 +1491,7 @@ MonoBehaviour:
   playerHealthBar: {fileID: 3199263065450343443}
   playerGetStats: {fileID: 1780066209391590489}
   hitLog: {fileID: 254897088470444877}
-  slotContent: {fileID: 6260564888108414062}
-  inventoryConfig: {fileID: 11400000, guid: 765f93f580a2c3449b636c8c0b2ea875, type: 2}
-  equipSlots:
-  - {fileID: 4605605285490590399}
-  - {fileID: 3564365686487750359}
-  - {fileID: 5563607961495857203}
-  - {fileID: 4785846755595235123}
-  - {fileID: 2784288409086873066}
-  - {fileID: 3269869723974187010}
+  inventoryLogic: {fileID: 6090828455569535888}
 --- !u!1 &2032057055416165518
 GameObject:
   m_ObjectHideFlags: 0
@@ -2048,6 +2051,11 @@ MonoBehaviour:
   itemNameText: {fileID: 2799821936267105691}
   itemDescriptionText: {fileID: 1026419617036838987}
   itemCountText: {fileID: 794559013518864452}
+  closeButton: {fileID: 5494107369984903856}
+  inventoryPanel: {fileID: 6090828455569535888}
+  removeButton: {fileID: 8929074312375780618}
+  useButton: {fileID: 4135729124862212811}
+  removePanel: {fileID: 3656087139828667638}
 --- !u!1 &2744108937981983510
 GameObject:
   m_ObjectHideFlags: 0

@@ -16,7 +16,7 @@ namespace Items.EquipArmour.Data
 
         public override ItemData GetItemData()
         {
-            return weaponData;
+            return (ItemData)weaponData.Clone();
         }
     }
 

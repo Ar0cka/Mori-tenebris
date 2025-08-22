@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Actors.NPC.NpcStateSystem;
+using Actors.NPC.SpecialPanel;
 using UnityEngine;
 using UnityEngine.Serialization;
 

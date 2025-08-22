@@ -6,7 +6,6 @@ namespace Actors.NPC.DialogSystem
     public class NpcController : MonoBehaviour
     {
         [SerializeField] private NpcContext npcContext;
-        [SerializeField] private NPCAbstractSpecialPanel specialPanel;
 
         private NpcRepSystem _npcRepSystem;
         
@@ -17,6 +16,5 @@ namespace Actors.NPC.DialogSystem
         }
         
         public IReputationOperations GetNpcRepSystem() => _npcRepSystem;
-        public INpcSpecialPanel GetSpecialPanel() => specialPanel;
     }
 }

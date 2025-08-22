@@ -15,7 +15,7 @@ namespace Enemy
         
         public override ItemData GetItemData()
         {
-            return armourData;
+            return (ItemData)armourData.Clone();
         }
     }
 

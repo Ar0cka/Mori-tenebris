@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using DefaultNamespace;
-using DefaultNamespace.InventoryPanel;
 using Player.Inventory;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,7 +22,7 @@ public class InventItemPanel : ItemPanelSystem
 
     protected override void PanelAction()
     {
-        inventoryPanel.ItemRoute(CurrentItem);
+        inventoryPanel.ItemRouter(CurrentItem);
         Close();
     }
 

@@ -1,15 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Actors.NPC.DialogSystem;
-using Actors.NPC.DialogSystem.TestUI;
-using Actors.Player.Inventory;
-using Actors.Player.Inventory.EquipSlots;
-using DefaultNamespace.InventoryPanel;
 using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
 using NegativeEffects;
+using Player.Inventory;
 using PlayerNameSpace;
-using PlayerNameSpace.Inventory;
 using UI.EffectUI;
 using UI.Player.Log;
 using UI.PlayerHpBar;

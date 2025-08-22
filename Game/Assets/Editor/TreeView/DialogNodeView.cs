@@ -1,5 +1,6 @@
     using Actors.NPC.DialogSystem.DataScripts;
     using Actors.NPC.NpcStateSystem;
+    using Actors.NPC.SpecialPanel;
     using UnityEditor.Experimental.GraphView;
     using UnityEditor.Search;
     using UnityEngine;

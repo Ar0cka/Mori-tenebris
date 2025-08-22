@@ -6,6 +6,6 @@ namespace Player.Inventory
 {
     public abstract class ItemAction : MonoBehaviour
     {
-        public abstract int Action(ItemInstance itemInstance);
+        public abstract void Action(ItemInstance itemInstance, ItemActionContext context);
     }
 }

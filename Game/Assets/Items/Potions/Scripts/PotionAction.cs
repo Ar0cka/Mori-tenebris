@@ -9,27 +9,19 @@ using Zenject;
 
 namespace Items.Potions.Scripts
 {
-    public class PotionAction : ItemAction, ICollectable
+    public class PotionAction : ItemAction
     {
         [Inject] private IRegenerationHealth _regenerationHealth;
 
         public int ItemUsedForOneUse { get; private set; } = 1;
 
-        public override int Action(ItemInstance itemInstance)
+        public override void Action(ItemInstance itemInstance, ItemActionContext context)
         {
-            Debug.Log("Potion Action");
-            
             if (itemInstance.itemData is Potion potion)  
             {
                 _regenerationHealth.Regeneration(potion.healthAmount);
+                context.ItemRouterService.RemoveItem(context.InventoryLogic, itemInstance, ItemUsedForOneUse);
             }
-
-            return ItemUsedForOneUse;
         }
-    }
-
-    public interface ICollectable
-    {
-        public int ItemUsedForOneUse { get; }
     }
 }

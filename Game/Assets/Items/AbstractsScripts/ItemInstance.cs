@@ -15,18 +15,18 @@ namespace Player.Inventory
 
         public ItemInstance(ItemData itemData)
         {
-            itemID = GenerateID(itemData.itemTypes);
             this.itemData = itemData;
             maxStack = itemData.maxStackInSlot;
+            GenerateID();
         }
 
-        private string GenerateID(ItemTypes itemType)
+        public void GenerateID()
         {
             string id = "";
 
             int randomCount = Random.Range(0, 10000);
             
-            switch (itemType)
+            switch (itemData.itemTypes)
             {
                 case ItemTypes.Collectable:
                     id = $"C:{randomCount}";
@@ -41,8 +41,8 @@ namespace Player.Inventory
                     id = $"I:{randomCount}";
                     break;
             }
-            
-            return id;
+
+            itemID = id;
         }
     }
 }

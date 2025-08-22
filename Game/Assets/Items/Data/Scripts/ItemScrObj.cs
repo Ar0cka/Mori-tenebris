@@ -16,15 +16,5 @@ public abstract class ItemScrObj : ScriptableObject
     {
         return null;
     }
-    
-    public virtual void OnEquip(InventoryLogic inventoryLogic)
-    {
-        
-    }
-
-    public virtual void OnUnequip(InventoryLogic inventoryLogic)
-    {
-        
-    }
 }
 
