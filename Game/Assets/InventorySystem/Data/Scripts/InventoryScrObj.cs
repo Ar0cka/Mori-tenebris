@@ -8,6 +8,5 @@ using UnityEngine;
 public class InventoryScrObj : ScriptableObject
 {
     [SerializeField] private InventoryData inventoryData;
-    [field:SerializeField] public List<GameObject> equipSlots;
     public InventoryData InventoryData => inventoryData;
 }

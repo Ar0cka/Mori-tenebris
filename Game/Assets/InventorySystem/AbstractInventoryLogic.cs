@@ -4,6 +4,7 @@ using DefaultNamespace.Zenject;
 using Player.Inventory;
 using Player.Inventory.InventoryInterface;
 using PlayerNameSpace.InventorySystem;
+using Service;
 using SlotSystem;
 using UnityEngine;
 using Zenject;
@@ -183,6 +184,20 @@ namespace Actors.Player.Inventory
             return SlotStack.Pop();
         }
 
+        public List<ItemInstance> GetAllItems()
+        {
+            List<ItemInstance> items = new();
+            
+            foreach (var slot in Slots)
+            {
+                if (slot.IsEmpty()) continue;
+                
+                items.Add(slot.GetCopyItem());
+            }
+
+            return items;
+        }
+        
         public bool HaveFreeSlot()
         {
             return SlotStack.Count > 0;

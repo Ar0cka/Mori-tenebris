@@ -23,19 +23,12 @@ namespace Player.Inventory
         private ItemInstance _itemInstance;
         private AbstractInventoryLogic _currentInventory;
         
-        private IEquipSlots _equipSystem;
-        
         public void InitializeItemSettings(ItemInstance itemInstance, AbstractInventoryLogic inventoryLogic)
         {
             _itemInstance = itemInstance;
             image.sprite = _itemInstance.itemData.iconItem;
 
             _currentInventory = inventoryLogic;
-        }
-
-        public void InitEquipSystem(IEquipSlots equipSystem)
-        {
-            _equipSystem = equipSystem;
         }
         
         public ItemInstance GetItemInstance() => _itemInstance;
@@ -46,10 +39,12 @@ namespace Player.Inventory
             _panelController.OpenPanel(this);
         }
         
-        public void UpdateUI(int countItemsInSlot)
+        public void UpdateUI()
         {
-            countUI.text = countItemsInSlot.ToString();
+            countUI.text = _itemInstance.amount.ToString();
         }
+        
+        public Sprite GetImage() => image.sprite;
         
         public void DeleteObjectFromSlot()
         {

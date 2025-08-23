@@ -28,9 +28,9 @@ namespace SlotSystem
             _itemUI.InitializeItemSettings(itemInstance, currentInventory);
         }
         
-        public void UpdateUI(int currentItemAmount)
+        public void UpdateUI()
         {
-            _itemUI.UpdateUI(currentItemAmount);
+            _itemUI.UpdateUI();
         }
 
         public void ChangeItem(GameObject itemPrefab, ItemUI itemUI)

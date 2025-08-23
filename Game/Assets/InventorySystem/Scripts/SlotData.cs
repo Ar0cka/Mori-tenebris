@@ -51,11 +51,11 @@ namespace PlayerNameSpace.InventorySystem
 
             int result = amountItems;
             
-            if (_slot.CheckItemInSlot(itemData.itemID))
+            if (_slot.CheckItemInSlot(itemData.itemData.typeID))
             {
                 result = _slot.AddNewItem(itemData, result);
                 
-                _slotView.UpdateUI(_slot.CurrentItemCount());
+                _slotView.UpdateUI();
             }
             
 
@@ -78,7 +78,7 @@ namespace PlayerNameSpace.InventorySystem
                 }
                 else
                 {
-                    _slotView.UpdateUI(_slot.CurrentItemCount());
+                    _slotView.UpdateUI();
                 }
             }
 
@@ -106,6 +106,11 @@ namespace PlayerNameSpace.InventorySystem
         public GameObject TakePrefabFromSlot()
         {
             return _slotView.UnEquipItemObject();
+        }
+        
+        public ItemInstance GetCopyItem()
+        {
+            return _slot.GetItemInstance();
         }
         
         public bool IsEmpty()

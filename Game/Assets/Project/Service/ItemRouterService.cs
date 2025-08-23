@@ -14,8 +14,10 @@ namespace Items
         
         public void TransitItem(AbstractInventoryLogic fromInventory, AbstractInventoryLogic toInventory, ItemInstance itemInstance, int amount)
         {
+            var addItemInstance = new ItemInstance(itemInstance.itemData);
+            
             fromInventory.RemoveItem(itemInstance, amount);
-            toInventory.AddItemToInventory(itemInstance, amount);
+            toInventory.AddItemToInventory(addItemInstance, amount);
         }
 
         public void EquipItem(AbstractInventoryLogic inventory, IEquipSlots equipSystem, ItemInstance itemInstance)

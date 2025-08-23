@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnPrefab: {fileID: 8596181059298199730, guid: 759e80397696bc94188f50b3a2109ebc, type: 3}
   weaponData:
+    typeID: 2000
     nameItem: Sword
     description: nice
     maxStackInSlot: 1

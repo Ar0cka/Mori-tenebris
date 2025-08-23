@@ -1,8 +1,10 @@
 using Actors.NPC.Inventory;
 using Actors.NPC.SpecialPanel;
 using Actors.Player.Inventory;
+using DefaultNamespace.Zenject;
 using Items;
 using Player.Inventory;
+using Project.Service;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -11,25 +13,34 @@ namespace DefaultNamespace.ShopPanel
 {
     public class ShopPanel : MonoBehaviour
     {
+        [Header("Shop panel settings")]
         [SerializeField] private GameObject shopPanel;
         [SerializeField] private SpecialPanelType specialPanelType;
         [SerializeField] private ItemPanelSystem itemPanel;
+        [SerializeField] private Button openShopButton;
         
+        [Header("Test player inventory")]
         [SerializeField] private InventoryPanel inventoryPanel;
 
+        [Header("Settings for inventory in shop")]
         [SerializeField] private Transform leftInventory;
         [SerializeField] private Transform rightInventory;
-
-        [SerializeField] private Button openShopButton;
+        [SerializeField] private InventoryScrObj shopInventoryConfig;
         
         [Inject] private ItemRouterService _itemRouterService;
         [Inject] private PanelController _panelController;
+        [Inject] private ISpawnProjectObject _itemFactory;
+        [Inject] private IDestroyService _destroyService;
 
         private ShopContext _shopContext;
+        private InventoryRenderer _inventoryRenderer;
 
         public void Initialize(NpcInventoryPanel npcInventoryPanel)
         {
             openShopButton.onClick.AddListener(() => SendShopContext(npcInventoryPanel));
+
+            _inventoryRenderer = new InventoryRenderer();
+            _inventoryRenderer.Init(new InventoryRendererInitContext(shopInventoryConfig, leftInventory, rightInventory), _itemFactory, _destroyService);
         }
 
         private void SendShopContext(NpcInventoryPanel npcInventoryPanel)
@@ -46,6 +57,8 @@ namespace DefaultNamespace.ShopPanel
             
             _panelController.UpdatePanel(itemPanel);
             shopPanel.SetActive(true); 
+            
+            _inventoryRenderer.Redraw(shopContext);
         }
 
         public void RouteItem(AbstractInventoryLogic inventoryFrom, ItemInstance item, int amountItems)
@@ -61,6 +74,7 @@ namespace DefaultNamespace.ShopPanel
             }
             
             _itemRouterService.TransitItem(inventoryFrom, targetInventory, item, amountItems);
+            _inventoryRenderer.Redraw(_shopContext);
         }
         
         public void CloseShopPanel()
@@ -80,8 +94,8 @@ namespace DefaultNamespace.ShopPanel
 
     public class ShopContext
     {
-        public AbstractInventoryLogic PrimaryInventory { get; }
-        public AbstractInventoryLogic SecondaryInventory { get; }
+        public AbstractInventoryLogic PrimaryInventory;
+        public AbstractInventoryLogic SecondaryInventory;
 
         public ShopContext(AbstractInventoryLogic primaryInventory, AbstractInventoryLogic secondaryInventory)
         {

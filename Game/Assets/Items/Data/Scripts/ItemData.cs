@@ -1,5 +1,6 @@
 using System;
 using DefaultNamespace.Enums;
+using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -8,6 +9,7 @@ namespace Enemy
     [Serializable]
     public class ItemData
     {
+        public int typeID;
         public string nameItem;
         public string description;
         

@@ -1,5 +1,6 @@
 using Enemy;
 using Player.Inventory;
+using Service;
 using UnityEngine;
 
 namespace SlotSystem
@@ -25,7 +26,7 @@ namespace SlotSystem
                 return amountItems;
             }
 
-            if (_currentItem.itemID != itemInstance.itemID) return amountItems; // сравнение по ID
+            if (_currentItem.itemData.typeID != itemInstance.itemData.typeID) return amountItems; // сравнение по ID
             if (IsFull) return amountItems;
 
             int space = _currentItem.maxStack - _currentCountItem;
@@ -46,6 +47,7 @@ namespace SlotSystem
             int itemRemove = Mathf.Min(amountItems, _currentCountItem);
             _currentCountItem -= itemRemove;
             _currentItem.amount = _currentCountItem;
+            
             if (_currentCountItem == 0)
             {
                 ClearSlot();
@@ -57,6 +59,7 @@ namespace SlotSystem
         public bool CanCreate() => !IsOccupied && _currentItem == null;
         public int CurrentItemCount() => _currentCountItem;
         public bool CheckItemInSlot(string id) => _currentItem != null && _currentItem.itemID == id;
+        public bool CheckItemInSlot(int id) => _currentItem != null && _currentItem.itemData.typeID == id;
 
         public ItemInstance UnEquipData()
         {
@@ -64,7 +67,9 @@ namespace SlotSystem
             ClearSlot();
             return item;
         }
-
+        
+        public ItemInstance GetItemInstance() => _currentItem;
+        
         private void ClearSlot()
         {
             _currentCountItem = 0;

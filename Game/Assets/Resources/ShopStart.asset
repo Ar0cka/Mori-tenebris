@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Items>k__BackingField:
   - itemScrObj: {fileID: 11400000, guid: e455560e3c9bf8348853d180fee9168e, type: 2}
-    amount: 11
+    amount: 1
   - itemScrObj: {fileID: 11400000, guid: 86407cde20d6e894c8fc28bd186b345c, type: 2}
     amount: 50

@@ -12,14 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c8d652ca8394e3ba877b230807eed9a, type: 3}
   m_Name: Helm
   m_EditorClassIdentifier: 
+  spawnPrefab: {fileID: 0}
   armourData:
+    typeID: 100
     nameItem: Ice Helm
     description: "\u0428\u043B\u0435\u043C \u0432\u044B\u043A\u043E\u0432\u0430\u043D\u043D\u044B\u0439
       \u0438\u0437 \u0441\u0432\u044F\u0442\u043E\u0441\u0442\u0438 \u0438 \u043B\u044C\u0434\u0430"
     maxStackInSlot: 1
     itemTypes: 0
     iconItem: {fileID: 1565494732, guid: 3d3f190d4f38e824385e51c008d7e6bd, type: 3}
-    prefabItem: {fileID: 6593871118970111117, guid: 34e42f2eea9ba4f42a9ae60213bcd6b5, type: 3}
-    equipItemType: 2
+    prefabItemUI: {fileID: 0}
+    _isEquipped: 0
     physicArmour: 1
     magicArmour: 1
