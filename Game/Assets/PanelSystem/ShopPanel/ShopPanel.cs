@@ -41,6 +41,9 @@ namespace DefaultNamespace.ShopPanel
 
             _inventoryRenderer = new InventoryRenderer();
             _inventoryRenderer.Init(new InventoryRendererInitContext(shopInventoryConfig, leftInventory, rightInventory), _itemFactory, _destroyService);
+            
+            shopPanel.SetActive(false);
+            itemPanel.gameObject.SetActive(false);
         }
 
         private void SendShopContext(NpcInventoryPanel npcInventoryPanel)
