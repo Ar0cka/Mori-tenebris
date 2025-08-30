@@ -1,0 +1,20 @@
+{
+    "asset": "209282d300b48fb4f8474d05094c9514",
+    "fileName": "0198f5bd-6c16-79dc-9bfb-257fea15db43.png",
+    "prompt": "Pixel art sprite of a fantasy wizard, standing in 3/4 view, wearing a long robe and a pointy hat, holding a glowing staff with magical runes. Blue and purple color palette, detailed shading, high contrast outlines. Character proportions in chibi style (big head, small body). Transparent background, front-facing idle pose.",
+    "negativePrompt": "",
+    "model": "242b56c1-2224-41c4-8949-2ba760bbfc69",
+    "modelName": "16-bit Pixel",
+    "customSeed": -1,
+    "w3CTraceId": "4502c0ac1c3cc5876137b73ba36c973c",
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0
+}

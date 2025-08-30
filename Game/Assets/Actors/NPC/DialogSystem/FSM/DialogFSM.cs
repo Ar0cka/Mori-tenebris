@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using Actors.NPC.DialogSystem.DataScripts;
 using Actors.NPC.DialogSystem.DialogStates;
 using Actors.NPC.SpecialPanel;
+using Actors.Player.Inventory;
+using Player.Inventory;
+using PlayerContextProviders;
 using UnityEngine;
 
 namespace Actors.NPC.DialogSystem
@@ -44,7 +47,7 @@ namespace Actors.NPC.DialogSystem
         /// <summary>
         /// Event triggered to open a special UI panel, for example, an inventory or quest panel.
         /// </summary>
-        public Action<SpecialPanelType> OnOpenSpecialPanel;
+        public Action<SpecialPanelType, InventoryPanel> OnOpenShop;
 
         /// <summary>
         /// Event triggered to close the currently open UI panel.
@@ -60,6 +63,8 @@ namespace Actors.NPC.DialogSystem
 
         // Flag to ensure FSM enters idle state only once until explicitly reset
         private bool _hasEnteredIdleState = false;
+        
+        public PlayerDialogContext DialogContext { get; private set; }
 
         /// <summary>
         /// Constructor subscribes to OnExitFromDialog event to automatically transition to idle state.
@@ -143,6 +148,16 @@ namespace Actors.NPC.DialogSystem
             _hasEnteredIdleState = false;
         }
 
+        public void UpdatePlayerDialogContext(PlayerDialogContext dialogContext)
+        {
+            DialogContext = dialogContext;
+        }
+
+        public void RemoveDialogContext()
+        {
+            DialogContext = null;
+        }
+        
         /// <summary>
         /// Unsubscribes from events and clears event handlers to prevent memory leaks.
         /// Call when disposing the FSM.
@@ -156,7 +171,7 @@ namespace Actors.NPC.DialogSystem
             OnSendDialogNodes = null;
             OnStartDialog = null;
             OnExitFromDialog = null;
-            OnOpenSpecialPanel = null;
+            OnOpenShop = null;
             OnClosePanel = null;
             OnClick = null;
         }

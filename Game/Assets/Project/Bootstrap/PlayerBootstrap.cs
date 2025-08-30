@@ -1,11 +1,14 @@
+using System.Reflection;
 using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
 using NegativeEffects;
 using Player.Inventory;
+using PlayerContextProviders;
 using PlayerNameSpace;
 using UI.EffectUI;
 using UI.Player.Log;
 using UI.PlayerHpBar;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 public class PlayerBootstrap : MonoBehaviour
@@ -20,8 +23,12 @@ public class PlayerBootstrap : MonoBehaviour
     [SerializeField] private PlayerGeterStats playerGetStats;
     [SerializeField] private HitLog hitLog;
     
+    [FormerlySerializedAs("inventoryLogic")]
     [Header("Inventory")]
-    [SerializeField] private InventoryPanel inventoryLogic;
+    [SerializeField] private InventoryPanel inventoryPanel;
+    
+    [Header("Providers")]
+    [SerializeField] private PlayerDialogContextProvider playerDialogContextProvider;
     
     [Inject] private DiContainer _diContainer;
     [Inject] private PlayerData _playerData;
@@ -45,25 +52,20 @@ public class PlayerBootstrap : MonoBehaviour
     
     private bool ValidateSerializedFields()
     {
+        bool valid = true;
+        var fields = this.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
 
-        // Serialized fields
-        Check(nameof(playerUIManager), playerUIManager, out _valid);
-        Check(nameof(passiveRegenerationStats), passiveRegenerationStats, out _valid);
-        Check(nameof(stateMachineRealize), stateMachineRealize, out _valid);
-        Check(nameof(playerLogController), playerLogController, out _valid);
-        Check(nameof(effectUIController), effectUIController, out _valid);
-        Check(nameof(playerHealthBar), playerHealthBar, out _valid);
-        Check(nameof(playerGetStats), playerGetStats, out _valid);
-        Check(nameof(hitLog), hitLog, out _valid);
+        foreach (var field in fields)
+        {
+            var value = field.GetValue(this);
+            if (value == null)
+            {
+                Debug.LogError($"[PlayerBootstrap] Missing reference: {field.Name}");
+                valid = false;
+            }
+        }
 
-        // Injected fields
-        Check(nameof(_playerData), _playerData, out _valid);
-        Check(nameof(_health), _health, out _valid);
-        Check(nameof(_armour), _armour, out _valid);
-        Check(nameof(_stamina), _stamina, out _valid);
-        Check(nameof(_damageSystem), _damageSystem, out _valid);
-
-        return _valid;
+        return valid;
     }
 
     private void SpawnPlayer()
@@ -95,21 +97,17 @@ public class PlayerBootstrap : MonoBehaviour
         effectUIController.Init();
 
         #endregion
+        
+        ProvidersInitialization();
     }
 
     private void InitializeInventory()
     {
-        inventoryLogic.Initialize();
+        inventoryPanel.Initialize();
     }
-    
-    private void Check(string objName, object obj, out bool valid)
-    {
-        if (obj == null)
-        {
-            Debug.LogError($"[PlayerBootstrap] Missing reference: {objName}");
-            valid = false;
-        }
 
-        valid = true;
+    private void ProvidersInitialization()
+    {
+        playerDialogContextProvider.Initialize(inventoryPanel);
     }
 }

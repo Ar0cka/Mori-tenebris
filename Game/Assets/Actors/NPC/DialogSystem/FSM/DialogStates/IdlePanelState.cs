@@ -22,7 +22,7 @@ namespace Actors.NPC.DialogSystem.FSM.DialogStates
 
         public override void Update()
         {
-            ///Заглушка
+            //Заглушка
         }
 
         public override void Exit()

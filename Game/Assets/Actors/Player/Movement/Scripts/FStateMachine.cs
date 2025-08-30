@@ -25,6 +25,10 @@ public class FStateMachine
             CurrentState = state;
             state.Enter();
         }
+        else
+        {
+            
+        }
     }
 
     public void UpdateStateData<T>(MovementColliderOffset movementColliderOffset) where T : MovementState
@@ -40,11 +44,11 @@ public class FStateMachine
     }
     public void Update()
     {
-        CurrentState.UpdateLogic();
+        CurrentState?.UpdateLogic();
     }
 
     public void FixedUpdate()
     {
-        CurrentState.PhysicUpdate();
+        CurrentState?.PhysicUpdate();
     }
 }

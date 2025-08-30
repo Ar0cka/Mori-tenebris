@@ -32,7 +32,7 @@ namespace DefaultNamespace.ShopPanel
         {
             if (CurrentItem != null)
             {
-                shopPanel.RouteItem(CurrentItem.GetCurrentInventory(), CurrentItem.GetItemInstance(), _currentBuyCount);
+                shopPanel.ItemRouter(CurrentItem.GetCurrentInventory(), CurrentItem.GetItemInstance(), _currentBuyCount);
                 Close();
             }
         }

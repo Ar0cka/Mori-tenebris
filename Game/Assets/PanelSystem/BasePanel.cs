@@ -22,7 +22,7 @@ namespace DefaultNamespace
             
         }
 
-        public virtual void OpenPanel()
+        public virtual void OpenPanel(PanelContext panelContext)
         {
             if (!gameObject.activeInHierarchy)
             {

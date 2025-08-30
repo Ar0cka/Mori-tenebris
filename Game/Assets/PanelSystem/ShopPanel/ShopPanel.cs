@@ -11,16 +11,12 @@ using Zenject;
 
 namespace DefaultNamespace.ShopPanel
 {
-    public class ShopPanel : MonoBehaviour
+    public class ShopPanel : BasePanel
     {
         [Header("Shop panel settings")]
         [SerializeField] private GameObject shopPanel;
         [SerializeField] private SpecialPanelType specialPanelType;
         [SerializeField] private ItemPanelSystem itemPanel;
-        [SerializeField] private Button openShopButton;
-        
-        [Header("Test player inventory")]
-        [SerializeField] private InventoryPanel inventoryPanel;
 
         [Header("Settings for inventory in shop")]
         [SerializeField] private Transform leftInventory;
@@ -34,11 +30,13 @@ namespace DefaultNamespace.ShopPanel
 
         private ShopContext _shopContext;
         private InventoryRenderer _inventoryRenderer;
+        
+        private NpcInventoryPanel _npcInventoryPanel;
 
         public void Initialize(NpcInventoryPanel npcInventoryPanel)
         {
-            openShopButton.onClick.AddListener(() => SendShopContext(npcInventoryPanel));
-
+            _npcInventoryPanel = npcInventoryPanel;
+            
             _inventoryRenderer = new InventoryRenderer();
             _inventoryRenderer.Init(new InventoryRendererInitContext(shopInventoryConfig, leftInventory, rightInventory), _itemFactory, _destroyService);
             
@@ -46,11 +44,11 @@ namespace DefaultNamespace.ShopPanel
             itemPanel.gameObject.SetActive(false);
         }
 
-        private void SendShopContext(NpcInventoryPanel npcInventoryPanel)
+        public void SendShopContext(InventoryPanel playerInventoryPanel)
         {
-            OpenShopPanel(new ShopContext(npcInventoryPanel.GetInventoryLogic(), inventoryPanel.GetInventoryLogic()));
+            OpenShopPanel(new ShopContext(_npcInventoryPanel.GetInventoryLogic(), playerInventoryPanel.GetInventoryLogic()));
         }
-        
+
         private void OpenShopPanel(ShopContext shopContext)
         {
             if (shopPanel.activeInHierarchy)
@@ -64,7 +62,7 @@ namespace DefaultNamespace.ShopPanel
             _inventoryRenderer.Redraw(shopContext);
         }
 
-        public void RouteItem(AbstractInventoryLogic inventoryFrom, ItemInstance item, int amountItems)
+        public void ItemRouter(AbstractInventoryLogic inventoryFrom, ItemInstance item, int amountItems)
         {
             AbstractInventoryLogic targetInventory = TakeTargetInventory(inventoryFrom);
 
@@ -95,7 +93,7 @@ namespace DefaultNamespace.ShopPanel
         }
     }
 
-    public class ShopContext
+    public class ShopContext : PanelContext
     {
         public AbstractInventoryLogic PrimaryInventory;
         public AbstractInventoryLogic SecondaryInventory;
