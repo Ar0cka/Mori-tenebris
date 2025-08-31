@@ -1,13 +1,13 @@
 {
   "dependencies": {
     "com.ar0cka.console": {
-      "version": "https://github.com/Ar0cka/Console-package.git?path=ConsolePackage#v0.2.3",
+      "version": "https://github.com/Ar0cka/Console-package.git?path=ConsolePackage#v0.2.4",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.unity.textmeshpro": "3.0.6"
       },
-      "hash": "6a95548607501a40b50bd78c61ca8a68d4bd1179"
+      "hash": "0d12bd31153c914f53007f3b5b77556819eb77d3"
     },
     "com.unity.2d.animation": {
       "version": "12.0.2",

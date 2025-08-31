@@ -1,4 +1,5 @@
 using Actors.NPC.DialogSystem.DataScripts;
+using Actors.NPC.DialogSystem.DialogStates;
 
 namespace Actors.NPC.DialogSystem.FSM.DialogStates
 {
@@ -17,7 +18,7 @@ namespace Actors.NPC.DialogSystem.FSM.DialogStates
 
         private void PanelIsClosed()
         {
-            ChangeDialogState<EndDialogState>();
+            ChangeDialogState<EndPanelState>();
         }
 
         public override void Update()

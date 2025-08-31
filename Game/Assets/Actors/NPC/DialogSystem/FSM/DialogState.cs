@@ -10,6 +10,8 @@ namespace Actors.NPC.DialogSystem
     public abstract class DialogState : IDialogState
     {
         protected DialogNode CurrentDialogNode;
+        protected DialogNode FirstDialogNode;
+        
         protected bool IsEnterToState = false;
         protected bool IsCompleted = false;
 
@@ -54,7 +56,7 @@ namespace Actors.NPC.DialogSystem
             Fsm.OnSendActorText?.Invoke(text);
         }
 
-        protected void SendDialogsNodes()
+        protected void SendNextDialogNodes()
         {
             if (CurrentDialogNode != null) 
                 Fsm.OnSendDialogNodes?.Invoke(CurrentDialogNode.GetNextNodes());

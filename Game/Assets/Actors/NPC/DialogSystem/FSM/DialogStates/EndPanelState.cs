@@ -1,16 +1,13 @@
-using System;
-using System.Collections.Generic;
 using Actors.NPC.DialogSystem.DataScripts;
 using Actors.NPC.DialogSystem.DialogStates;
-using Actors.NPC.DialogSystem.TestUI;
 
-namespace Actors.NPC.DialogSystem
+namespace Actors.NPC.DialogSystem.FSM.DialogStates
 {
-    public class EndDialogState : DialogState
+    public class EndPanelState : DialogState
     {
-        public EndDialogState(DialogFSM stateMachine) : base(stateMachine)
+        public EndPanelState(DialogFSM stateMachine) : base(stateMachine)
         {
-            Fsm = stateMachine;
+           
         }
 
         public override void Enter(DialogNode node)
@@ -21,7 +18,7 @@ namespace Actors.NPC.DialogSystem
 
         private void EndAction()
         {
-            SendNextDialogNodes();
+            Fsm.OnLastDialogNode?.Invoke();
             ChangeDialogState<IdleDialogState>();
         }
         
@@ -29,10 +26,6 @@ namespace Actors.NPC.DialogSystem
         {
             // Конечное состояния, отключаем базовый FixedUpdate
         }
-
-        public override void Exit()
-        {
-            base.Exit();
-        }
+        
     }
 }

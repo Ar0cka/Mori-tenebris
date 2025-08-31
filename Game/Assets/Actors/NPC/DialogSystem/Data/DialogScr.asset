@@ -80,17 +80,17 @@ MonoBehaviour:
     isStartNode: 0
     npcDialog:
     - text: Yea, what you need?
-      timeCode: 3
+      timeCode: 1
       dialogReputation: 2
     - text: Yea, you can watch yo my items
-      timeCode: 3
+      timeCode: 1
       dialogReputation: 0
     - text: Yea, lock but not handle my items
-      timeCode: 3
+      timeCode: 1
       dialogReputation: 2
     playerDialog:
       text: Can i buy your items?
-      timeCode: 3
+      timeCode: 1
       dialogReputation: 2
     panelSettings:
       specialPanelType: 1

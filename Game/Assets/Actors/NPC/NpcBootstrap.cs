@@ -61,7 +61,7 @@ namespace Actors.NPC
         private void SpecialPanelInit()
         {
             npcInventoryPanel.Initialize();
-            shopPanel.Initialize(npcInventoryPanel);
+            shopPanel.Initialize(npcInventoryPanel, dialogFsmRealize.GetDialogFsm());
             specialPanelController.Initialize(dialogFsmRealize.GetDialogFsm());
         }
         

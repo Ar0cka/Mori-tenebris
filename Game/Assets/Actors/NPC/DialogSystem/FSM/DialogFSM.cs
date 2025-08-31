@@ -33,6 +33,10 @@ namespace Actors.NPC.DialogSystem
         /// Event triggered to provide a list of dialog nodes representing the next possible dialog options.
         /// </summary>
         public Action<List<DialogNode>> OnSendDialogNodes;
+        
+        public Action OnLastDialogNode;
+
+        public Action OnFirstDialogNode;
 
         /// <summary>
         /// Event triggered to signal the start of dialog with a specific dialog node.

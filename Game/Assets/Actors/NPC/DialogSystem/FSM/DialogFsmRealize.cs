@@ -23,6 +23,7 @@ namespace Actors.NPC.DialogSystem
             fsm.AddState(new NPCDialogState(fsm, npcController));
             fsm.AddState(new OpenNpcPanel(fsm));
             fsm.AddState(new IdlePanelState(fsm));
+            fsm.AddState(new EndPanelState(fsm));
             fsm.AddState(new EndDialogState(fsm));
             
             fsm.EnterToIdleState();

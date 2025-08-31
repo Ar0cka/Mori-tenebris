@@ -1,9 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Actors.NPC.DialogSystem.DataScripts;
 using Actors.NPC.NpcTools;
+using ConsoleApp.Runtime;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Actors.NPC.DialogSystem.TestUI
@@ -20,11 +24,15 @@ namespace Actors.NPC.DialogSystem.TestUI
         [SerializeField] private Transform dialogTextParent;
 
         private DialogFSM _dialogFsm;
-        private DialogObjectSettings _exitButtonSettings = null;
         private List<DialogObjectSettings> _dialogTextObjects;
         private DialogNode _currentDialogNode;
         private DialogNode _startDialogNode;
+
+        private Stack<DialogNode> _historyNodes = new Stack<DialogNode>();
+        private Dictionary<string, OptionalButtons> _optionalButtonsMap = new();
+        
         private DialogGraphAsset _currentDialogGraphAsset;
+        private bool _displayDialogNode = false;
 
         /// <summary>
         /// Initializes the dialog UI with the dialog FSM and the starting dialog graph asset.
@@ -43,6 +51,8 @@ namespace Actors.NPC.DialogSystem.TestUI
 
             _dialogFsm = dialogFsm;
 
+            dialogPanel.SetActive(false);
+            
             // Prepare pool of dialog text UI objects
             _dialogTextObjects = new List<DialogObjectSettings>();
 
@@ -58,12 +68,13 @@ namespace Actors.NPC.DialogSystem.TestUI
                 instance.SetActive(false);
                 _dialogTextObjects.Add(dialogObject);
             }
-
-            SpawnExitButton();
+            
+            SpawnDopButtons();
 
             // Subscribe to FSM events
             _dialogFsm.OnSendActorText += DisplayDialogText;
             _dialogFsm.OnSendDialogNodes += DisplayDialogOptions;
+            _dialogFsm.OnLastDialogNode += ReturnToLastDialogNode;
 
             _currentDialogGraphAsset = startDialogConfig;
 
@@ -71,7 +82,7 @@ namespace Actors.NPC.DialogSystem.TestUI
             _startDialogNode = DialogNodeConverter.ConvertFromAsset(_currentDialogGraphAsset).First();
             _currentDialogNode = _startDialogNode;
         }
-
+        
         /// <summary>
         /// Starts the dialog by activating the dialog panel and invoking the FSM start event.
         /// </summary>
@@ -97,12 +108,26 @@ namespace Actors.NPC.DialogSystem.TestUI
             _currentDialogNode = _startDialogNode;
         }
 
+        public void ReturnToMenu()
+        {
+            _currentDialogNode = _startDialogNode;
+            _dialogFsm.OnStartDialog?.Invoke(_currentDialogNode);
+        }
+
+        public void ReturnToLastDialogNode()
+        {
+            _currentDialogNode = _historyNodes.Pop();
+            DisplayDialogOptions(_currentDialogNode.GetNextNodes());
+        }
+        
         /// <summary>
         /// Displays a single dialog text line (NPC or player) on the UI.
         /// </summary>
         /// <param name="text">The text to display.</param>
         private void DisplayDialogText(string text)
         {
+            _displayDialogNode = true;
+            
             ClearAllDialogText();
 
             // Find the first inactive dialog text UI object
@@ -121,17 +146,35 @@ namespace Actors.NPC.DialogSystem.TestUI
         /// <summary>
         /// Spawns and configures the exit button for the dialog UI.
         /// </summary>
-        private void SpawnExitButton()
+        private void SpawnDopButtons()
         {
-            var instance = Instantiate(dialogTextPrefab, dialogTextParent);
-            _exitButtonSettings = new DialogObjectSettings(
-                instance,
-                instance.GetComponent<TextMeshProUGUI>(),
-                instance.GetComponent<Button>());
+            var optionalButtons = new Dictionary<string, UnityAction>
+            {
+                {"Last node", ReturnToLastDialogNode},
+                {"Exit", ExitFromDialogMenu}
+            };
+            
+            foreach (var item in optionalButtons)
+            {
+                var instance = Instantiate(dialogTextPrefab, dialogTextParent);
+                
+                instance.gameObject.name = item.Key;
+                
+                var dialogButton = new DialogObjectSettings(
+                    instance,
+                    instance.GetComponent<TextMeshProUGUI>(),
+                    instance.GetComponent<Button>());
 
-            _exitButtonSettings.Button.onClick.AddListener(ExitFromDialogMenu);
-            _exitButtonSettings.TextMeshProUGUI.text = "Exit";
-            _exitButtonSettings.Prefab.SetActive(true);
+                dialogButton.Button.onClick.AddListener(item.Value);
+                dialogButton.TextMeshProUGUI.text = item.Key;
+                dialogButton.Prefab.SetActive(true);
+
+                Func<bool> isVisable = item.Key == "Last node" 
+                    ? new Func<bool>(() => _historyNodes.Count > 0 && !_displayDialogNode) 
+                    : new Func<bool>(() => !_displayDialogNode);
+                
+                _optionalButtonsMap[item.Key] = new OptionalButtons(dialogButton, isVisable);
+            }
         }
 
         /// <summary>
@@ -140,6 +183,8 @@ namespace Actors.NPC.DialogSystem.TestUI
         /// <param name="dialogOptions">List of dialog nodes representing player choices.</param>
         private void DisplayDialogOptions(List<DialogNode> dialogOptions)
         {
+            _displayDialogNode = false;
+            
             ClearAllDialogText();
 
             if (dialogOptions == null || dialogOptions.Count == 0)
@@ -172,6 +217,9 @@ namespace Actors.NPC.DialogSystem.TestUI
         {
             if (dialogNode == null) return;
 
+            if (dialogNode.Condition.CurrentConditionType != ConditionType.Quest) 
+                _historyNodes.Push(_currentDialogNode);
+            
             _currentDialogNode = dialogNode;
             StartDialog();
         }
@@ -189,6 +237,11 @@ namespace Actors.NPC.DialogSystem.TestUI
                 dialogObject.TextMeshProUGUI.text = string.Empty;
                 dialogObject.Button.interactable = true;
             }
+
+            foreach (var item in _optionalButtonsMap)
+            {
+                item.Value.Button.Prefab.SetActive(item.Value.IsVisible());
+            }
         }
 
         /// <summary>
@@ -199,7 +252,7 @@ namespace Actors.NPC.DialogSystem.TestUI
         {
             return dialogPanel != null && dialogTextPrefab != null && dialogTextParent != null;
         }
-
+        
         /// <summary>
         /// Cleanup instantiated UI objects when application quits.
         /// </summary>
@@ -213,9 +266,6 @@ namespace Actors.NPC.DialogSystem.TestUI
                         Destroy(dialogObject.Prefab);
                 }
             }
-
-            if (_exitButtonSettings?.Prefab != null)
-                Destroy(_exitButtonSettings.Prefab);
         }
     }
 
@@ -233,6 +283,18 @@ namespace Actors.NPC.DialogSystem.TestUI
             Prefab = prefab;
             TextMeshProUGUI = textMeshProUGUI;
             Button = button;
+        }
+    }
+
+    public class OptionalButtons
+    {
+        public DialogObjectSettings Button { get; private set; }
+        public Func<bool> IsVisible { get; private set; }
+
+        public OptionalButtons(DialogObjectSettings button, Func<bool> isVisible)
+        {
+            Button = button;
+            IsVisible = isVisible;
         }
     }
 }

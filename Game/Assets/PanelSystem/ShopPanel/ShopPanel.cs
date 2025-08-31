@@ -1,3 +1,4 @@
+using Actors.NPC.DialogSystem;
 using Actors.NPC.Inventory;
 using Actors.NPC.SpecialPanel;
 using Actors.Player.Inventory;
@@ -32,13 +33,16 @@ namespace DefaultNamespace.ShopPanel
         private InventoryRenderer _inventoryRenderer;
         
         private NpcInventoryPanel _npcInventoryPanel;
+        private DialogFSM _dialogFsm;
 
-        public void Initialize(NpcInventoryPanel npcInventoryPanel)
+        public void Initialize(NpcInventoryPanel npcInventoryPanel, DialogFSM dialogFsm)
         {
             _npcInventoryPanel = npcInventoryPanel;
             
             _inventoryRenderer = new InventoryRenderer();
             _inventoryRenderer.Init(new InventoryRendererInitContext(shopInventoryConfig, leftInventory, rightInventory), _itemFactory, _destroyService);
+            
+            _dialogFsm = dialogFsm;
             
             shopPanel.SetActive(false);
             itemPanel.gameObject.SetActive(false);
@@ -80,6 +84,7 @@ namespace DefaultNamespace.ShopPanel
         
         public void CloseShopPanel()
         { 
+            _dialogFsm.OnClosePanel?.Invoke();
             gameObject.SetActive(false);
         }
 
