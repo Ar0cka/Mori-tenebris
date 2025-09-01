@@ -1,0 +1,9 @@
+# Protected Assets
+
+The following assets are protected by `ASSETS_LICENSE.txt` and may not be used
+in commercial projects outside of this game:
+
+List with folder:
+
+Non-commercial use is allowed for learning, research, or mods, but commercial
+use requires explicit written permission from [Your Name / Nickname].
