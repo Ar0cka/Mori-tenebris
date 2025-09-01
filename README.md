@@ -60,6 +60,12 @@ Email: vanoshul@gmail.com
 
 Mozilla Public License (MPL) 2.0
 
+## Assets License (Summary)
+
+All original assets (see the list in Assets.md) are the exclusive property of Ar0cka.
+✅ Allowed: running official builds, contributing to this project, and non-commercial personal use.
+❌ Not allowed: use in commercial projects, redistribution, or resale as standalone files.
+
 # Build & Run Instructions
 
 1. Clone the repository:
