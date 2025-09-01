@@ -10,7 +10,7 @@ All original assets in this repository, including but not limited to:
 - Fonts
 - Visual effects
 
-are the exclusive property of [Your Name / Nickname].
+are the exclusive property of Ar0cka.
 
 These assets may be used only for:
 - Running the official game builds
