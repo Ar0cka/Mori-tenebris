@@ -1,0 +1,25 @@
+Assets License
+
+All original assets in this repository, including but not limited to:
+- Artwork
+- Sprites
+- Textures
+- 3D Models
+- Animations
+- Audio
+- Fonts
+- Visual effects
+
+are the exclusive property of [Your Name / Nickname].
+
+These assets may be used only for:
+- Running the official game builds
+- Contributing to the development of this project
+- Non-commercial personal use (e.g., learning, creating mods for this game)
+
+These assets may NOT be used for:
+- Any commercial project (games, apps, products, media, etc.)
+- Redistribution, modification, or resale as standalone files
+- Use in any other project without explicit written permission
+
+Any violation will be treated as copyright infringement.
