@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DefaultNamespace.Enums;
 using NegativeEffects;
 using PlayerNameSpace;
+using ScrObj.EffectScr;
 using UnityEngine;
 
 public class HitAndAddEffect : MonoBehaviour

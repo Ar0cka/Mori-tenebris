@@ -11,15 +11,13 @@ namespace Items.Potions.Scripts
 {
     public class PotionAction : ItemAction
     {
-        [Inject] private IRegenerationHealth _regenerationHealth;
-
         public int ItemUsedForOneUse { get; private set; } = 1;
 
         public override void Action(ItemInstance itemInstance, ItemActionContext context)
         {
             if (itemInstance.itemData is Potion potion)  
             {
-                _regenerationHealth.Regeneration(potion.healthAmount);
+                context.PlayerController.RegenerationHealth().Regeneration(potion.healthAmount);
                 context.ItemRouterService.RemoveItem(context.InventoryLogic, itemInstance, ItemUsedForOneUse);
             }
         }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using EventBusNamespace;
 using PlayerNameSpace;
+using ScrObj.EffectScr;
 using UI.EffectUI;
 using UnityEngine;
 using UnityEngine.Serialization;

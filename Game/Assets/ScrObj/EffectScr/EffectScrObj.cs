@@ -1,6 +1,7 @@
+using NegativeEffects;
 using UnityEngine;
 
-namespace NegativeEffects
+namespace ScrObj.EffectScr
 {
     public abstract class EffectScrObj : ScriptableObject
     {

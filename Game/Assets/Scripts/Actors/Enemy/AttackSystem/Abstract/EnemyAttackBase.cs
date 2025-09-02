@@ -6,6 +6,7 @@ using Actors.Enemy.Monsters.AbstractEnemy;
 using Enemy.StatSystems.DamageSystem;
 using NegativeEffects;
 using PlayerNameSpace;
+using ScrObj.EffectScr;
 using UnityEngine;
 
 namespace Actors.Enemy.AttackSystem.Scripts

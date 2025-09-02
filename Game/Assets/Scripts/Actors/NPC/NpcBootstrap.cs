@@ -7,6 +7,7 @@ using Actors.NPC.DialogSystem.TestUI;
 using Actors.NPC.Inventory;
 using Actors.NPC.NpcSpecPanelSystem;
 using DefaultNamespace.ShopPanel;
+using EconomicSystem;
 using Service;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -30,6 +31,9 @@ namespace Actors.NPC
         [SerializeField] private NpcInventoryPanel npcInventoryPanel;
         [SerializeField] private ShopPanel shopPanel;
         
+        [Header("Npc economic")]
+        [SerializeField] private WalletRealize walletRealize;
+        
         [Inject] private DiContainer _diContainer;
         
         private void Awake()
@@ -48,6 +52,7 @@ namespace Actors.NPC
             npcController.InitializeNpcSystems();
             
             DialogInit();
+            EconomicSystem();
             SpecialPanelInit();
         }
 
@@ -63,6 +68,11 @@ namespace Actors.NPC
             npcInventoryPanel.Initialize();
             shopPanel.Initialize(npcInventoryPanel, dialogFsmRealize.GetDialogFsm());
             specialPanelController.Initialize(dialogFsmRealize.GetDialogFsm());
+        }
+
+        private void EconomicSystem()
+        {
+            walletRealize.Initialize();
         }
         
         private bool CheckValidity()

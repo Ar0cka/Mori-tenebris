@@ -11,16 +11,14 @@ namespace PlayerNameSpace
     public class Health : IHitPlayer, IRegenerationHealth, IDisposable
     {
         private readonly IGetPlayerStat _getPlayerStat;
-        private readonly IUpgradeStat _upgradeStat;
         private readonly Armour _armour;
 
         public int MaxHitPoint { get; private set; }
         public int CurrentHitPoint { get; private set; }
         
         public bool IsDead { get; private set; }
-
-        [Inject]
-        public Health(IGetPlayerStat getPlayerStat, Armour armour, IUpgradeStat upgradeStat)
+        
+        public Health(IGetPlayerStat getPlayerStat, Armour armour)
         {
             _armour = armour;
             _getPlayerStat = getPlayerStat;

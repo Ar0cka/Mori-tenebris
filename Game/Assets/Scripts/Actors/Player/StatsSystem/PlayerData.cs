@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using DefaultNamespace.PlayerStatsOperation;
 using DefaultNamespace.PlayerStatsOperation.SaveSystem;
@@ -7,7 +8,7 @@ using Zenject;
 
 namespace PlayerNameSpace
 {
-    public class PlayerData : IGetPlayerStat
+    public class PlayerData : IGetPlayerStat, IDisposable
     {
         private const string SCR_OBJ_PATH = "Data/Player/PlayerData";
 
@@ -58,7 +59,7 @@ namespace PlayerNameSpace
             _saveSystem.SaveData(_playerDataStats, _filePath);
         }
 
-        private void OnApplicationQuit()
+        public void Dispose()
         {
             EventBus.Unsubscribe<SendSavePlayerDataEvent>(e => SavePlayerData());
         }

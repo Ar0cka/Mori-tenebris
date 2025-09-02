@@ -1,5 +1,6 @@
 using System;
 using DefaultNamespace.Enums;
+using Items.Data.Scripts;
 using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -18,6 +19,8 @@ namespace Enemy
         
         public Sprite iconItem;
         public GameObject prefabItemUI;
+
+        public ItemTradeInfo tradeInfo;
         
         public object Clone() => this.MemberwiseClone();
     }

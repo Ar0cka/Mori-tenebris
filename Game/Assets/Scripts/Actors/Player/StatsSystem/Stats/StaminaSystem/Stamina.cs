@@ -7,13 +7,18 @@ namespace PlayerNameSpace
 {
     public class Stamina : ISubtractionStamina, IRegenerationStamina, IDisposable
     {
-        [Inject] private IGetPlayerStat _playerStat;
+        private IGetPlayerStat _playerStat;
         
         private int maxStamina;
         public int CurrentStamina { get; private set; }
         
         private PlayerDataStats _playerDataStats => _playerStat.GetPlayerDataStats();
 
+        public Stamina(IGetPlayerStat playerStat)
+        {
+            _playerStat = playerStat;
+        }
+        
         public void Initialize()
         {
             EventBus.Subscribe<SendUpdateStatEvent>(e => UpdateStamina());

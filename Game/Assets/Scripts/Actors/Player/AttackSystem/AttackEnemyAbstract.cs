@@ -16,6 +16,7 @@ namespace Actors.Player.AttackSystem
         [Header("Components")]
         [SerializeField] protected Animator animator;
         [SerializeField] protected SpriteRenderer spriteRenderer;
+        [SerializeField] protected PlayerController playerController;
         
         [Header("SidesValue")] 
         [SerializeField] protected string nameSideParameters;
@@ -27,7 +28,7 @@ namespace Actors.Player.AttackSystem
         [SerializeField] protected float checkHitAnimationDelay;
         [SerializeField] protected float endAnimationDelay;
         
-        [Inject] protected DamageSystem PlayerDamageSystem;
+        protected IDamageSystem PlayerDamageSystem;
         
         protected Dictionary<int, AttackData> _queueAttackDictionary = new Dictionary<int, AttackData>();
 
@@ -50,6 +51,8 @@ namespace Actors.Player.AttackSystem
        
         protected virtual void Awake()
         {
+            PlayerDamageSystem = playerController.DamageSystem();
+            
             if (ValidateComponents())
             {
                 enabled = false;
@@ -92,7 +95,7 @@ namespace Actors.Player.AttackSystem
         {
             if (spriteRenderer == null) spriteRenderer = GetComponentInParent<SpriteRenderer>();
             if (animator == null) animator = GetComponentInParent<Animator>();
-            
+            if (playerController == null) playerController = GetComponentInParent<PlayerController>();
             
             return spriteRenderer == null || animator == null;
         }

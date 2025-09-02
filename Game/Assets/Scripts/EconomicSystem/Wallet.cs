@@ -1,9 +1,16 @@
+using DefaultNamespace.PlayerStatsOperation.SaveSystem;
+
 namespace EconomicSystem
 {
-    public class Wallet : IMoneyDisplay, IWallet
+    public class Wallet : IWallet
     {
         public int Balance { get; private set; }
 
+        public Wallet(int balance)
+        {
+            Balance = balance;
+        }
+        
         public void AddMoney(int amount)
         {
             Balance += amount;
@@ -13,14 +20,8 @@ namespace EconomicSystem
         {
             Balance -= amount;
         }
-        
-        public int GetBalance() => Balance;
     }
-
-    public interface IMoneyDisplay
-    {
-        int GetBalance();
-    }
+    
     public interface IWallet
     {
         int Balance { get; }

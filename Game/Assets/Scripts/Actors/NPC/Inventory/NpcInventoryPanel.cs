@@ -13,6 +13,7 @@ namespace Actors.NPC.Inventory
         [SerializeField] private ItemList itemList;
         [SerializeField] private InventoryScrObj inventoryConfig;
         [SerializeField] private Transform slotHolder;
+        [SerializeField] private InventoryObjectType objectType;
         
         [Inject] private InventoryFillService _inventoryFillService;
         [Inject] private DiContainer _diContainer;
@@ -22,7 +23,7 @@ namespace Actors.NPC.Inventory
         public void Initialize()
         {
             _inventoryLogic = _diContainer.Instantiate<InventoryLogic>();
-            _inventoryLogic.Initialize(new InventoryInitializeConfig(slotHolder, inventoryConfig));
+            _inventoryLogic.Initialize(new InventoryInitializeConfig(slotHolder, inventoryConfig, objectType));
             
             _inventoryFillService.AddItemFromScrObj(_inventoryLogic, itemList.Items);
         }

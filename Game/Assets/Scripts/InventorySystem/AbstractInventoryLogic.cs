@@ -25,6 +25,8 @@ namespace Actors.Player.Inventory
         protected Stack<SlotData> SlotStack = new();
         protected bool BaseFunctionInit = false;
 
+        public InventoryObjectType ParentInventory { get; private set; }
+
         [Inject]
         public AbstractInventoryLogic(ISpawnProjectObject itemFactory)
         {
@@ -202,5 +204,12 @@ namespace Actors.Player.Inventory
         {
             return SlotStack.Count > 0;
         }
+    }
+    
+    public enum InventoryObjectType
+    {
+        Player, 
+        Npc,
+        Other
     }
 }

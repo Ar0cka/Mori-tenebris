@@ -1,5 +1,6 @@
 using DefaultNamespace.Enums;
 using NegativeEffects;
+using ScrObj.EffectScr;
 using UnityEngine;
 using Zenject;
 
@@ -9,8 +10,13 @@ namespace PlayerNameSpace
     {
         [SerializeField] private PlayerEffectController playerEffectController;
         
-        [Inject] private IHitPlayer _hitPlayer;
+        private IHitPlayer _hitPlayer;
 
+        public void Initialize(IHitPlayer hitPlayer)
+        {
+            _hitPlayer = hitPlayer;
+        }
+        
         public int GetCurrentHitPoint()
         {
             return _hitPlayer.CurrentHitPoint;

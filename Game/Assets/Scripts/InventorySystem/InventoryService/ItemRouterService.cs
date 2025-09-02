@@ -36,7 +36,7 @@ namespace Items
                 }
             }
         }
-
+        
         public void RemoveItem(IInventoryRemove fromInventory, ItemInstance itemInstance, int amount = DefaultItemRemove)
         {
             fromInventory.RemoveItem(itemInstance, amount);

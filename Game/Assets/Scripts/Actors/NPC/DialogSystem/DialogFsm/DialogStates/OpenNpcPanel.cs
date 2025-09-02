@@ -19,7 +19,7 @@ namespace Actors.NPC.DialogSystem.FSM.DialogStates
 
         private void OpenDialog()
         {
-            Fsm.OnOpenShop?.Invoke(CurrentDialogNode.SpecialPanelSettings.specialPanelType, Fsm.DialogContext.InventoryPanel);
+            Fsm.OnOpenShop?.Invoke(CurrentDialogNode.SpecialPanelSettings.specialPanelType, Fsm.DialogContext.InventoryPanel, Fsm.DialogContext.Wallet);
             ChangeDialogState<IdlePanelState>();
         }
 

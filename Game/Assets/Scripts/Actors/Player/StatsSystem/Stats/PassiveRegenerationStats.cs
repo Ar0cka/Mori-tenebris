@@ -1,4 +1,5 @@
 using System;
+using Actors.Player;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Zenject;
@@ -10,20 +11,23 @@ namespace PlayerNameSpace
         [SerializeField] private int checkThresholdHealth = 1;
         [SerializeField] private int checkThresholdStamina = 1;
 
-        [Inject] private IRegenerationHealth _regenerationHealth;
-        [Inject] private IRegenerationStamina _regenerationStamina;
-
-        [Inject] private IGetPlayerStat _getPlayerStat;
+        [SerializeField] private PlayerController playerController;
 
         private float _healingCount;
         private float _staminaCount;
 
-        private PlayerDataStats _playerData => _getPlayerStat.GetPlayerDataStats();
+        private PlayerDataStats _playerData;
+        private IRegenerationHealth _regenerationHealth;
+        private IRegenerationStamina _regenerationStamina;
 
         private bool _initializeCompleted;
 
         public void Initialize()
         {
+            _playerData = playerController.GetPlayerStat().GetPlayerDataStats();
+            _regenerationHealth = playerController.RegenerationHealth();
+            _regenerationStamina = playerController.RegenerationStamina();
+            
             _initializeCompleted = true;
         }
 

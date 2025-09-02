@@ -8,9 +8,9 @@ using Zenject;
 
 namespace PlayerNameSpace
 {
-    public class DamageSystem: IDisposable
+    public class DamageSystem: IDisposable, IDamageSystem
     {
-        [Inject] private IGetPlayerStat _getPlayerStat;
+        private IGetPlayerStat _getPlayerStat;
         
         public int Damage { get; private set; }
         public DamageType DamageType { get; private set; }
@@ -18,8 +18,10 @@ namespace PlayerNameSpace
         private PlayerStaticData PlayerStaticData => _getPlayerStat.GetPlayerDataStaticStats();
         private PlayerDataStats PlayerData => _getPlayerStat.GetPlayerDataStats();
 
-        public void Initialize()
+        public void Initialize(IGetPlayerStat getPlayerStat)
         {
+            _getPlayerStat = getPlayerStat;
+            
             EventBus.Subscribe<SendUpdateStatEvent>(e => CalculateDamage());
             EventBus.Subscribe<SendEquipWeaponEvent>(e => CalculateDamageWithWeapon(e.WeaponDamage));
             
@@ -42,5 +44,11 @@ namespace PlayerNameSpace
             EventBus.Unsubscribe<SendUpdateStatEvent>(e => CalculateDamage());
             EventBus.Unsubscribe<SendEquipWeaponEvent>(e => CalculateDamage());
         }
+    }
+
+    public interface IDamageSystem
+    {
+        public int Damage { get; }
+        public DamageType DamageType { get; }
     }
 }

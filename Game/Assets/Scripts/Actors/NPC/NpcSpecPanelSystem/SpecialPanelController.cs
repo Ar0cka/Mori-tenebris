@@ -6,6 +6,7 @@ using Actors.Player.Inventory;
 using ConsoleApp.Runtime;
 using DefaultNamespace;
 using DefaultNamespace.ShopPanel;
+using EconomicSystem;
 using Player.Inventory;
 using UnityEngine;
 
@@ -37,13 +38,13 @@ namespace Actors.NPC.NpcSpecPanelSystem
             }
         }
 
-        private void ShowShopPanel(SpecialPanelType specialPanelType, InventoryPanel inventoryLogic)
+        private void ShowShopPanel(SpecialPanelType specialPanelType, InventoryPanel inventoryLogic, IWallet targetWallet)
         {
             var shop = _specialPanelRegister.GetObject(specialPanelType);
 
             if (shop is ShopPanel shopPanel)
             {
-                shopPanel.SendShopContext(inventoryLogic);
+                shopPanel.SendShopContext(inventoryLogic, targetWallet);
             }
         }
     }

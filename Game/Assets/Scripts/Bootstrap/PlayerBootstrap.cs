@@ -1,5 +1,7 @@
 using System.Reflection;
+using Actors.Player;
 using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
+using EconomicSystem;
 using NegativeEffects;
 using Player.Inventory;
 using PlayerContextProviders;
@@ -14,6 +16,7 @@ using Zenject;
 public class PlayerBootstrap : MonoBehaviour
 {
     [Header("Player")]
+    [SerializeField] private PlayerController playerController;
     [SerializeField] private PlayerStatsUI playerUIManager;
     [SerializeField] private PassiveRegenerationStats passiveRegenerationStats;
     [SerializeField] private StateMachineRealize stateMachineRealize;
@@ -22,8 +25,10 @@ public class PlayerBootstrap : MonoBehaviour
     [SerializeField] private PlayerHealthBar playerHealthBar;
     [SerializeField] private PlayerGeterStats playerGetStats;
     [SerializeField] private HitLog hitLog;
-    
-    [FormerlySerializedAs("inventoryLogic")]
+    [SerializeField] private PlayerTakeDamage playerTakeDamage;
+
+    [Header("Economic")] 
+    [SerializeField] private WalletRealize wallet;
     [Header("Inventory")]
     [SerializeField] private InventoryPanel inventoryPanel;
     
@@ -31,11 +36,6 @@ public class PlayerBootstrap : MonoBehaviour
     [SerializeField] private PlayerDialogContextProvider playerDialogContextProvider;
     
     [Inject] private DiContainer _diContainer;
-    [Inject] private PlayerData _playerData;
-    [Inject] private Health _health;
-    [Inject] private Armour _armour;
-    [Inject] private Stamina _stamina;
-    [Inject] private DamageSystem _damageSystem;
 
     private bool _valid;
 
@@ -71,32 +71,28 @@ public class PlayerBootstrap : MonoBehaviour
     private void SpawnPlayer()
     {
         playerHealthBar.Init();
-
-        _playerData.Initialize();
-
-        #region Stats
-
-        _armour.Initialize();
-        _health.Initialize();
-        _stamina.Initialize();
-        _damageSystem.Initialize();
+        
         playerGetStats.Init();
         hitLog.Initialize();
 
-        #endregion
-
-        stateMachineRealize.Initialize(_stamina);
+        playerController.InitializePlayer();
+        
+        stateMachineRealize.Initialize(playerController.SubtractionStamina());
         passiveRegenerationStats.Initialize();
         
         InitializeInventory();
         
         #region UI
 
-        playerUIManager.Initialize();
+        playerUIManager.Initialize(playerController);
         playerLogController.Initialize();
         effectUIController.Init();
 
         #endregion
+        
+        playerTakeDamage.Initialize(playerController.HitPlayer());
+        
+        wallet.Initialize();
         
         ProvidersInitialization();
     }
@@ -108,6 +104,6 @@ public class PlayerBootstrap : MonoBehaviour
 
     private void ProvidersInitialization()
     {
-        playerDialogContextProvider.Initialize(inventoryPanel);
+        playerDialogContextProvider.Initialize(inventoryPanel, wallet);
     }
 }

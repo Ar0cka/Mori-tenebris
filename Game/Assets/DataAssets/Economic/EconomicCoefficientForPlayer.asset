@@ -13,8 +13,17 @@ MonoBehaviour:
   m_Name: EconomicCoefficientForPlayer
   m_EditorClassIdentifier: Assembly-CSharp::EconomicSystem.EconomicCoefficient
   reputationCoefficient:
-    m_Keys: 
-    m_Values: 
+    keys: 000000000200000001000000
+    values:
+    - 1.1
+    - 1.3
+    - 1.7
   rarityCoefficient:
-    m_Keys: 
-    m_Values: 
+    keys: 000000000100000002000000030000000400000005000000
+    values:
+    - 1
+    - 1.15
+    - 1.4
+    - 1.6
+    - 1.92
+    - 2.1

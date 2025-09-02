@@ -4,6 +4,7 @@ using Actors.NPC.DialogSystem.DataScripts;
 using Actors.NPC.DialogSystem.DialogStates;
 using Actors.NPC.SpecialPanel;
 using Actors.Player.Inventory;
+using EconomicSystem;
 using Player.Inventory;
 using PlayerContextProviders;
 using UnityEngine;
@@ -51,7 +52,7 @@ namespace Actors.NPC.DialogSystem
         /// <summary>
         /// Event triggered to open a special UI panel, for example, an inventory or quest panel.
         /// </summary>
-        public Action<SpecialPanelType, InventoryPanel> OnOpenShop;
+        public Action<SpecialPanelType, InventoryPanel, IWallet> OnOpenShop;
 
         /// <summary>
         /// Event triggered to close the currently open UI panel.

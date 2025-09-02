@@ -1,12 +1,20 @@
+using System;
 using Actors.NPC.DialogSystem;
 using Actors.NPC.Inventory;
+using Actors.NPC.NpcStateSystem;
 using Actors.NPC.SpecialPanel;
 using Actors.Player.Inventory;
+using ConsoleApp.Runtime;
 using DefaultNamespace.Zenject;
+using EconomicSystem;
 using Items;
+using Items.Data.Scripts;
 using Player.Inventory;
 using Project.Service;
+using Project.Service.EconomicService;
+using ScrObj.Economic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 using Zenject;
 
@@ -24,10 +32,18 @@ namespace DefaultNamespace.ShopPanel
         [SerializeField] private Transform rightInventory;
         [SerializeField] private InventoryScrObj shopInventoryConfig;
         
+        [Header("Npc wallet")]
+        [SerializeField] private WalletRealize walletRealize;
+        [SerializeField] private EconomicCoefficient coefficient;
+        
+        [Header("Npc settings")]
+        [SerializeField] private NpcController npcController;
+        
         [Inject] private ItemRouterService _itemRouterService;
         [Inject] private PanelController _panelController;
         [Inject] private ISpawnProjectObject _itemFactory;
         [Inject] private IDestroyService _destroyService;
+        [Inject] private TradeService _tradeService;
 
         private ShopContext _shopContext;
         private InventoryRenderer _inventoryRenderer;
@@ -48,9 +64,9 @@ namespace DefaultNamespace.ShopPanel
             itemPanel.gameObject.SetActive(false);
         }
 
-        public void SendShopContext(InventoryPanel playerInventoryPanel)
+        public void SendShopContext(InventoryPanel playerInventoryPanel, IWallet targetWallet)
         {
-            OpenShopPanel(new ShopContext(_npcInventoryPanel.GetInventoryLogic(), playerInventoryPanel.GetInventoryLogic()));
+            OpenShopPanel(new ShopContext(_npcInventoryPanel.GetInventoryLogic(), playerInventoryPanel.GetInventoryLogic(), targetWallet, walletRealize.Wallet));
         }
 
         private void OpenShopPanel(ShopContext shopContext)
@@ -77,9 +93,16 @@ namespace DefaultNamespace.ShopPanel
 #endif
                 return;
             }
-            
-            _itemRouterService.TransitItem(inventoryFrom, targetInventory, item, amountItems);
-            _inventoryRenderer.Redraw(_shopContext);
+
+            if (targetInventory.HaveFreeSlot())
+            {
+                if (_tradeService.ItemBuy(inventoryFrom, item, _shopContext, coefficient,
+                        npcController.GetNpcRepSystem().GetCurrentNpcReputationState(), amountItems))
+                {
+                    _itemRouterService.TransitItem(inventoryFrom, targetInventory, item, amountItems);
+                    _inventoryRenderer.Redraw(_shopContext);
+                }
+            }
         }
         
         public void CloseShopPanel()
@@ -102,11 +125,15 @@ namespace DefaultNamespace.ShopPanel
     {
         public AbstractInventoryLogic PrimaryInventory;
         public AbstractInventoryLogic SecondaryInventory;
+        public IWallet PrimaryWallet;
+        public IWallet SecondaryWallet;
 
-        public ShopContext(AbstractInventoryLogic primaryInventory, AbstractInventoryLogic secondaryInventory)
+        public ShopContext(AbstractInventoryLogic primaryInventory, AbstractInventoryLogic secondaryInventory, IWallet primaryWallet, IWallet secondaryWallet)
         {
             PrimaryInventory = primaryInventory;
             SecondaryInventory = secondaryInventory;
+            PrimaryWallet = primaryWallet;
+            SecondaryWallet = secondaryWallet;
         }
     }
 }

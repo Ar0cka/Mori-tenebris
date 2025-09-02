@@ -1,3 +1,4 @@
+using ScrObj.EffectScr;
 using UnityEngine;
 
 namespace NegativeEffects

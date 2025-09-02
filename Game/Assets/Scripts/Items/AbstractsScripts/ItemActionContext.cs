@@ -1,3 +1,4 @@
+using Actors.Player;
 using Actors.Player.Inventory;
 using Actors.Player.Inventory.EquipSlots;
 using Items;
@@ -9,12 +10,15 @@ namespace Player.Inventory
         public AbstractInventoryLogic InventoryLogic { get; private set; }
         public PlayerEquipSystem PlayerEquipSystem { get; private set; }
         public ItemRouterService ItemRouterService { get; private set; }
+        
+        public PlayerController PlayerController { get; private set; }
 
-        public ItemActionContext(AbstractInventoryLogic inventoryLogic, PlayerEquipSystem playerEquipSystem, ItemRouterService itemRouterService)
+        public ItemActionContext(AbstractInventoryLogic inventoryLogic, PlayerEquipSystem playerEquipSystem, ItemRouterService itemRouterService, PlayerController playerController)
         {
             InventoryLogic = inventoryLogic;
             PlayerEquipSystem = playerEquipSystem;
             ItemRouterService = itemRouterService;
+            PlayerController = playerController;
         }
     }
 }

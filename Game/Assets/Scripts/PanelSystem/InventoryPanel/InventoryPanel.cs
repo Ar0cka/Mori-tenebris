@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Actors.Player;
 using Actors.Player.Inventory;
 using Actors.Player.Inventory.EquipSlots;
 using DefaultNamespace;
@@ -11,6 +12,7 @@ using Player.Inventory;
 using PlayerNameSpace.Inventory;
 using Service;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 namespace Player.Inventory
@@ -19,11 +21,13 @@ namespace Player.Inventory
     {
         [SerializeField] private List<GameObject> equipSlots;
         [SerializeField] private TakeItemInInventory takeItemInInventory;
+        [SerializeField] private PlayerController playerController;
         
         [SerializeField] private Transform slotContent;
         [SerializeField] private InventoryScrObj inventoryConfig;
 
         [SerializeField] private ItemList startItemList;
+        [SerializeField] private InventoryObjectType objectType;
         
         [Inject] private InventoryFillService _inventoryFillService;
         
@@ -34,11 +38,13 @@ namespace Player.Inventory
             InventoryLogic = DiContainer.Instantiate<InventoryLogic>();
             _equipSystem = DiContainer.Instantiate<PlayerEquipSystem>();
             
-            InventoryLogic.Initialize(new InventoryInitializeConfig(slotContent, inventoryConfig));
+            InventoryLogic.Initialize(new InventoryInitializeConfig(slotContent, inventoryConfig, objectType));
             _equipSystem.InitializeEquipSlots(equipSlots);
             takeItemInInventory.Initialize(InventoryLogic);
             
             _inventoryFillService.AddItemFromScrObj(InventoryLogic, startItemList.Items);
+            
+            gameObject.SetActive(false);
         }
 
         public override void ItemRouter(ItemUI itemUI)
@@ -53,7 +59,7 @@ namespace Player.Inventory
                 return;
             }
             
-            itemUI.GetItemAction().Action(itemInstance, new ItemActionContext(InventoryLogic, _equipSystem, ItemRouterService));
+            itemUI.GetItemAction().Action(itemInstance, new ItemActionContext(InventoryLogic, _equipSystem, ItemRouterService, playerController));
         }
         
         public void OpenInventoryPanel()

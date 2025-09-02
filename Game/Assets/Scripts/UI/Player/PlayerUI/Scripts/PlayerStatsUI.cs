@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Actors.Player;
 using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
 using EventBusNamespace;
 using TMPro;
@@ -27,11 +28,11 @@ namespace PlayerNameSpace
         [SerializeField] private TextMeshProUGUI experienceText;
         [SerializeField] private TextMeshProUGUI upgradeTokensText;
 
-        [Inject] private IGetPlayerStat _getPlayerStat;
-        [Inject] private Armour _armour;
+        private IGetPlayerStat _getPlayerStat;
+        private Armour _armour;
         
-        [Inject] private Stamina _stamina;
-        [Inject] private Health _health;
+        private Stamina _stamina;
+        private Health _health;
         
         private PlayerDataStats _playerData;
         private PlayerStaticData _playerStaticData;
@@ -42,8 +43,13 @@ namespace PlayerNameSpace
             EventBus.Subscribe<SendUpdateStatEvent>(e => UpdateStatsUI());
         }
 
-        public void Initialize()
+        public void Initialize(PlayerController playerController)
         {
+            _getPlayerStat = playerController.GetPlayerStat();
+            _health = playerController.GetHealth();
+            _stamina = playerController.GetStamina();
+            _armour = playerController.GetArmour();
+            
             _playerData = _getPlayerStat.GetPlayerDataStats();
             _playerStaticData = _getPlayerStat.GetPlayerDataStaticStats();
             

@@ -10,6 +10,7 @@ using Enemy.StatSystems.DamageSystem;
 using HitChecker;
 using NegativeEffects;
 using PlayerNameSpace;
+using ScrObj.EffectScr;
 using Unity.VisualScripting;
 using UnityEngine;
 

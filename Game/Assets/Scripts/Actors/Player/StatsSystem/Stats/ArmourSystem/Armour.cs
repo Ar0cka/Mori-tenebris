@@ -13,12 +13,17 @@ namespace DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem
         public float PhysicArmour { get; private set; }
         public float MagicArmour { get; private set; }
         
-        [Inject] private readonly IGetPlayerStat _getPlayerStat;
+        private readonly IGetPlayerStat _getPlayerStat;
 
         private Dictionary<string, ArmourData> _equipItems = new Dictionary<string, ArmourData>();
 
         private int _armourFromAgility;
 
+        public Armour(IGetPlayerStat getPlayerStat)
+        {
+            _getPlayerStat = getPlayerStat;
+        }
+        
         public void Initialize()
         {
             EventBus.Subscribe<SendUpdateStatEvent>(e => UpdateArmour());
@@ -39,14 +44,13 @@ namespace DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem
         
         public void EquipArmourItem(ItemData itemData)
         {
-            //if (itemData is ArmourData equipItem)
-           // {
-               // _equipItems.Add(itemData.nameItem, equipItem);
+            if (itemData is ArmourData equipItem)
+            {
+               _equipItems.Add(itemData.nameItem, equipItem);
 
-               // PhysicArmour += equipItem.physicArmour;
-               // MagicArmour += equipItem.magicArmour;
-           // }
-            
+               PhysicArmour += equipItem.physicArmour;
+               MagicArmour += equipItem.magicArmour; 
+            }
         }
 
         public void DeleteArmour(string name)
