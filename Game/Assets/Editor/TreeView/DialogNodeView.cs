@@ -112,17 +112,17 @@
                 if (data.condition == null)
                     data.condition = new DialogCondition();
 
-                var conditionTypeEnum = new EnumField("Condition Type", data.condition.CurrentConditionType);
+                var conditionTypeEnum = new EnumField("Condition Type", data.condition.currentConditionType);
                 conditionTypeEnum.RegisterValueChangedCallback(evt =>
                 {
-                    data.condition.CurrentConditionType = (ConditionType)evt.newValue;
+                    data.condition.currentConditionType = (ConditionType)evt.newValue;
                 });
                 mainContainer.Add(conditionTypeEnum);
 
-                var actionTypeEnum = new EnumField("Action Type", data.condition.ActionType);
+                var actionTypeEnum = new EnumField("Action Type", data.condition.actionType);
                 actionTypeEnum.RegisterValueChangedCallback(evt =>
                 {
-                    data.condition.ActionType = (DialogActionType)evt.newValue;
+                    data.condition.actionType = (DialogActionType)evt.newValue;
                 });
                 mainContainer.Add(actionTypeEnum);
 

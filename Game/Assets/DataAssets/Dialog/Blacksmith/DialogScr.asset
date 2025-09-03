@@ -29,6 +29,9 @@ MonoBehaviour:
       text: Repair my item
       timeCode: 1
       dialogReputation: 2
+    condition:
+      currentConditionType: 0
+      actionType: 0
     panelSettings:
       specialPanelType: 2
     position: {x: 552, y: 299}
@@ -49,6 +52,9 @@ MonoBehaviour:
       text: Hi blacksmith
       timeCode: 1
       dialogReputation: 2
+    condition:
+      currentConditionType: 0
+      actionType: 2
     panelSettings:
       specialPanelType: 0
     position: {x: -206, y: -197}
@@ -72,6 +78,9 @@ MonoBehaviour:
       text: Can you repair my items?
       timeCode: 1
       dialogReputation: 2
+    condition:
+      currentConditionType: 0
+      actionType: 0
     panelSettings:
       specialPanelType: 2
     position: {x: 162, y: 299}
@@ -92,6 +101,9 @@ MonoBehaviour:
       text: Can i buy your items?
       timeCode: 1
       dialogReputation: 2
+    condition:
+      currentConditionType: 0
+      actionType: 1
     panelSettings:
       specialPanelType: 1
     position: {x: -447, y: 303}

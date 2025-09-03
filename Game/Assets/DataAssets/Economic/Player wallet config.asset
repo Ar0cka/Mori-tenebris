@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e4af00584254c6683f1dd92ae90a4cc, type: 3}
   m_Name: Player wallet config
   m_EditorClassIdentifier: Assembly-CSharp::ScrObj.Economic.EconomicWalletConfig
+  startBalance: 100

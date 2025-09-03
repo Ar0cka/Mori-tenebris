@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4453955254570309456}
   - component: {fileID: -1961299021396645776}
   - component: {fileID: -3503673867866383888}
+  - component: {fileID: 7401816728384572998}
   m_Layer: 0
   m_Name: ProjectContext
   m_TagString: Untagged
@@ -50,6 +51,7 @@ MonoBehaviour:
   _monoInstallers:
   - {fileID: -1961299021396645776}
   - {fileID: -3503673867866383888}
+  - {fileID: 7401816728384572998}
   _installerPrefabs: []
   _parentNewObjectsUnderContext: 1
   _editorReflectionBakingCoverageMode: 0
@@ -88,3 +90,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e5ca2ba4a16460596642ac40041e933, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7401816728384572998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3761858745815207376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64b37ae69282476dbd794b6bd089dff0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Zenject.EconomicService.InjectEconomicService

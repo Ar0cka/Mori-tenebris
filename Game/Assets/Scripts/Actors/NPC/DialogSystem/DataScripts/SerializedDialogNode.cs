@@ -21,10 +21,10 @@ namespace Actors.NPC.DialogSystem.DataScripts
     }
     
     [Serializable]
-    public class DialogCondition : IDialogCondition
+    public class DialogCondition
     {
-        public ConditionType CurrentConditionType { get; set; }
-        public DialogActionType ActionType { get; set; }
+        public ConditionType currentConditionType;
+        public DialogActionType actionType;
     }
 
     [Serializable]

@@ -1,5 +1,6 @@
 using System.Reflection;
 using Actors.Player;
+using ConsoleApp.Runtime.ConsoleAttribute;
 using DefaultNamespace.PlayerStatsOperation.StatSystem.ArmourSystem;
 using EconomicSystem;
 using NegativeEffects;
@@ -95,6 +96,8 @@ public class PlayerBootstrap : MonoBehaviour
         wallet.Initialize();
         
         ProvidersInitialization();
+        
+        CommandRegister.Register(typeof(PlayerBootstrap).Assembly);
     }
 
     private void InitializeInventory()

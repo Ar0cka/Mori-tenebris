@@ -35,6 +35,7 @@ namespace PlayerNameSpace.Inventory
         {
             if (loadConfig is InventoryInitializeConfig inventoryConfig)
             {
+                parentInventory = inventoryConfig.InventoryObjectType;
                 BaseInit(inventoryConfig.SlotParent, inventoryConfig.InventoryScrObj);
             }
         }

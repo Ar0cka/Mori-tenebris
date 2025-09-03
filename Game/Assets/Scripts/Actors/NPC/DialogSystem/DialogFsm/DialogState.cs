@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Actors.NPC.DialogSystem.DataScripts;
 using Actors.NPC.DialogSystem.FSM.DialogStates;
 using Actors.NPC.DialogSystem.TestUI;
+using ConsoleApp.Runtime;
 using UnityEngine;
 
 namespace Actors.NPC.DialogSystem
@@ -74,7 +75,9 @@ namespace Actors.NPC.DialogSystem
 
         protected bool CheckAndSwitchOnPanelState()
         {
-            if (CurrentDialogNode != null && CurrentDialogNode.Condition.ActionType == DialogActionType.OpenPanel)
+            ConsoleLogger.Info($"Current dialog action type = {CurrentDialogNode.Condition.actionType}");
+            
+            if (CurrentDialogNode != null && CurrentDialogNode.Condition.actionType == DialogActionType.OpenPanel)
             {
                 ChangeDialogState<OpenNpcPanel>();
                 return true;

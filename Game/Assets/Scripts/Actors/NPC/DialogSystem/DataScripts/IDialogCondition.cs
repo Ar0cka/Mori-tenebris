@@ -1,10 +1,5 @@
 namespace Actors.NPC.DialogSystem.DataScripts
 {
-    public interface IDialogCondition
-    {
-        ConditionType CurrentConditionType { get; set; }
-    }
-
     public enum ConditionType
     {
         Default,

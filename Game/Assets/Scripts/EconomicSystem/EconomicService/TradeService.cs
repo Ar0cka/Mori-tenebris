@@ -33,16 +33,18 @@ namespace Project.Service.EconomicService
                 return false;
             }
 
-            var buyerWallet = TakeWallet(fromInventoryLogic, shopContext);
-            var sellerWallet = TakeWallet(fromInventoryLogic, shopContext);
+            var (buyerWallet, sellerWallet) = TakeWallet(fromInventoryLogic, shopContext);
 
             if (buyerWallet == null || sellerWallet == null)
             {
                 ConsoleLogger.Error("Cant resolve wallets");
                 return false;
             }
+            
+            ConsoleLogger.Info($"BuyerWallet: {buyerWallet.Balance}, SellerWallet: {sellerWallet.Balance}");
 
             var itemPrice = CalculateFinallyItemPrice(itemInstance.itemData.tradeInfo, coefficient, npcReputation, fromInventoryLogic, amountItem);
+            ConsoleLogger.Info($"Item price {itemInstance.itemData.nameItem} = {itemPrice}");
 
             if (!CanBuy(buyerWallet, itemPrice))
             {
@@ -50,7 +52,7 @@ namespace Project.Service.EconomicService
                 return false;
             }
 
-            _moneyService.TransitMoney(buyerWallet, sellerWallet, itemPrice);
+            _moneyService.TransitMoney(sellerWallet, buyerWallet, itemPrice);
 
             return true;
         }
@@ -69,11 +71,14 @@ namespace Project.Service.EconomicService
             {
                 itemPrice = _priceCalculatingService.CalculateSellItemPrice(itemTradeInfo.price, reputationCoef,
                     itemRarityKoef);
+                
+                ConsoleLogger.Info($"Player sell item price {itemPrice}");
             }
             else
             {
                 itemPrice = _priceCalculatingService.CalculateItemPrice(itemTradeInfo.price, reputationCoef,
                     itemRarityKoef);
+                ConsoleLogger.Info($"Npc sell item price {itemPrice}");
             }
 
             return itemPrice * amountItem;
@@ -81,14 +86,17 @@ namespace Project.Service.EconomicService
 
         private bool CanBuy(IWallet buyerWallet, int itemPrice)
         {
+            ConsoleLogger.Info($"Can buy {buyerWallet.Balance >= itemPrice} where itemPrice is {itemPrice} and balance is {buyerWallet.Balance}");
             return buyerWallet.Balance >= itemPrice;
         }
 
-        private IWallet TakeWallet(AbstractInventoryLogic fromInventoryLogic, ShopContext shopContext)
+        private (IWallet buyerWallet, IWallet sellerWallet) TakeWallet(AbstractInventoryLogic fromInventoryLogic, ShopContext shopContext)
         {
-            return fromInventoryLogic == shopContext.PrimaryInventory
-                ? shopContext.SecondaryWallet
-                : shopContext.PrimaryWallet;
+            if (fromInventoryLogic == shopContext.PrimaryInventory) return (shopContext.SecondaryWallet, shopContext.PrimaryWallet);
+            
+            if (fromInventoryLogic == shopContext.SecondaryInventory) return (shopContext.PrimaryWallet, shopContext.SecondaryWallet);
+            
+            return (null, null);
         }
     }
 }

@@ -217,7 +217,7 @@ namespace Actors.NPC.DialogSystem.TestUI
         {
             if (dialogNode == null) return;
 
-            if (dialogNode.Condition.CurrentConditionType != ConditionType.Quest) 
+            if (dialogNode.Condition.currentConditionType != ConditionType.Quest) 
                 _historyNodes.Push(_currentDialogNode);
             
             _currentDialogNode = dialogNode;

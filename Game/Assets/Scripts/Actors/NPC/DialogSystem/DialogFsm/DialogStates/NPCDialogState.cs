@@ -3,6 +3,7 @@ using System.Linq;
 using Actors.NPC.DialogSystem.DataScripts;
 using Actors.NPC.DialogSystem.DialogStates;
 using Actors.NPC.DialogSystem.TestUI;
+using ConsoleApp.Runtime;
 
 namespace Actors.NPC.DialogSystem
 {
@@ -53,6 +54,8 @@ namespace Actors.NPC.DialogSystem
         {
             base.Complete();
             bool openPanel = CheckAndSwitchOnPanelState();
+            
+            ConsoleLogger.Info($"Open panel = {openPanel}");
             
             if (!openPanel) 
                 ChangeDialogState<EndDialogState>();

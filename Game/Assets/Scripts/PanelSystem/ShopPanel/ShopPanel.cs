@@ -13,7 +13,9 @@ using Player.Inventory;
 using Project.Service;
 using Project.Service.EconomicService;
 using ScrObj.Economic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 using Zenject;
@@ -31,6 +33,8 @@ namespace DefaultNamespace.ShopPanel
         [SerializeField] private Transform leftInventory;
         [SerializeField] private Transform rightInventory;
         [SerializeField] private InventoryScrObj shopInventoryConfig;
+        [SerializeField] private TextMeshProUGUI npcBalance;
+        [SerializeField] private TextMeshProUGUI targetBalance;
         
         [Header("Npc wallet")]
         [SerializeField] private WalletRealize walletRealize;
@@ -66,7 +70,8 @@ namespace DefaultNamespace.ShopPanel
 
         public void SendShopContext(InventoryPanel playerInventoryPanel, IWallet targetWallet)
         {
-            OpenShopPanel(new ShopContext(_npcInventoryPanel.GetInventoryLogic(), playerInventoryPanel.GetInventoryLogic(), targetWallet, walletRealize.Wallet));
+            OpenShopPanel(new ShopContext(_npcInventoryPanel.GetInventoryLogic(), walletRealize.Wallet, 
+                playerInventoryPanel.GetInventoryLogic(), targetWallet));
         }
 
         private void OpenShopPanel(ShopContext shopContext)
@@ -75,6 +80,8 @@ namespace DefaultNamespace.ShopPanel
                 CloseShopPanel();
             
             _shopContext = shopContext;
+            
+            UpdateBalance(shopContext.PrimaryWallet, shopContext.SecondaryWallet);
             
             _panelController.UpdatePanel(itemPanel);
             shopPanel.SetActive(true); 
@@ -101,13 +108,31 @@ namespace DefaultNamespace.ShopPanel
                 {
                     _itemRouterService.TransitItem(inventoryFrom, targetInventory, item, amountItems);
                     _inventoryRenderer.Redraw(_shopContext);
+                    UpdateBalance(_shopContext.PrimaryWallet, _shopContext.SecondaryWallet);
                 }
             }
+            else
+            {
+                ConsoleLogger.Error("Not have slots");
+            }
+        }
+
+        private void UpdateBalance(IWallet primaryWallet, IWallet secondaryWallet)
+        {
+            if (npcBalance == null || targetBalance == null || primaryWallet == null || secondaryWallet == null)
+            {
+                ConsoleLogger.Error("Not find components for update");
+                return;
+            }
+            
+            npcBalance.text = primaryWallet.Balance.ToString();
+            targetBalance.text = secondaryWallet.Balance.ToString();
         }
         
         public void CloseShopPanel()
         { 
             _dialogFsm.OnClosePanel?.Invoke();
+            _shopContext = null;
             gameObject.SetActive(false);
         }
 
@@ -128,7 +153,7 @@ namespace DefaultNamespace.ShopPanel
         public IWallet PrimaryWallet;
         public IWallet SecondaryWallet;
 
-        public ShopContext(AbstractInventoryLogic primaryInventory, AbstractInventoryLogic secondaryInventory, IWallet primaryWallet, IWallet secondaryWallet)
+        public ShopContext(AbstractInventoryLogic primaryInventory, IWallet primaryWallet, AbstractInventoryLogic secondaryInventory, IWallet secondaryWallet)
         {
             PrimaryInventory = primaryInventory;
             SecondaryInventory = secondaryInventory;

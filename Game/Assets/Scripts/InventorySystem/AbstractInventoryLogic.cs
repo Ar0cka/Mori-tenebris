@@ -25,7 +25,9 @@ namespace Actors.Player.Inventory
         protected Stack<SlotData> SlotStack = new();
         protected bool BaseFunctionInit = false;
 
-        public InventoryObjectType ParentInventory { get; private set; }
+        protected InventoryObjectType parentInventory;
+        
+        public InventoryObjectType ParentInventory => parentInventory;
 
         [Inject]
         public AbstractInventoryLogic(ISpawnProjectObject itemFactory)
@@ -73,7 +75,7 @@ namespace Actors.Player.Inventory
                 var slot = Slots[i];
                 SlotStack.Push(slot);
             }
-
+            
             BaseFunctionInit = true;
         }
         
