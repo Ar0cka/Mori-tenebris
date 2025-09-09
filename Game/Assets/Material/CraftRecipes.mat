@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: inventoryOutline
-  m_Shader: {fileID: 4800000, guid: decdcc02bff7ddb44b79d08c476337f4, type: 3}
+  m_Name: CraftRecipes
+  m_Shader: {fileID: 4800000, guid: b7f08d8736bd5954b8a85f4f0b27a2c5, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -16,7 +16,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2000
   stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
@@ -43,9 +43,9 @@ Material:
     m_Floats:
     - _ColorMask: 15
     - _EnableExternalAlpha: 0
-    - _OutlineWeight: 0.05
+    - _OutlineWeight: 0.07
     - _Size: 1
-    - _Stencil: 0
+    - _Stencil: 1
     - _StencilComp: 8
     - _StencilOp: 0
     - _StencilReadMask: 255
@@ -53,8 +53,8 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
-    - _MainColor: {r: 0.27190825, g: 0.2924528, b: 0.2717604, a: 1}
-    - _OutlineColor: {r: 0.084905684, g: 0.0028034912, b: 0.0028034912, a: 1}
+    - _MainColor: {r: 0.27058825, g: 0.29411766, b: 0.27058825, a: 1}
+    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

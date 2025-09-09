@@ -1,4 +1,4 @@
-Shader "Unlit/InventoryOutline"
+Shader "Unlit/NonStencilOutline"
 {
     Properties
     {
@@ -6,31 +6,13 @@ Shader "Unlit/InventoryOutline"
         _OutlineColor ("Outline color", Color) = (1,1,1,1)
         _OutlineWeight ("Outline weight", Float) = 1.0
         _Size ("Size squer", Float) = 1.0
-
-        _Stencil ("Stencil ID", Float) = 0
-        _StencilOp ("Stencil Op", Float) = 0
-        _StencilComp ("Stencil Comp", Float) = 8 // Always
-        _StencilReadMask ("Stencil Read Mask", Float) = 255
-        _StencilWriteMask ("Stencil Write Mask", Float) = 255
-        _ColorMask ("Color Mask", Float) = 15
     }
     SubShader
     {
         Tags
         {
-            "RenderType"="Transparent" "Queue"="Transparent"
+            "RenderType"="Opaque"
         }
-        Stencil
-        {
-            Ref [_Stencil]
-            Comp [_StencilComp]
-            Pass [_StencilOp]
-            ReadMask [_StencilReadMask]
-            WriteMask [_StencilWriteMask]
-        }
-        ColorMask [_ColorMask]
-
-        Blend SrcAlpha OneMinusSrcAlpha
 
         LOD 100
 
