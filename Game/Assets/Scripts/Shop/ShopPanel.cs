@@ -50,7 +50,7 @@ namespace DefaultNamespace.ShopPanel
         [Inject] private TradeService _tradeService;
 
         private ShopContext _shopContext;
-        private InventoryRenderer _inventoryRenderer;
+        private ShopInventoryRenderer _shopInventoryRenderer;
         
         private NpcInventoryPanel _npcInventoryPanel;
         private DialogFSM _dialogFsm;
@@ -59,8 +59,8 @@ namespace DefaultNamespace.ShopPanel
         {
             _npcInventoryPanel = npcInventoryPanel;
             
-            _inventoryRenderer = new InventoryRenderer();
-            _inventoryRenderer.Init(new InventoryRendererInitContext(shopInventoryConfig, leftInventory, rightInventory), _itemFactory, _destroyService);
+            _shopInventoryRenderer = new ShopInventoryRenderer();
+            _shopInventoryRenderer.Init(new InventoryRendererInitContext(shopInventoryConfig, leftInventory, rightInventory), _itemFactory, _destroyService);
             
             _dialogFsm = dialogFsm;
             
@@ -86,7 +86,7 @@ namespace DefaultNamespace.ShopPanel
             _panelController.UpdatePanel(itemPanel);
             shopPanel.SetActive(true); 
             
-            _inventoryRenderer.Redraw(shopContext);
+            _shopInventoryRenderer.Redraw(shopContext);
         }
 
         public void ItemRouter(AbstractInventoryLogic inventoryFrom, ItemInstance item, int amountItems)
@@ -107,7 +107,7 @@ namespace DefaultNamespace.ShopPanel
                         npcController.GetNpcRepSystem().GetCurrentNpcReputationState(), amountItems))
                 {
                     _itemRouterService.TransitItem(inventoryFrom, targetInventory, item, amountItems);
-                    _inventoryRenderer.Redraw(_shopContext);
+                    _shopInventoryRenderer.Redraw(_shopContext);
                     UpdateBalance(_shopContext.PrimaryWallet, _shopContext.SecondaryWallet);
                 }
             }

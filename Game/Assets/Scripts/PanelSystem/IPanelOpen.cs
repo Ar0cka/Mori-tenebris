@@ -2,9 +2,9 @@ using Player.Inventory;
 
 namespace DefaultNamespace
 {
-    public interface IPanelOpen
+    public interface IPanelOpen <TValue>
     {
-        void Open(ItemUI itemUI);
+        void Open(TValue itemUI);
         void Close();
     }
 }

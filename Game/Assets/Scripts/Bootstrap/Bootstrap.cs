@@ -32,6 +32,8 @@ namespace DefaultNamespace
         private void Initialize()
         {
             spawnPlayer.SetStartPosition(spawnPoint);
+            
+            
         }
         
         private void SpawnMonster()
@@ -39,7 +41,7 @@ namespace DefaultNamespace
             spawnMonster.Initialize();
         }
     }
-
+    
     public class GameInitialized
     {
         

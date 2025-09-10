@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using Enemy;
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "craftRecipes", menuName = "Craft/Recipes")]
 public class RecipesConfig : ScriptableObject
 {
-    [field:SerializeField] public GameObject RecipePrefab { get; private set; }
-    
     [SerializeField] private ItemScrObj resultItem;
     [SerializeField] private List<RecipeData> recipes = new List<RecipeData>();
     

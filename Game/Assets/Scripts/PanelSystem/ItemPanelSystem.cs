@@ -6,9 +6,12 @@ using UnityEngine.UI;
 
 namespace DefaultNamespace
 {
-    public abstract class ItemPanelSystem : MonoBehaviour, IPanelOpen
+    public abstract class ItemPanelSystem : MonoBehaviour, IPanelOpen<ItemUI>
     {
+        [Header("Base components")]
         [SerializeField] protected GameObject panelObject;
+        
+        [Header("Base UI")] 
         [SerializeField] protected TextMeshProUGUI itemNameText;
         [SerializeField] protected TextMeshProUGUI itemDescriptionText;
         [SerializeField] protected TextMeshProUGUI itemCountText;

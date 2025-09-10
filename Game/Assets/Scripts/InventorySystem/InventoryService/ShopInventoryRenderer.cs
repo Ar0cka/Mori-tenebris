@@ -1,16 +1,18 @@
 using System.Collections.Generic;
 using Actors.Player.Inventory;
+using DefaultNamespace;
 using DefaultNamespace.ShopPanel;
 using DefaultNamespace.Zenject;
 using Player.Inventory;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Zenject;
 
 namespace Project.Service
 {
     public class SlotContainer
     {
-        private readonly List<ShopSlot> _slots = new();
+        private readonly List<SlotUI> _slots = new();
         private readonly ISpawnProjectObject _factory;
         
         private readonly Transform _slotParent; 
@@ -52,7 +54,7 @@ namespace Project.Service
         public void CreateNewSlot(IDestroyService destroyService)
         {
             var slotGo = _factory.Create(_slotPrefab, _slotParent);
-            var slot = new ShopSlot(slotGo, destroyService);
+            var slot = new SlotUI(slotGo, destroyService);
             _slots.Add(slot);
         }
         
@@ -65,24 +67,24 @@ namespace Project.Service
         }
     }
     
-    public class InventoryRenderer
+    public class ShopInventoryRenderer
     {
         private SlotContainer _leftPanel;
         private SlotContainer _rightPanel;
 
-        public void Init(InventoryRendererInitContext ctx, ISpawnProjectObject factory, IDestroyService destroyService)
+        public virtual void Init<TInitConfig>(TInitConfig ctx, ISpawnProjectObject factory, IDestroyService destroyService) where TInitConfig : InventoryRendererInitContext
         {
             _leftPanel = new SlotContainer(ctx.LeftInventory, ctx.ShopInventoryConfig.InventoryData.SlotPrefab, ctx.ShopInventoryConfig.InventoryData.CountSlots, factory, destroyService);
             _rightPanel = new SlotContainer(ctx.RightInventory, ctx.ShopInventoryConfig.InventoryData.SlotPrefab, ctx.ShopInventoryConfig.InventoryData.CountSlots, factory, destroyService);
         }
 
-        public void Redraw(ShopContext ctx)
+        public virtual void Redraw<TContext>(TContext ctx) where TContext : ShopContext 
         {
             _leftPanel.Render(ctx.PrimaryInventory);
             _rightPanel.Render(ctx.SecondaryInventory);
         }
     }
-
+    
     public class InventoryRendererInitContext
     {
         public readonly InventoryScrObj ShopInventoryConfig;
@@ -95,5 +97,10 @@ namespace Project.Service
             LeftInventory = leftInventory;
             RightInventory = rightInventory;
         }
+    }
+
+    public class CraftRendInitContext
+    {
+        
     }
 }

@@ -25,7 +25,7 @@ namespace Player.Inventory
         
         [SerializeField] private Transform slotContent;
         [SerializeField] private InventoryScrObj inventoryConfig;
-
+        [SerializeField] private ItemPanelSystem itemPanelSystem;
         [SerializeField] private ItemList startItemList;
         [SerializeField] private InventoryObjectType objectType;
         

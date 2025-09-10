@@ -9,7 +9,6 @@ namespace DefaultNamespace
     public abstract class BasePanel : MonoBehaviour
     {
         [SerializeField] protected GameObject inventoryObject;
-        [SerializeField] protected ItemPanelSystem itemPanelSystem;
         
         protected AbstractInventoryLogic InventoryLogic;
         
@@ -22,11 +21,10 @@ namespace DefaultNamespace
             
         }
 
-        public virtual void OpenPanel(PanelContext panelContext)
+        public virtual void OpenPanel(PanelContext panelContext = null)
         {
             if (!gameObject.activeInHierarchy)
             {
-                PanelController.UpdatePanel(itemPanelSystem);
                 inventoryObject.SetActive(true);
             }
             else

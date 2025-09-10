@@ -6,6 +6,7 @@ using Actors.NPC.DialogSystem.DataScripts;
 using Actors.NPC.DialogSystem.TestUI;
 using Actors.NPC.Inventory;
 using Actors.NPC.NpcSpecPanelSystem;
+using DefaultNamespace;
 using DefaultNamespace.ShopPanel;
 using EconomicSystem;
 using Service;
@@ -31,10 +32,14 @@ namespace Actors.NPC
         [SerializeField] private NpcInventoryPanel npcInventoryPanel;
         [SerializeField] private ShopPanel shopPanel;
         
+        [Header("Craft")]
+        [SerializeField] private CraftPanel craftPanel;
+        
         [Header("Npc economic")]
         [SerializeField] private WalletRealize walletRealize;
         
         [Inject] private DiContainer _diContainer;
+        [Inject] private PanelController _panelController;
         
         private void Awake()
         {
@@ -49,11 +54,15 @@ namespace Actors.NPC
 
         private void Init()
         {
+            var initRegisterPanelType = new RegisterPanelValuesTypes();
+            initRegisterPanelType.InitPanelsValues(_panelController);
+            
             npcController.InitializeNpcSystems();
             
             DialogInit();
             EconomicSystem();
             SpecialPanelInit();
+            CraftSystem();
         }
 
         private void DialogInit()
@@ -73,6 +82,11 @@ namespace Actors.NPC
         private void EconomicSystem()
         {
             walletRealize.Initialize();
+        }
+
+        private void CraftSystem()
+        {
+            craftPanel.InitializeCraftPanel();
         }
         
         private bool CheckValidity()

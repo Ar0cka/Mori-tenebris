@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace DefaultNamespace.ShopPanel
 {
-    public class ShopSlot
+    public class SlotUI
     {
-        private GameObject _slotPrefab;
-        private ItemUI _itemUI;
+        protected GameObject _slotPrefab;
+        protected ItemUI _itemUI;
 
-        private IDestroyService _destroyService;
+        protected IDestroyService _destroyService;
         
-        public ShopSlot(GameObject slotPrefab, IDestroyService destroyService)
+        public SlotUI(GameObject slotPrefab, IDestroyService destroyService)
         {
             _slotPrefab = slotPrefab;
             _destroyService = destroyService;

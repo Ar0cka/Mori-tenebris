@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using ConsoleApp.Runtime;
 using Player.Inventory;
 using UnityEngine;
 
@@ -5,19 +8,26 @@ namespace DefaultNamespace
 {
     public class PanelController
     {
-        private IPanelOpen _currentPanel;
+        private Dictionary<Type, object> _panels = new();
 
-        public void UpdatePanel(IPanelOpen currentPanel)
+        public void RegisterNewPanelType<TValue>(TValue value)
         {
-            _currentPanel = currentPanel;
-            Debug.Log("PanelController:UpdatePanel");
+            if (!_panels.TryAdd(typeof(TValue), null))
+            {
+                ConsoleLogger.Error("_panel contains duplicate panel");
+            }
+        }
+        public void UpdatePanel<TValue>(IPanelOpen<TValue> panel)
+        {
+            _panels[typeof(TValue)] = panel;
+            Debug.Log($"Update panel {typeof(TValue).Name}");
         }
 
-        public void OpenPanel(ItemUI itemUI)
+        public void OpenPanel<TValue>(TValue panelValue)
         {
-            if (_currentPanel != null)
+            if (_panels.TryGetValue(typeof(TValue), out var panel))
             {
-                _currentPanel.Open(itemUI);
+                ((IPanelOpen<TValue>)panel).Open(panelValue);
             }
         }
     }
