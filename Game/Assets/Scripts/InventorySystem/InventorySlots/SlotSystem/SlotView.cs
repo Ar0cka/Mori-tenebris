@@ -30,7 +30,7 @@ namespace SlotSystem
         
         public void UpdateUI()
         {
-            _itemUI.UpdateUI();
+            _itemUI.UpdateUI(_itemUI.GetItemInstance().amount);
         }
 
         public void ChangeItem(GameObject itemPrefab, ItemUI itemUI)
