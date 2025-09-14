@@ -6,6 +6,7 @@ using Project.Service;
 using Project.Service.Context;
 using Project.Service.RendererRealize;
 using UnityEngine;
+using UnityEngine.UI;
 using Zenject;
 
 namespace DefaultNamespace
@@ -18,28 +19,38 @@ namespace DefaultNamespace
         [SerializeField] private InventoryScrObj inventoryScrObj;
         [SerializeField] private Transform playerInventoryPosition;
         
+        [Header("Button")]
+        [SerializeField] private Button exitButton;
+        
         [Inject] private PanelController _panelController;
         [Inject] private ISpawnProjectObject _spawnProjectObject;
         [Inject] private IDestroyService _destroyService;
+        [Inject] private IItemUIFactory _itemUIFactory;
 
         private CraftContext _craftContext;
         private CraftInventoryRenderer _craftInventoryRenderer;
         
         public void InitializeCraftPanel()
         {
-            craftItemPanel.InitializeCraftItemPanel();
             _craftInventoryRenderer = new CraftInventoryRenderer();
-            _craftInventoryRenderer.Init(new CraftRendInitContext(inventoryScrObj, playerInventoryPosition), _spawnProjectObject, _destroyService);
+            _craftInventoryRenderer.Init(new CraftRendInitContext(inventoryScrObj, playerInventoryPosition), _spawnProjectObject, _destroyService, _itemUIFactory);
+            craftItemPanel.InitializeCraftItemPanel(_craftInventoryRenderer);
+            
+            exitButton.onClick.AddListener(ClosePanel);
         }
         
         public override void OpenPanel(PanelContext panelContext = null)
         {
+            craftItemPanel.gameObject.SetActive(false);
+            
             inventoryObject.SetActive(true);
             _panelController.UpdatePanel<RecipesConfig>(craftItemPanel);
             
             _craftContext = (CraftContext)panelContext;
             
             if (_craftContext == null) return;
+            
+            craftItemPanel.SetCraftContext(_craftContext);
             
             RendererItems();
         }
@@ -50,14 +61,16 @@ namespace DefaultNamespace
 
             foreach (var items in itemList)
             {
-                craftItemPanel.RegisterNewListenerOnItem(items);
+                items.RemoveListener();
             }
         }
 
         public void ClosePanel()
         {
-            craftItemPanel.Close();
+            craftItemPanel.UnsetCraftContext();
             gameObject.SetActive(false);
+            craftItemPanel.gameObject.SetActive(false);
+            craftItemPanel.Close();
         }
     }
 

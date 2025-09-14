@@ -26,12 +26,10 @@ namespace Player.Inventory
         
         [Inject] private PanelController _panelController;
 
+        private Func<object?> _onClick;
+        
         private ItemInstance _itemInstance;
         private AbstractInventoryLogic _currentInventory;
-
-        private Action _customListener;
-        private Action<object> _customListenerWithContext;
-        private Action _defaultListener;
         
         public void InitializeItemSettings(ItemInstance itemInstance, AbstractInventoryLogic inventoryLogic)
         {
@@ -39,48 +37,62 @@ namespace Player.Inventory
             image.sprite = _itemInstance.itemData.iconItem;
 
             _currentInventory = inventoryLogic;
-
-            _defaultListener = UiAction;
-            itemButton.onClick.AddListener(() => _defaultListener?.Invoke());
+            
+            DefaultListener();
+            
+            itemButton.onClick.RemoveAllListeners();
+            itemButton.onClick.AddListener(OnClick);
         }
         
         public ItemInstance GetItemInstance() => _itemInstance;
         public AbstractInventoryLogic GetCurrentInventory() => _currentInventory;
         public ItemAction GetItemAction() => itemAction;
-        public virtual void UiAction()
-        {
-            _panelController.OpenPanel(this);
-        }
         
-        public void UpdateUI(int amount)
+        public void CountUIUpdate(int amount)
         {
             countUI.text = amount.ToString();
         }
         
         public Sprite GetImage() => image.sprite;
         
-        
-        public void CustomListener(Action clickAction)
-        {
-            itemButton.onClick.RemoveAllListeners();
-            _customListener = clickAction;
-            
-            itemButton.onClick.AddListener(() => _customListener?.Invoke());
-        }
+        #region Listeners
 
-        public void CustomListener(Action<object> clickAction, object ctx = null)
+        protected virtual void OnClick()
         {
-            itemButton.onClick.RemoveAllListeners();
-            _customListenerWithContext  = clickAction;
-            
-            itemButton.onClick.AddListener(() => _customListenerWithContext?.Invoke(ctx));
+            _onClick?.Invoke();
+        }
+        
+        public void CustomListener(Func<object?> onClick)
+        {
+            _onClick = onClick;
         }
         
         public void DefaultListener()
         {
+            _onClick = () =>
+            {
+                _panelController.OpenPanel(this);
+                return null;
+            };
+        }
+
+        public void RemoveListener()
+        {
+            _onClick = null;
+        }
+
+        #endregion
+
+        #region DeinstalItem
+
+        public void ClearItem()
+        {
+            _itemInstance = null;
+            image.sprite = null;
+            countUI.text = "";
+
+            _currentInventory = null;
             itemButton.onClick.RemoveAllListeners();
-            _customListener = null;
-            itemButton.onClick.AddListener(() => _defaultListener?.Invoke());
         }
         
         public void DeleteObjectFromSlot()
@@ -88,5 +100,8 @@ namespace Player.Inventory
             itemButton.onClick.RemoveAllListeners();
             Destroy(gameObject);
         }
+
+        #endregion
+        
     }
 }

@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
+using ConsoleApp.Runtime;
 using Enemy;
 using JetBrains.Annotations;
 using Player.Inventory;
+using Project.Service.RendererRealize;
 using Service;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,14 +27,17 @@ namespace DefaultNamespace
         
         [Inject] private ZenjectClassFactory _classFactory;
         
-        private CraftPanelInventory _craftPanelInventory;
+        private CraftInventory _craftInventory;
+        private CraftContext _craftContext;
+        private CraftInventoryRenderer _craftInventoryRenderer;
         
         private RecipesConfig _config;
 
-        public void InitializeCraftItemPanel()
+        public void InitializeCraftItemPanel(CraftInventoryRenderer craftRenderer)
         {
             Debug.Assert(slotParent != null, "slotParent is null");
-            _craftPanelInventory = _classFactory.Create<CraftPanelInventory>(craftSettings, slotParent, previewPrefab);
+            _craftInventory = _classFactory.Create<CraftInventory>(craftSettings, slotParent, previewPrefab);
+            _craftInventoryRenderer = craftRenderer;
         }
         
         public void Open(RecipesConfig itemRecipesConfig)
@@ -39,7 +45,7 @@ namespace DefaultNamespace
             _config = itemRecipesConfig;
             
             panelObject.SetActive(true); 
-            _craftPanelInventory.OpenCraft(itemRecipesConfig.Recipes);
+            _craftInventory.OpenCraft(itemRecipesConfig.Recipes);
             
             ItemData itemData = itemRecipesConfig.GetResultItemData();
             itemIcon.sprite = itemData.iconItem;
@@ -47,24 +53,71 @@ namespace DefaultNamespace
             itemDescriptionText.text = itemData.description;
             
             craftButton.onClick.AddListener(PanelAction);
+            closeButton.onClick.AddListener(Close);
+            closeButton.onClick.AddListener(CloseDraw);
+            
+            DrawItems();
         }
 
+        public void SetCraftContext(CraftContext craftContext)
+        {
+            if (craftContext != null)
+                _craftContext = craftContext;
+            else
+                ConsoleLogger.Error("craftContext is null");
+        }
+
+        public void UnsetCraftContext()
+        {
+            _craftContext = null;
+        }
+        
         protected override void PanelAction()
         {
-            //В будущем добавить логика обработки всех этапов крафта.
+            if (_craftInventory.CheckCanCraft(_config))
+            {
+                _craftInventory.CraftItem(_config, _craftContext);
+                DrawItems();
+            }
+            else
+            {
+                ConsoleLogger.Error("Craft failed"); //Отображение панели с ошибкой
+            }
         }
 
-        public void RegisterNewListenerOnItem(ItemUI itemUI)
+        #region DrawRegion
+
+        private void CloseDraw()
         {
-            itemUI.CustomListener(() => _craftPanelInventory.AddItemOnCraftSlot(itemUI));
+            var list = _craftInventoryRenderer.RedrawItems(_craftContext);
+            
+            foreach (var item in list)
+            {
+                item.RemoveListener();
+            }
         }
+        
+        private void DrawItems()
+        {
+            var list = _craftInventoryRenderer.RedrawItems(_craftContext);
+            
+            foreach (var item in list)
+            {
+                item.CustomListener(() =>
+                {
+                    _craftInventory.AddItemOnCraftSlot(item, 1);
+                    return null;
+                });
+            }
+        }
+
+        #endregion
         
         public override void Close()
         {
-            _craftPanelInventory.CraftPanelClose();
+            _craftInventory.CraftPanelClose();
+            craftButton.onClick.RemoveAllListeners();
             base.Close();
         }
     }
-    
-    
 }

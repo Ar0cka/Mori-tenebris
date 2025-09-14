@@ -49,6 +49,7 @@ namespace DefaultNamespace.ShopPanel
         [Inject] private ISpawnProjectObject _itemFactory;
         [Inject] private IDestroyService _destroyService;
         [Inject] private TradeService _tradeService;
+        [Inject] private IItemUIFactory _itemUIFactory;
 
         private ShopContext _shopContext;
         private ShopInventoryRenderer _shopInventoryRenderer;
@@ -61,7 +62,7 @@ namespace DefaultNamespace.ShopPanel
             _npcInventoryPanel = npcInventoryPanel;
             
             _shopInventoryRenderer = new ShopInventoryRenderer();
-            _shopInventoryRenderer.Init(new InventoryRendererInitContext(shopInventoryConfig, leftInventory, rightInventory), _itemFactory, _destroyService);
+            _shopInventoryRenderer.Init(new InventoryRendererInitContext(shopInventoryConfig, leftInventory, rightInventory), _itemFactory, _destroyService, _itemUIFactory);
             
             _dialogFsm = dialogFsm;
             

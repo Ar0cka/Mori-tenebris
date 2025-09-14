@@ -125,7 +125,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3387809182930147286}
         m_TargetAssemblyTypeName: Player.Inventory.ItemSettings, Assembly-CSharp
-        m_MethodName: UiAction
+        m_MethodName: OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

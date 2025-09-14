@@ -13,8 +13,8 @@ namespace DefaultNamespace
         private int _amount;
         private int _typeID;
 
-        public CraftSlots(GameObject slotPrefab, IDestroyService destroyService, GameObject previewPrefab) : base(
-            slotPrefab, destroyService)
+        public CraftSlots(GameObject slotPrefab, IDestroyService destroyService, GameObject previewPrefab, ItemUI itemUI) : base(
+            slotPrefab, destroyService, itemUI)
         {
             _previewPrefab = previewPrefab;
         }
@@ -33,10 +33,17 @@ namespace DefaultNamespace
 
         public void AddItemToSlot(ItemUI itemUI, int amount)
         {
-            _amount += amount;
-            SetItem(itemUI);
+            Debug.Log("AddItemToSlot");
             
-            _itemUI.UpdateUI(_amount);
+            if (!IsInit)
+            {
+                SetItem(new ItemUIContext(itemUI.GetItemInstance(), itemUI.GetCurrentInventory()));
+            }
+            
+            _amount += amount;
+            _typeID = itemUI.GetItemInstance().itemData.typeID;
+            
+            _itemUI.CountUIUpdate(_amount);
             
             if (_amount > 1)
                 itemUI.gameObject.SetActive(false);
@@ -52,16 +59,33 @@ namespace DefaultNamespace
             return typeID == _typeID && _amount >= neededCount;
         }
         
-        public void ReturnItemToInventory()
+        private void ReturnItemToInventory()
         {
-            _itemUI.GetCurrentInventory().AddItemToInventory(_itemUI.GetItemInstance(), _amount);
+            if (_itemUI != null && _amount > 0) 
+                _itemUI.GetCurrentInventory().AddItemToInventory(_itemUI.GetItemInstance(), _amount);
+        }
+
+        public ItemInstance ItemUseForCraft(int neededCount)
+        {
+            _amount -= neededCount;
+            ItemInstance item = _itemUI.GetItemInstance();
+
+            if (_amount > 0)
+            {
+                item.amount = _amount;
+            }
+
+            Clear();
+            _amount = 0;
+            
+            return item;
         }
 
         public void Close()
         {
             ReturnItemToInventory();
-            _itemUI = null;
-            _previewPrefab = null;
+            _amount = 0;
+            Clear();
         }
     }
 }

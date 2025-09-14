@@ -138,6 +138,8 @@ namespace Actors.Player.Inventory
         {
             int remaining = amount;
 
+            Debug.Log($"Item with name {itemInstance.itemData.nameItem} removing {remaining}");
+            
             foreach (var slot in Slots)
             {
                 if (remaining <= 0)

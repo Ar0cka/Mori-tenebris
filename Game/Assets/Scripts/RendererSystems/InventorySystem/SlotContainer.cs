@@ -11,11 +11,14 @@ namespace Project.Service
     {
         private readonly List<SlotUI> _slots = new();
         private readonly ISpawnProjectObject _factory;
+        private readonly IItemUIFactory _itemUIFactory;
         
         private readonly Transform _slotParent; 
         private readonly GameObject _slotPrefab;
-        public SlotContainer(Transform root, GameObject slotPrefab, int slotCount, ISpawnProjectObject factory, IDestroyService destroyService)
+        public SlotContainer(Transform root, GameObject slotPrefab, int slotCount, ISpawnProjectObject factory,
+            IDestroyService destroyService, IItemUIFactory itemUIFactory)
         {
+            _itemUIFactory = itemUIFactory;
             _factory = factory;
             _slotPrefab = slotPrefab;
             _slotParent = root;
@@ -37,14 +40,16 @@ namespace Project.Service
             {
                 if (i < items.Count)
                 {
-                    var item = _factory.Create(items[i].itemData.prefabItemUI);
-                    var itemUI = item.GetComponent<ItemUI>();
-                    itemUI.InitializeItemSettings(items[i], inventoryFrom);
-                    _slots[i].SetItem(itemUI);
-                    itemUIList.Add(itemUI);
+                    Debug.Log($"Items count = {items.Count} and current index = {i}");
+                    
+                    var item = _slots[i].SetItem(new ItemUIContext(items[i], inventoryFrom));
+                    
+                    if (item != null)
+                        itemUIList.Add(item);
                 }
                 else
                 {
+                    _slots[i].Clear();
                     break;
                 }
             }
@@ -55,7 +60,7 @@ namespace Project.Service
         public void CreateNewSlot(IDestroyService destroyService)
         {
             var slotGo = _factory.Create(_slotPrefab, _slotParent);
-            var slot = new SlotUI(slotGo, destroyService);
+            var slot = new SlotUI(slotGo, destroyService, _itemUIFactory.CreateItemUI());
             _slots.Add(slot);
         }
         

@@ -5,7 +5,7 @@ namespace Project.Service
     public abstract class AbstractInventoryRenderer <TInitConfig, TRendererContext>
     {
         public abstract void Init(TInitConfig ctx, ISpawnProjectObject factory,
-            IDestroyService destroyService);
+            IDestroyService destroyService, IItemUIFactory itemUIFactory);
 
         public abstract void Redraw(TRendererContext ctx);
     }

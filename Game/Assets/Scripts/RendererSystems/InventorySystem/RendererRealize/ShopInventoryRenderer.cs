@@ -18,13 +18,13 @@ namespace Project.Service
         private SlotContainer _leftPanel;
         private SlotContainer _rightPanel;
 
-        public override void Init(InventoryRendererInitContext shopCtx, ISpawnProjectObject factory, IDestroyService destroyService)
+        public override void Init(InventoryRendererInitContext shopCtx, ISpawnProjectObject factory, IDestroyService destroyService,  IItemUIFactory itemUIFactory)
         {
             _leftPanel = new SlotContainer(shopCtx.LeftInventory, shopCtx.ShopInventoryConfig.InventoryData.SlotPrefab,
-                shopCtx.ShopInventoryConfig.InventoryData.CountSlots, factory, destroyService);
+                shopCtx.ShopInventoryConfig.InventoryData.CountSlots, factory, destroyService, itemUIFactory);
             _rightPanel = new SlotContainer(shopCtx.RightInventory,
                 shopCtx.ShopInventoryConfig.InventoryData.SlotPrefab,
-                shopCtx.ShopInventoryConfig.InventoryData.CountSlots, factory, destroyService);
+                shopCtx.ShopInventoryConfig.InventoryData.CountSlots, factory, destroyService, itemUIFactory);
         }
 
         public override void Redraw(ShopContext ctx)

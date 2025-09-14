@@ -11,11 +11,11 @@ namespace Project.Service.RendererRealize
         private SlotContainer _playerInventoryContainer;
 
         public override void Init(CraftRendInitContext ctx, ISpawnProjectObject factory,
-            IDestroyService destroyService)
+            IDestroyService destroyService, IItemUIFactory itemUIFactory) 
         {
             _playerInventoryContainer = new SlotContainer(ctx.LeftInventory, ctx.InventoryConfig.InventoryData.SlotPrefab,
                 ctx.InventoryConfig.InventoryData.CountSlots,
-                factory, destroyService);
+                factory, destroyService, itemUIFactory);
         }
 
         public override void Redraw(CraftContext ctx)

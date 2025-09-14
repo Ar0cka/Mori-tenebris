@@ -15,4 +15,4 @@ MonoBehaviour:
   resultItem: {fileID: 11400000, guid: ffc91aaa971bec548812283901d21e4e, type: 2}
   recipes:
   - itemScrObj: {fileID: 11400000, guid: e455560e3c9bf8348853d180fee9168e, type: 2}
-    <CountForCraft>k__BackingField: 4
+    <CountForCraft>k__BackingField: 2

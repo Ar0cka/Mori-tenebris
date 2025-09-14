@@ -16,7 +16,7 @@ namespace DefaultNamespace
         [SerializeField] protected TextMeshProUGUI itemDescriptionText;
         [SerializeField] protected TextMeshProUGUI itemCountText;
         
-        [SerializeField] private Button closeButton;
+        [SerializeField] protected Button closeButton;
 
         protected ItemUI CurrentItem;
         
