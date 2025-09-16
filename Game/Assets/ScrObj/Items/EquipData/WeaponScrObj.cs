@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Items.EquipArmour.Data
 {
-    [CreateAssetMenu(fileName = "Weapon", menuName = "EquipItem/Weapon")]
+    [CreateAssetMenu(fileName = "Weapon", menuName = "Item/Weapon")]
     public class WeaponScrObj : ItemScrObj
     {
         [SerializeField] private WeaponData weaponData;

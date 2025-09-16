@@ -45,7 +45,7 @@ namespace DefaultNamespace
             
             _itemUI.CountUIUpdate(_amount);
             
-            if (_amount > 1)
+            if (itemUI.GetItemInstance().amount == 0)
                 itemUI.gameObject.SetActive(false);
         }
         
@@ -69,21 +69,23 @@ namespace DefaultNamespace
         {
             _amount -= neededCount;
             ItemInstance item = _itemUI.GetItemInstance();
-
+            
+            Clear();
+            
             if (_amount > 0)
             {
                 item.amount = _amount;
+                return item;
             }
 
-            Clear();
-            _amount = 0;
-            
-            return item;
+            return null;
         }
 
         public void Close()
         {
             ReturnItemToInventory();
+            _slotPrefab.SetActive(false);
+            _typeID = 0;
             _amount = 0;
             Clear();
         }

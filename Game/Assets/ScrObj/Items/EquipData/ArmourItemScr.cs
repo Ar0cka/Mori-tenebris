@@ -7,7 +7,7 @@ using UnityEngine.Serialization;
 
 namespace Enemy
 {
-    [CreateAssetMenu(fileName = "Armour", menuName = "EquipItem/Armour")]
+    [CreateAssetMenu(fileName = "Armour", menuName = "Item/Armour")]
     public class ArmourItemScr : ItemScrObj
     {
         [SerializeField] private ArmourData armourData;

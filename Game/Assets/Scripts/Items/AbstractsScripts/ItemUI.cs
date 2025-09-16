@@ -25,8 +25,8 @@ namespace Player.Inventory
         [SerializeField] private Button itemButton;
         
         [Inject] private PanelController _panelController;
-
-        private Func<object?> _onClick;
+        
+        private Func<object> _onClick;
         
         private ItemInstance _itemInstance;
         private AbstractInventoryLogic _currentInventory;
@@ -62,7 +62,7 @@ namespace Player.Inventory
             _onClick?.Invoke();
         }
         
-        public void CustomListener(Func<object?> onClick)
+        public void CustomListener(Func<object> onClick)
         {
             _onClick = onClick;
         }

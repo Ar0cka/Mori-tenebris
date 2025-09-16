@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30d1e22c2d054309bebd6dcff4dc159e, type: 3}
+  m_Name: Big Health
+  m_EditorClassIdentifier: Assembly-CSharp::RecipesConfig
+  resultItem: {fileID: 11400000, guid: 12f2ec5aa866f504a88aa4967a0d4827, type: 2}
+  recipes:
+  - itemScrObj: {fileID: 11400000, guid: 86407cde20d6e894c8fc28bd186b345c, type: 2}
+    <CountForCraft>k__BackingField: 5
+  - itemScrObj: {fileID: 11400000, guid: ffc91aaa971bec548812283901d21e4e, type: 2}
+    <CountForCraft>k__BackingField: 1

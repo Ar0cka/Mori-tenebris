@@ -100,7 +100,9 @@ namespace DefaultNamespace
                 if (_craftSlots.TryGetValue(recipeData.GetItemData().typeID, out var slot))
                 {
                     var item = slot.ItemUseForCraft(recipeData.CountForCraft);
-                    items.Add(item);
+                    
+                    if (item != null) 
+                        items.Add(item);
                 }
             }
 
@@ -114,6 +116,8 @@ namespace DefaultNamespace
         
         public void CraftPanelClose()
         {
+            _craftSlots.Clear();
+            
             foreach (var slot in _slots)
             {
                 slot.Close();

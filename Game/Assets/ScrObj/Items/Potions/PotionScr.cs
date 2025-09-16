@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Items
 {
-    [CreateAssetMenu(fileName = "potion", menuName = "Create/newPotion", order = 0)]
+    [CreateAssetMenu(fileName = "potion", menuName = "Item/NewPotion", order = 0)]
     public class PotionScr : ItemScrObj
     {
         [SerializeField] private Potion potion;

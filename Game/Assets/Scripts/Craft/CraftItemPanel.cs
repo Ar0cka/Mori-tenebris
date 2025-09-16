@@ -42,6 +42,9 @@ namespace DefaultNamespace
         
         public void Open(RecipesConfig itemRecipesConfig)
         {
+            if (gameObject.activeInHierarchy)
+                Close();
+            
             _config = itemRecipesConfig;
             
             panelObject.SetActive(true); 
@@ -106,6 +109,10 @@ namespace DefaultNamespace
                 item.CustomListener(() =>
                 {
                     _craftInventory.AddItemOnCraftSlot(item, 1);
+                    
+                    if (item.GetItemInstance().amount > 1)
+                        DrawItems();
+                    
                     return null;
                 });
             }
