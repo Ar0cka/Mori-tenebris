@@ -1,6 +1,6 @@
 ﻿using FiniteStateMachine;
 
-namespace Actors.Enemy.Movement.MovementFsm
+namespace Actors.Enemy.Movement
 {
     public class EnemyMoveFsm : FsmUnityBase<EnemyMoveFsm, MoveEnemyFsmUnityState>
     {

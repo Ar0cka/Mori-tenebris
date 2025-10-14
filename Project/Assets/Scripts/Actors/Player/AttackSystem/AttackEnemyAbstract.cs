@@ -55,6 +55,7 @@ namespace Actors.Player.AttackSystem
             
             if (ValidateComponents())
             {
+                Debug.LogError("Not valid components");
                 enabled = false;
                 return;
             }
@@ -71,6 +72,7 @@ namespace Actors.Player.AttackSystem
             yield return new WaitForSeconds(checkHitAnimationDelay);
                 
             CurrentAngle = GetAnimationVector() == leftSide ? hitCollider.angleColliderLeft : hitCollider.angleColliderRight;
+            Debug.Log($"Current angle is {CurrentAngle}");
             CurrentSize = hitCollider.hitSize;
             
             var hit = Physics2D.OverlapBoxAll(hitPositon.position, hitCollider.hitSize, CurrentAngle);

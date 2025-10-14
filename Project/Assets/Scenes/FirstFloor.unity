@@ -735,6 +735,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Actors.Enemy.Movement.MovementFsm.EnemyMoveFsmRealize
   moveData: {fileID: 11400000, guid: 0355afaec32c73b4d92dd6186f7e7bbd, type: 2}
   spriteRenderer: {fileID: 1481467978}
+  rb2D: {fileID: 1481467981}
 --- !u!1 &515119187
 GameObject:
   m_ObjectHideFlags: 0
@@ -73838,7 +73839,7 @@ SpriteRenderer:
   m_SortingOrder: 1
   m_Sprite: {fileID: 1595364293, guid: fa98a4a4c68967c49b4e74491b6c8381, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 1
+  m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 2, y: 2}
@@ -73925,6 +73926,7 @@ PolygonCollider2D:
       - {x: 0.3534975, y: -0.31545877}
       - {x: 0.5313728, y: -0.23938721}
       - {x: 0.58404255, y: -0.13685514}
+      - {x: 0.5814526, y: -0.0093205925}
       - {x: 0.5763567, y: 0.06291708}
       - {x: 0.53084433, y: 0.16934176}
       - {x: 0.3558295, y: 0.35083684}
@@ -74283,6 +74285,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 703755283917094458, guid: dee7587013fe8354eb1c4586870dd0e4, type: 3}
+      propertyPath: m_LinearDamping
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2567825167409041810, guid: dee7587013fe8354eb1c4586870dd0e4, type: 3}
+      propertyPath: sceneTest
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3802472210036300666, guid: dee7587013fe8354eb1c4586870dd0e4, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.207946

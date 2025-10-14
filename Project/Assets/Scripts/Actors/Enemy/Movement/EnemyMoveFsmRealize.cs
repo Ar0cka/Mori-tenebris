@@ -1,23 +1,31 @@
-﻿using System;
-using Actors.Enemy.Movement.MovementFsm.States;
+﻿using Actors.Enemy.Movement.States;
 using FiniteStateMachine;
 using ScrObj.EnemyMoveScr;
 using UnityEngine;
 
-namespace Actors.Enemy.Movement.MovementFsm
+namespace Actors.Enemy.Movement
 {
     public class EnemyMoveFsmRealize : FsmRealizeBase<EnemyMoveFsm, MoveEnemyFsmUnityState>
     {
         [SerializeField] private MoveData moveData;
+        
+        [Header("Components")]
         [SerializeField] private SpriteRenderer spriteRenderer;
+        [SerializeField] private Rigidbody2D rb2D;
 
         public bool OnSeePlayer { get; private set; }
         
         public override void Initialize()
         {
             FsmUnityBase = new EnemyMoveFsm();
+
+            Vector2 currentPosition = transform.position;
             
             FsmUnityBase.AddState(new IdleMoveState(FsmUnityBase, this));
+            FsmUnityBase.AddState(new PursuitPlayer(FsmUnityBase, rb2D, this, 
+                moveData.MoveSettings));
+            FsmUnityBase.AddState(new ReturnToStartPosition(FsmUnityBase, this, rb2D,
+                new Vector2(currentPosition.x, currentPosition.y), moveData.MoveSettings));
             
             FsmUnityBase.ChangeState<IdleMoveState>();
         }
@@ -26,7 +34,10 @@ namespace Actors.Enemy.Movement.MovementFsm
         {
             OnSeePlayer = onSeePlayer;
         }
-        
+
+        //Service for get position player and check his collider in zone
+        #region Physics Service 
+
         public bool DetectTarget()
         {
             var detectionData = moveData.IdleDetectionSettings;
@@ -52,8 +63,24 @@ namespace Actors.Enemy.Movement.MovementFsm
             }
             
             Debug.Log(angle + " player detection");
+            ChangeViewState(true);
             return true;
         }
+
+        public Vector2 GetTargetPosition()
+        {
+            var agrSettings = moveData.AggressiveSettings;
+            
+            Collider2D hit = Physics2D.OverlapCircle(transform.position, agrSettings.detectionRadius, LayerMask.GetMask("Player"));
+            
+            if (hit is null)
+                return Vector2.zero;
+            
+            return hit.transform.position;
+        }
+
+        #endregion 
+        
 
 #if UNITY_EDITOR
         private void OnDrawGizmos()
@@ -63,6 +90,9 @@ namespace Actors.Enemy.Movement.MovementFsm
 
             var detectionData = moveData.IdleDetectionSettings;
 
+            Gizmos.color = Color.darkRed;
+            Gizmos.DrawWireSphere(transform.position, moveData.AggressiveSettings.detectionRadius);
+            
             // Цвет радиуса
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, detectionData.idleDetectionRadius);
@@ -80,9 +110,7 @@ namespace Actors.Enemy.Movement.MovementFsm
             Gizmos.color = Color.cyan;
             Gizmos.DrawRay(transform.position, leftBoundary * detectionData.idleDetectionRadius);
             Gizmos.DrawRay(transform.position, rightBoundary * detectionData.idleDetectionRadius);
-        }
-#endif
-       
-        
+        } 
+#endif //Gizmos for drawing sphere and angle 
     }
 }

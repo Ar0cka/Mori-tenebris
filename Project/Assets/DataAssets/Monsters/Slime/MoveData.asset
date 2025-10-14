@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: MoveData
   m_EditorClassIdentifier: Assembly-CSharp::ScrObj.EnemyMoveScr.MoveData
   <MoveSettings>k__BackingField:
-    speed: 5
-    speedMin: 2.5
+    speed: 1
+    speedMin: 0.2
     acceleration: 1.5
     deceleration: 1.5
   <PatrolSettings>k__BackingField:

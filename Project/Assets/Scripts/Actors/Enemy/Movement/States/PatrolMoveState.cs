@@ -1,6 +1,6 @@
 ﻿using ScrObj.EnemyMoveScr;
 
-namespace Actors.Enemy.Movement.MovementFsm.States
+namespace Actors.Enemy.Movement.States
 {
     public class PatrolMoveState : MoveEnemyFsmUnityState
     {

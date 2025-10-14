@@ -1,7 +1,6 @@
 using System;
 using Actors.Enemy.Monsters.AbstractEnemy;
 using Actors.Enemy.Movement;
-using Actors.Enemy.Movement.MovementFsm;
 using Actors.Enemy.Stats.Scripts;
 using UnityEngine;
 
