@@ -17,9 +17,16 @@ MonoBehaviour:
     speedMin: 0.2
     acceleration: 1.5
     deceleration: 1.5
+    hasPatrol: 1
   <PatrolSettings>k__BackingField:
-    patrolPoints: []
-    patrolSpeed: 0
+    patrolPoints:
+    - {x: 10, y: 5}
+    - {x: 0, y: 0}
+    - {x: 3, y: 3}
+    - {x: -1, y: 3}
+    - {x: 8, y: -3}
+    patrolSpeed: 2
+    switchNodeDistance: 0.4
   <AggressiveSettings>k__BackingField:
     detectionRadius: 7
     lingerTime: 2

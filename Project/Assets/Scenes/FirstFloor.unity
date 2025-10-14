@@ -734,6 +734,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Actors.Enemy.Movement.MovementFsm.EnemyMoveFsmRealize
   moveData: {fileID: 11400000, guid: 0355afaec32c73b4d92dd6186f7e7bbd, type: 2}
+  waypoints:
+  - {x: 10, y: 5}
+  - {x: 0, y: 0}
+  - {x: 3, y: 3}
+  - {x: -1, y: 3}
+  - {x: 8, y: -3}
   spriteRenderer: {fileID: 1481467978}
   rb2D: {fileID: 1481467981}
 --- !u!1 &515119187

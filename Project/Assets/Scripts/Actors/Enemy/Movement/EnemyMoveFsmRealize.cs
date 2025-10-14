@@ -1,4 +1,5 @@
-﻿using Actors.Enemy.Movement.States;
+﻿using System.Collections.Generic;
+using Actors.Enemy.Movement.States;
 using FiniteStateMachine;
 using ScrObj.EnemyMoveScr;
 using UnityEngine;
@@ -7,7 +8,9 @@ namespace Actors.Enemy.Movement
 {
     public class EnemyMoveFsmRealize : FsmRealizeBase<EnemyMoveFsm, MoveEnemyFsmUnityState>
     {
+        [Header("Move data")]
         [SerializeField] private MoveData moveData;
+        [SerializeField] private List<Vector2> waypoints;
         
         [Header("Components")]
         [SerializeField] private SpriteRenderer spriteRenderer;
@@ -21,13 +24,24 @@ namespace Actors.Enemy.Movement
 
             Vector2 currentPosition = transform.position;
             
+            moveData.PatrolSettings.SetPatrolPoints(waypoints);
+            
             FsmUnityBase.AddState(new IdleMoveState(FsmUnityBase, this));
             FsmUnityBase.AddState(new PursuitPlayer(FsmUnityBase, rb2D, this, 
-                moveData.MoveSettings));
+                moveData.MoveSettings, moveData.AggressiveSettings));
             FsmUnityBase.AddState(new ReturnToStartPosition(FsmUnityBase, this, rb2D,
                 new Vector2(currentPosition.x, currentPosition.y), moveData.MoveSettings));
-            
-            FsmUnityBase.ChangeState<IdleMoveState>();
+            FsmUnityBase.AddState(new PatrolMoveState(FsmUnityBase, this, rb2D, moveData.PatrolSettings));
+
+            switch (moveData.MoveSettings.hasPatrol)
+            {
+                case true:
+                    FsmUnityBase.ChangeState<PatrolMoveState>();
+                    break;
+                case false:
+                    FsmUnityBase.ChangeState<IdleMoveState>();
+                    break;
+            } //On starting state
         }
 
         public void ChangeViewState(bool onSeePlayer)
@@ -110,6 +124,15 @@ namespace Actors.Enemy.Movement
             Gizmos.color = Color.cyan;
             Gizmos.DrawRay(transform.position, leftBoundary * detectionData.idleDetectionRadius);
             Gizmos.DrawRay(transform.position, rightBoundary * detectionData.idleDetectionRadius);
+
+            if (waypoints is null || waypoints.Count == 0)
+                return;
+            
+            foreach (var waypoint in waypoints)
+            {
+                Gizmos.color = Color.deepPink;
+                Gizmos.DrawSphere(waypoint, 0.5f);
+            }
         } 
 #endif //Gizmos for drawing sphere and angle 
     }

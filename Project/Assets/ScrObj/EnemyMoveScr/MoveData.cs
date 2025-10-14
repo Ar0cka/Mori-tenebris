@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ScrObj.EnemyMoveScr
@@ -19,6 +20,8 @@ namespace ScrObj.EnemyMoveScr
         public float speedMin;
         public float acceleration;
         public float deceleration;
+
+        public bool hasPatrol = false;
     }
 
     [Serializable]
@@ -42,5 +45,11 @@ namespace ScrObj.EnemyMoveScr
     {
         public Vector2[] patrolPoints;
         public float patrolSpeed;
+        public float switchNodeDistance;
+        
+        public void SetPatrolPoints(List<Vector2> points)
+        {
+            patrolPoints = points.ToArray();
+        }
     }
 }

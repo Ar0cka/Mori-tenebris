@@ -45,7 +45,8 @@ namespace Actors.Enemy.Movement.States
             {
                 _hasArrived = true;
                 Debug.Log($"Returning To StartPosition {_startPosition} where current position is {_rb2D.position}");
-                StateMachine.ChangeState<IdleMoveState>();
+                
+                ChooseIdleState(_moveSettings);
             }
         }
 
