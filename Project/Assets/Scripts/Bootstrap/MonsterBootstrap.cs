@@ -1,6 +1,7 @@
 using System;
 using Actors.Enemy.Monsters.AbstractEnemy;
 using Actors.Enemy.Movement;
+using Actors.Enemy.Movement.MovementFsm;
 using Actors.Enemy.Stats.Scripts;
 using UnityEngine;
 
@@ -11,12 +12,12 @@ namespace Project.Bootstrap
         [SerializeField] private EnemyData enemyData;
         [SerializeField] private ChangeInterrupt interrupt;
         [SerializeField] private MonstersBattleController monstersBattleController;
-        [SerializeField] private EnemyMove enemyMove;
+        [SerializeField] private EnemyMoveFsmRealize fsmRealize;
 
         private void Awake()
         {
             enemyData.Initialize();
-            enemyMove.Initialize();
+            fsmRealize.Initialize();
             interrupt.Initialize();
             
             if (monstersBattleController != null) 

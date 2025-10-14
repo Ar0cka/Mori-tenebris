@@ -1,12 +1,12 @@
 namespace FiniteStateMachine
 {
-    public abstract class StateAbstract<TFsm, TState> 
-        where TState : StateAbstract<TFsm, TState>
-        where TFsm : FsmAbstract<TFsm, TState>
+    public abstract class FsmUnityState<TFsm, TState> 
+        where TState : FsmUnityState<TFsm, TState>
+        where TFsm : FsmUnityBase<TFsm, TState>
     {
         protected TFsm StateMachine;
         
-        public StateAbstract(TFsm fsm)
+        public FsmUnityState(TFsm fsm)
         {
             StateMachine = fsm;
         }

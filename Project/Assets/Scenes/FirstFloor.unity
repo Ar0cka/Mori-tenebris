@@ -166,7 +166,7 @@ MonoBehaviour:
   enemyData: {fileID: 1481467982}
   interrupt: {fileID: 1481467984}
   monstersBattleController: {fileID: 1481467983}
-  enemyMove: {fileID: 455578825}
+  fsmRealize: {fileID: 455578826}
 --- !u!1 &148456737
 GameObject:
   m_ObjectHideFlags: 0
@@ -682,7 +682,7 @@ GameObject:
   m_Component:
   - component: {fileID: 455578823}
   - component: {fileID: 455578824}
-  - component: {fileID: 455578825}
+  - component: {fileID: 455578826}
   m_Layer: 0
   m_Name: Move
   m_TagString: Untagged
@@ -712,7 +712,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 455578822}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fd6f76ebbdff45f4b7af3f8e4d83aed9, type: 3}
   m_Name: 
@@ -721,7 +721,7 @@ MonoBehaviour:
   animator: {fileID: 1481467977}
   polygonCollider: {fileID: 1481467980}
   colliderSettings: {fileID: 11400000, guid: 79a01f75c85f15540bd09165aded07bf, type: 2}
---- !u!114 &455578825
+--- !u!114 &455578826
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -730,15 +730,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 455578822}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7bf48c380d574a20808cbde25b808ef2, type: 3}
+  m_Script: {fileID: 11500000, guid: 731401e8201942c3a3ba362ecff2d665, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  enemyData: {fileID: 1481467982}
-  rb2D: {fileID: 1481467981}
-  spriteController: {fileID: 455578824}
-  switchNodeDistance: 0.1
-  delayForRequestPath: 0.1
-  stopDistance: 1.3
+  m_EditorClassIdentifier: Assembly-CSharp::Actors.Enemy.Movement.MovementFsm.EnemyMoveFsmRealize
+  moveData: {fileID: 11400000, guid: 0355afaec32c73b4d92dd6186f7e7bbd, type: 2}
+  spriteRenderer: {fileID: 1481467978}
 --- !u!1 &515119187
 GameObject:
   m_ObjectHideFlags: 0
@@ -73642,7 +73638,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1276774232}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4d38b6ad74a6da04cb1ec5d138af6f71, type: 3}
   m_Name: 
@@ -73665,7 +73661,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1276774232}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1721d19808f8486b87081ea5a668b34c, type: 3}
   m_Name: 
@@ -73842,7 +73838,7 @@ SpriteRenderer:
   m_SortingOrder: 1
   m_Sprite: {fileID: 1595364293, guid: fa98a4a4c68967c49b4e74491b6c8381, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 2, y: 2}
@@ -73986,7 +73982,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1481467976}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bf89b98fe59645c7bc943ed1272cc1d9, type: 3}
   m_Name: 

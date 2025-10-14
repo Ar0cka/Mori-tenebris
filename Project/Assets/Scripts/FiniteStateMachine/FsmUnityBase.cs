@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace FiniteStateMachine
 {
-    public abstract class FsmAbstract<TFsm, TState>
-    where TFsm : FsmAbstract<TFsm, TState>
-    where TState : StateAbstract<TFsm, TState>
+    public abstract class FsmUnityBase<TFsm, TState>
+    where TFsm : FsmUnityBase<TFsm, TState>
+    where TState : FsmUnityState<TFsm, TState>
     {
         private TState _currentState;
         private Dictionary<Type, TState> _states = new();
