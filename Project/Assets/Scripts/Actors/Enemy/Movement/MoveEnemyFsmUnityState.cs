@@ -16,7 +16,7 @@ namespace Actors.Enemy.Movement
             if (moveSettings.hasPatrol)
                 StateMachine.ChangeState<PatrolMoveState>();
             else
-                StateMachine.ChangeState<IdleMoveState>();
+                StateMachine.ChangeState<ReturnToStartPosition>();
         }
     }
 }

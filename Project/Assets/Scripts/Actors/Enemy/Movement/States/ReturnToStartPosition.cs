@@ -37,16 +37,16 @@ namespace Actors.Enemy.Movement.States
             
             Vector2 direction = (_startPosition - _rb2D.position).normalized;
 
-            // Простое возвращение к старту
-            _rb2D.MovePosition(_rb2D.position + direction * _moveSettings.speed * Time.deltaTime);
+            // Возвращение к начальной точке.
+            _rb2D.MovePosition(_rb2D.position + direction * _moveSettings.speed * Time.fixedDeltaTime);
 
-            // Проверка прибытия
+            // Проверка дистации от начальной точки
             if (Vector2.Distance(_rb2D.position, _startPosition) <= _distance)
             {
                 _hasArrived = true;
                 Debug.Log($"Returning To StartPosition {_startPosition} where current position is {_rb2D.position}");
                 
-                ChooseIdleState(_moveSettings);
+                StateMachine.ChangeState<IdleMoveState>();
             }
         }
 
