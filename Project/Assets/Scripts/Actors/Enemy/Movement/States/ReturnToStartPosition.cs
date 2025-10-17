@@ -3,27 +3,21 @@ using UnityEngine;
 
 namespace Actors.Enemy.Movement.States
 {
-    public class ReturnToStartPosition : MoveEnemyFsmUnityState
+    public class ReturnToStartPosition : BaseMovementState
     {
-        private readonly EnemyMoveFsmRealize _fsmRealize;
-        private readonly Rigidbody2D _rb2D;
         private readonly Vector2 _startPosition;
-        private readonly MoveSettings _moveSettings;
 
         private bool _hasArrived = false;
         private float _distance = 0.5f;
         
-        public ReturnToStartPosition(EnemyMoveFsm fsm, EnemyMoveFsmRealize fsmRealize, Rigidbody2D rb2D, 
-            Vector2 startPosition, MoveSettings moveSettings) : base(fsm)
+        public ReturnToStartPosition(EnemyMoveFsm fsm, BaseMovementContext context, Vector2 startPosition) : base(fsm, context)
         {
-            _fsmRealize = fsmRealize;
-            _rb2D = rb2D;
             _startPosition = startPosition;
-            _moveSettings = moveSettings;
         }
 
         public override void Enter()
         {
+            base.Enter();
             _hasArrived = false;
             Debug.Log("Entering ReturnToStartPosition");
         }
@@ -32,26 +26,24 @@ namespace Actors.Enemy.Movement.States
         {
             if (_hasArrived) return;
             
-            if (_fsmRealize.DetectTarget())
+            base.PhysicsUpdate();
+            
+            if (FsmRealize.DetectTarget())
                 StateMachine.ChangeState<PursuitPlayer>();
             
-            Vector2 direction = (_startPosition - _rb2D.position).normalized;
-
-            // Возвращение к начальной точке.
-            _rb2D.MovePosition(_rb2D.position + direction * _moveSettings.speed * Time.fixedDeltaTime);
+            BaseMove(_startPosition, MoveSettings.speed);
 
             // Проверка дистации от начальной точки
-            if (Vector2.Distance(_rb2D.position, _startPosition) <= _distance)
+            if (CheckDistance(_startPosition, Rb2D.position, _distance))
             {
-                _hasArrived = true;
-                Debug.Log($"Returning To StartPosition {_startPosition} where current position is {_rb2D.position}");
-                
+                _hasArrived = true; ;
                 StateMachine.ChangeState<IdleMoveState>();
             }
         }
 
         public override void Exit()
         {
+            base.Exit();
             _hasArrived = false;
         }
     }

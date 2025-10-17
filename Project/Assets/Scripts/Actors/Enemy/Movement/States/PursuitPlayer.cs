@@ -5,11 +5,8 @@ using UnityEngine;
 
 namespace Actors.Enemy.Movement.States
 {
-    public class PursuitPlayer : MoveEnemyFsmUnityState
+    public class PursuitPlayer : BaseMovementState
     {
-        private readonly Rigidbody2D _rigidbody;
-        private readonly EnemyMoveFsmRealize _fsmRealize;
-        private MoveSettings _moveSettings;
         private AggressiveSettings _aggressiveSettings;
 
         private bool _stopDistance;
@@ -19,33 +16,34 @@ namespace Actors.Enemy.Movement.States
 
         private Vector2 _lastCheckPoint = Vector2.zero;
         
-        public PursuitPlayer(EnemyMoveFsm fsm, Rigidbody2D rigidbody2D,
-           EnemyMoveFsmRealize fsmRealize , MoveSettings moveData, AggressiveSettings aggressiveSettings) : base(fsm)
+        public PursuitPlayer(EnemyMoveFsm fsm, BaseMovementContext context, 
+           AggressiveSettings aggressiveSettings) : base(fsm, context)
         {
-            _rigidbody = rigidbody2D;
-            _fsmRealize = fsmRealize;
-            _moveSettings = moveData;
             _aggressiveSettings = aggressiveSettings;
         }
 
         public override void Enter()
         {
-            if (!_fsmRealize.OnSeePlayer)
-                ChooseIdleState(_moveSettings);
+            if (!FsmRealize.OnSeePlayer)
+                ChooseIdleState(MoveSettings);
+            
+            base.Enter();
 
             _timer = 0;
         }
 
         public override void PhysicsUpdate()
         {
+            base.PhysicsUpdate();
+            
             MoveToPlayer();
         }
 
         private void MoveToPlayer()
         {
-            Vector2 targetPosition = _fsmRealize.GetTargetPosition();
+            Vector2 targetPosition = FsmRealize.GetTargetPosition();
             
-            _stopDistance = Vector2.Distance(_rigidbody.position, targetPosition) <= _aggressiveSettings.stopDistance;
+            _stopDistance = Vector2.Distance(Rb2D.position, targetPosition) <= _aggressiveSettings.stopDistance;
             
             if (targetPosition == Vector2.zero)
             {
@@ -55,9 +53,7 @@ namespace Actors.Enemy.Movement.States
             
             if (!_stopDistance)
             {
-                Vector2 direction = (_fsmRealize.GetTargetPosition() - _rigidbody.position).normalized;
-                Vector2 moveDirection = direction * _moveSettings.speed * Time.fixedDeltaTime;
-                _rigidbody.MovePosition(_rigidbody.position + moveDirection);
+                BaseMove(FsmRealize.GetTargetPosition(), MoveSettings.speed);
             }
             
             _timer = 0;
@@ -72,25 +68,25 @@ namespace Actors.Enemy.Movement.States
             if (_timer >= _aggressiveSettings.lingerTime)
             {
                 Debug.Log("Linger change state");
-                ChooseIdleState(_moveSettings);
+                ChooseIdleState(MoveSettings);
             }
 
             if (_lastCheckPoint == Vector2.zero ||
-                Vector2.Distance(_lastCheckPoint, _rigidbody.position) < LingerDistance)
+                Vector2.Distance(_lastCheckPoint, Rb2D.position) < LingerDistance)
             {
                 _lastCheckPoint = new Vector2(Random.Range(-2, 2), Random.Range(-2, 2));
-                _lastCheckPoint += _rigidbody.position; //Сделать проверку дошел ли до точки
+                _lastCheckPoint += Rb2D.position; //Сделать проверку дошел ли до точки
             } 
                 
             
-            Vector2 moveDirection = (_lastCheckPoint - _rigidbody.position).normalized;
+            Vector2 moveDirection = (_lastCheckPoint - Rb2D.position).normalized;
             
-            _rigidbody.MovePosition(_rigidbody.position + moveDirection * (_moveSettings.speed + 1) * Time.fixedDeltaTime);
+            Rb2D.MovePosition(Rb2D.position + moveDirection * (MoveSettings.speed + 1) * Time.fixedDeltaTime);
         }
         
         public override void Exit()
         {
-            _fsmRealize.ChangeViewState(false);
+            FsmRealize.ChangeViewState(false);
             _lastCheckPoint = Vector2.zero;
         }
     }

@@ -13,23 +13,30 @@ MonoBehaviour:
   m_Name: MoveData
   m_EditorClassIdentifier: Assembly-CSharp::ScrObj.EnemyMoveScr.MoveData
   <MoveSettings>k__BackingField:
-    speed: 1
+    movementAnimationList:
+      keys: 01000000
+      values:
+      - Walk
+    speed: 0.97
     speedMin: 0.2
     acceleration: 1.5
     deceleration: 1.5
     hasPatrol: 1
   <PatrolSettings>k__BackingField:
     patrolPoints:
-    - {x: 10, y: 5}
-    - {x: 0, y: 0}
-    - {x: 3, y: 3}
-    - {x: -1, y: 3}
-    - {x: 8, y: -3}
+    - {x: 7.94, y: -0.06}
+    - {x: -2.87, y: 0}
+    - {x: 2.68, y: 4.6}
+    - {x: -1.03, y: 3.4}
+    - {x: 6.1, y: -3}
+    - {x: -0.42, y: -3}
+    - {x: 2.73, y: -4.86}
+    - {x: 6.27, y: 2.82}
     patrolSpeed: 2
     switchNodeDistance: 0.4
   <AggressiveSettings>k__BackingField:
     detectionRadius: 7
-    lingerTime: 2
+    lingerTime: 5
     stopDistance: 2
   <IdleDetectionSettings>k__BackingField:
     fieldOfViewAngle: 90

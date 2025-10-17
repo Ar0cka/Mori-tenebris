@@ -15,6 +15,7 @@ namespace Actors.Enemy.Movement
         [Header("Components")]
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private Rigidbody2D rb2D;
+        [SerializeField] private Animator animator;
 
         public bool OnSeePlayer { get; private set; }
         
@@ -25,13 +26,15 @@ namespace Actors.Enemy.Movement
             Vector2 currentPosition = transform.position;
             
             moveData.PatrolSettings.SetPatrolPoints(waypoints);
+
+            BaseMovementContext baseMovementContext =
+                new BaseMovementContext(this, spriteRenderer, rb2D, animator, moveData.MoveSettings);
             
             FsmUnityBase.AddState(new IdleMoveState(FsmUnityBase, this));
-            FsmUnityBase.AddState(new PursuitPlayer(FsmUnityBase, rb2D, this, 
-                moveData.MoveSettings, moveData.AggressiveSettings));
-            FsmUnityBase.AddState(new ReturnToStartPosition(FsmUnityBase, this, rb2D,
-                new Vector2(currentPosition.x, currentPosition.y), moveData.MoveSettings));
-            FsmUnityBase.AddState(new PatrolMoveState(FsmUnityBase, this, rb2D, moveData.PatrolSettings));
+            FsmUnityBase.AddState(new PursuitPlayer(FsmUnityBase, baseMovementContext, moveData.AggressiveSettings));
+            FsmUnityBase.AddState(new ReturnToStartPosition(FsmUnityBase, baseMovementContext, 
+                new Vector2(currentPosition.x, currentPosition.y)));
+            FsmUnityBase.AddState(new PatrolMoveState(FsmUnityBase, baseMovementContext, moveData.PatrolSettings));
 
             switch (moveData.MoveSettings.hasPatrol)
             {

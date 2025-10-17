@@ -5,21 +5,17 @@ using UnityEngine.Rendering;
 
 namespace Actors.Enemy.Movement.States
 {
-    public class PatrolMoveState : MoveEnemyFsmUnityState
+    public class PatrolMoveState : BaseMovementState
     {
         private PatrolSettings _patrolSettings;
-        private EnemyMoveFsmRealize _fsmRealize;
-        private Rigidbody2D _rb2D;
         
         private int _nodeNumber = 0;
         
-        public PatrolMoveState(EnemyMoveFsm fsm, EnemyMoveFsmRealize fsmRealize, Rigidbody2D rigidbody2D,
+        public PatrolMoveState(EnemyMoveFsm fsm, BaseMovementContext context,
             PatrolSettings patrolSettings) 
-            : base(fsm)
+            : base(fsm, context)
         {
             _patrolSettings = patrolSettings;
-            _rb2D = rigidbody2D;
-            _fsmRealize = fsmRealize;
         }
 
         public override void Enter()
@@ -27,26 +23,27 @@ namespace Actors.Enemy.Movement.States
             if (_patrolSettings.patrolPoints.Length == 0)
                 StateMachine.ChangeState<IdleMoveState>();
             
+            base.Enter();   
+            
             _nodeNumber = Math.Clamp(_nodeNumber, 0, _patrolSettings.patrolPoints.Length - 1);
         }
 
         public override void PhysicsUpdate()
         {
+            base.PhysicsUpdate();
             MoveToNode();
         }
 
         private void MoveToNode()
         {
-            if (_fsmRealize.DetectTarget())
+            if (FsmRealize.DetectTarget())
                 StateMachine.ChangeState<PursuitPlayer>();
             
             Vector2 targetPosition = _patrolSettings.patrolPoints[_nodeNumber];
-            Vector2 currentPosition = _rb2D.position;
             
-            Vector2 moveDirection = (targetPosition - currentPosition).normalized;
-            _rb2D.MovePosition(currentPosition + moveDirection * _patrolSettings.patrolSpeed * Time.deltaTime);
+            BaseMove(targetPosition, _patrolSettings.patrolSpeed);
 
-            if (CheckDistance(targetPosition, currentPosition))
+            if (CheckDistance(targetPosition, Rb2D.position, _patrolSettings.switchNodeDistance))
             {
                 _nodeNumber++;
 
@@ -55,11 +52,6 @@ namespace Actors.Enemy.Movement.States
                     _nodeNumber = 0;
                 }
             }
-        }
-
-        private bool CheckDistance(Vector2 targetPosition, Vector2 currentPosition)
-        {
-            return Vector2.Distance(targetPosition, currentPosition) <= _patrolSettings.switchNodeDistance;
         }
     }
 }

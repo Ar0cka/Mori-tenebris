@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Scripts.Systems;
 using UnityEngine;
 
 namespace ScrObj.EnemyMoveScr
@@ -16,6 +17,8 @@ namespace ScrObj.EnemyMoveScr
     [Serializable]
     public class MoveSettings
     {
+        public SerializableDictionary<MoveType, string> movementAnimationList;
+        
         public float speed;
         public float speedMin;
         public float acceleration;
@@ -52,4 +55,11 @@ namespace ScrObj.EnemyMoveScr
             patrolPoints = points.ToArray();
         }
     }
+}
+
+public enum MoveType
+{
+    Idle,
+    Move,
+    Backstep,
 }
