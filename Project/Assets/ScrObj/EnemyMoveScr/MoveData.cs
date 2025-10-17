@@ -32,6 +32,7 @@ namespace ScrObj.EnemyMoveScr
     {
         public float detectionRadius;
         public float lingerTime = 2f;
+        public float lingerDistance = 0.3f;
         public float stopDistance;
     }
 

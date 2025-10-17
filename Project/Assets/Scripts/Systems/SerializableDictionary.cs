@@ -21,7 +21,7 @@ namespace Scripts.Systems
             {
                 if (!Dictionary.TryAdd(keys[i], values[i]))
                 {
-                    Debug.Log($"Dictionary contains duplicate keys {keys[i]}");
+                    Debug.LogError($"Dictionary contains duplicate keys {keys[i]}");
                 }
             }
             

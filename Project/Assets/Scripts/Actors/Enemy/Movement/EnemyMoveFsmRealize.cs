@@ -26,6 +26,7 @@ namespace Actors.Enemy.Movement
             Vector2 currentPosition = transform.position;
             
             moveData.PatrolSettings.SetPatrolPoints(waypoints);
+            moveData.MoveSettings.movementAnimationList.ToDictionary();
 
             BaseMovementContext baseMovementContext =
                 new BaseMovementContext(this, spriteRenderer, rb2D, animator, moveData.MoveSettings);
@@ -35,6 +36,7 @@ namespace Actors.Enemy.Movement
             FsmUnityBase.AddState(new ReturnToStartPosition(FsmUnityBase, baseMovementContext, 
                 new Vector2(currentPosition.x, currentPosition.y)));
             FsmUnityBase.AddState(new PatrolMoveState(FsmUnityBase, baseMovementContext, moveData.PatrolSettings));
+            FsmUnityBase.AddState(new LingerState(FsmUnityBase, baseMovementContext, moveData.AggressiveSettings));
 
             switch (moveData.MoveSettings.hasPatrol)
             {

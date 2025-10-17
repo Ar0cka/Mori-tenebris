@@ -52,8 +52,11 @@ namespace Actors.Enemy.Movement.States
         {
             var dictionary = MoveSettings.movementAnimationList.Dictionary;
 
+            if (dictionary == null)
+               throw new Exception("No movement animation list found");
+            
             if (dictionary.TryGetValue(moveType, out var animation))
-            {
+            {   
                 if (_currentAnimationName == animation)
                     return;
                 
