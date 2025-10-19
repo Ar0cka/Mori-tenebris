@@ -1,0 +1,10 @@
+﻿namespace Actors.Enemy.Movement.States
+{
+    public class PathfinderMove : MoveEnemyFsmUnityState
+    {
+        public PathfinderMove(EnemyMoveFsm enemyMoveFsm, BaseMovementContext context) : base(enemyMoveFsm, context)
+        {
+            
+        }
+    }
+}
