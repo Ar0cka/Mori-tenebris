@@ -1,4 +1,5 @@
-﻿using Actors.Enemy.Movement.Service;
+﻿using System;
+using Actors.Enemy.Movement.Service;
 using Actors.Enemy.Movement.States;
 using FiniteStateMachine;
 using ScrObj.EnemyMoveScr;
@@ -8,17 +9,18 @@ namespace Actors.Enemy.Movement
 {
     public class MoveEnemyFsmUnityState : FsmUnityState<EnemyMoveFsm, MoveEnemyFsmUnityState>
     {
-        protected readonly EnemyMoveFsmRealize FsmRealize;
+        protected readonly MileEnemyMoveRealize Realize;
         protected readonly MoveData MoveData;
         protected readonly SpriteRenderer SpriteRenderer;
         protected readonly Rigidbody2D Rb2D;
         protected readonly Animator Animator;
         protected readonly DetectedPlayerService DetectedPlayerService;
         
-        public MoveEnemyFsmUnityState(EnemyMoveFsm fsm, BaseMovementContext baseMovementContext) : base(fsm)
+        public MoveEnemyFsmUnityState(EnemyMoveFsm fsm, DataContext<MileEnemyMoveRealize, MoveData> dataContext, 
+            BaseMovementContext baseMovementContext) : base(fsm)
         {
-            FsmRealize = baseMovementContext.FsmRealize;
-            MoveData = baseMovementContext.MoveData;
+            Realize = dataContext.Realize;
+            MoveData = dataContext.Config;
             SpriteRenderer = baseMovementContext.SpriteRenderer;
             Rb2D = baseMovementContext.Rigidbody2D;
             Animator = baseMovementContext.Animator;
@@ -32,7 +34,7 @@ namespace Actors.Enemy.Movement
             else
                 StateMachine.ChangeState<ReturnToStartPosition>();
             
-            FsmRealize.ChangeViewState(false);
+            Realize.ChangeViewState(false);
         }
 
         protected virtual Vector2 DetectedPlayer()
@@ -53,23 +55,31 @@ namespace Actors.Enemy.Movement
     
     public class BaseMovementContext
     {
-        public readonly EnemyMoveFsmRealize FsmRealize;
-        public readonly MoveData MoveData;
-        public readonly SpriteRenderer SpriteRenderer;
-        public readonly Rigidbody2D Rigidbody2D;
-        public readonly Animator Animator;
-        public readonly DetectedPlayerService DetectedPlayerService;
-    
-        public BaseMovementContext(EnemyMoveFsmRealize enemyMoveFsmRealize,
-            SpriteRenderer spriteRenderer, Rigidbody2D rigidbody2D, Animator animator,
-            MoveData moveData, DetectedPlayerService detectedPlayerService)
+        public SpriteRenderer SpriteRenderer;
+        public Rigidbody2D Rigidbody2D;
+        public Animator Animator;
+        public DetectedPlayerService DetectedPlayerService;
+
+        public BaseMovementContext(MileEnemyMoveRealize fsmRealize,
+            SpriteRenderer fsmSpriteRenderer, Rigidbody2D fsmRigidbody2D,
+            Animator fsmAnimator, MoveData fsmMoveData, DetectedPlayerService fsmDetectedPlayerService)
         {
-            FsmRealize = enemyMoveFsmRealize;
-            MoveData = moveData;
-            SpriteRenderer = spriteRenderer;
-            Rigidbody2D = rigidbody2D;
-            Animator = animator;
-            DetectedPlayerService =  detectedPlayerService;
+            SpriteRenderer = fsmSpriteRenderer;
+            Rigidbody2D = fsmRigidbody2D;
+            Animator = fsmAnimator;
+            DetectedPlayerService = fsmDetectedPlayerService;
+        }
+    }
+
+    public class DataContext<TRealize, TConfig>
+    {
+        public TRealize Realize;
+        public TConfig Config;
+
+        public DataContext(TRealize realize, TConfig config)
+        {
+            Realize = realize;
+            Config = config;
         }
     }
 }

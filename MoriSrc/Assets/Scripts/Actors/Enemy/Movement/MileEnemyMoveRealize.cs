@@ -8,16 +8,9 @@ using Zenject;
 
 namespace Actors.Enemy.Movement
 {
-    public class EnemyMoveFsmRealize : FsmRealizeBase<EnemyMoveFsm, MoveEnemyFsmUnityState>
+    public class MileEnemyMoveRealize : EnemyMoveFsmRealize<MoveData>
     {
-        [Header("Move data")]
-        [SerializeField] protected MoveData moveData;
         [SerializeField] protected List<Vector2> waypoints;
-        
-        [Header("Components")]
-        [SerializeField] protected SpriteRenderer spriteRenderer;
-        [SerializeField] protected Rigidbody2D rb2D;
-        [SerializeField] protected Animator animator;
         
         [Inject] protected DetectedPlayerService DetectedPlayerService;
         
@@ -27,12 +20,12 @@ namespace Actors.Enemy.Movement
         {
             FsmUnityBase = new EnemyMoveFsm();
             
-            moveData.PatrolSettings.SetPatrolPoints(waypoints);
-            moveData.MoveSettings.movementAnimationList.ToDictionary();
+            data.PatrolSettings.SetPatrolPoints(waypoints);
+            data.MoveSettings.movementAnimationList.ToDictionary();
             
             StatesInit();
             
-            switch (moveData.MoveSettings.hasPatrol)
+            switch (data.MoveSettings.hasPatrol)
             {
                 case true:
                     FsmUnityBase.ChangeState<PatrolMoveState>();
@@ -46,9 +39,9 @@ namespace Actors.Enemy.Movement
         protected virtual void StatesInit()
         {
             Vector2 currentPosition = transform.position;
-            
+
             BaseMovementContext baseMovementContext =
-                new BaseMovementContext(this, spriteRenderer, rb2D, animator, moveData, DetectedPlayerService);
+                new BaseMovementContext(this, spriteRenderer, rb2D, animator, data, DetectedPlayerService);
             
             FsmUnityBase.AddState(new IdleMoveState(FsmUnityBase, baseMovementContext));
             FsmUnityBase.AddState(new PursuitPlayer(FsmUnityBase, baseMovementContext));
@@ -66,13 +59,13 @@ namespace Actors.Enemy.Movement
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            if (moveData == null || moveData.IdleDetectionSettings == null)
+            if (data == null || data.IdleDetectionSettings == null)
                 return;
 
-            var detectionData = moveData.IdleDetectionSettings;
+            var detectionData = data.IdleDetectionSettings;
 
             Gizmos.color = Color.darkRed;
-            Gizmos.DrawWireSphere(transform.position, moveData.AggressiveSettings.detectionRadius);
+            Gizmos.DrawWireSphere(transform.position, data.AggressiveSettings.detectionRadius);
             
             // Цвет радиуса
             Gizmos.color = Color.yellow;

@@ -1,6 +1,6 @@
 namespace FiniteStateMachine
 {
-    public abstract class FsmUnityState<TFsm, TState> 
+    public abstract class FsmUnityState<TFsm, TState>
         where TState : FsmUnityState<TFsm, TState>
         where TFsm : FsmUnityBase<TFsm, TState>
     {

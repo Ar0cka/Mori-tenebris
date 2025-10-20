@@ -1,10 +1,14 @@
+using FiniteStateMachine;
+using ScrObj.EnemyMoveScr;
+using UnityEngine;
+
 namespace Actors.Enemy.Movement
 {
-    public class RangeAiMoveFsmRealize : EnemyMoveFsmRealize
+    public class RangeAiMoveFsmRealize : FsmRealizeBase<EnemyMoveFsm, MoveEnemyFsmUnityState>
     {
-        protected override void StatesInit()
+        public override void Initialize()
         {
-            base.StatesInit();
+            throw new System.NotImplementedException();
         }
     }
 }

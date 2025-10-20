@@ -1,4 +1,6 @@
-﻿namespace Actors.Enemy.Movement.States
+﻿using ScrObj.EnemyMoveScr;
+
+namespace Actors.Enemy.Movement.States
 {
     public class PathfinderMove : MoveEnemyFsmUnityState
     {

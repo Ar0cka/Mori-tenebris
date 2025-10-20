@@ -55,7 +55,7 @@ namespace Actors.Enemy.Movement.States
 
         public override void Exit()
         {
-            FsmRealize.ChangeViewState(true);
+            Realize.ChangeViewState(true);
         }
     }
 }

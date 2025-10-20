@@ -17,7 +17,7 @@ namespace Actors.Enemy.Movement.States
 
         public override void Enter()
         {
-            if (!FsmRealize.OnSeePlayer)
+            if (!Realize.OnSeePlayer)
                 ChooseIdleState(MoveData.MoveSettings);
             
             base.Enter();

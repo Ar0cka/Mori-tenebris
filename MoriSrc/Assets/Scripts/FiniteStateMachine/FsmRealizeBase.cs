@@ -2,7 +2,7 @@
 
 namespace FiniteStateMachine
 {
-    public abstract class FsmRealizeBase<TFsm, TState> : MonoBehaviour 
+    public abstract class FsmRealizeBase<TFsm, TState> : MonoBehaviour
         where TFsm : FsmUnityBase<TFsm, TState> 
         where TState : FsmUnityState<TFsm, TState>
     {
