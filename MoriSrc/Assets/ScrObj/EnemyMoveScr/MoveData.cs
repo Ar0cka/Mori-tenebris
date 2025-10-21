@@ -50,14 +50,9 @@ namespace ScrObj.EnemyMoveScr
     [Serializable]
     public class PatrolSettings
     {
-        public Vector2[] patrolPoints;
+        public List<Vector2> patrolPoints;
         public float patrolSpeed;
         public float switchNodeDistance;
-        
-        public void SetPatrolPoints(List<Vector2> points)
-        {
-            patrolPoints = points.ToArray();
-        }
     }
 
     [Serializable]

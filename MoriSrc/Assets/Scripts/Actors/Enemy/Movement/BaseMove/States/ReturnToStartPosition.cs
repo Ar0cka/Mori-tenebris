@@ -3,14 +3,15 @@ using UnityEngine;
 
 namespace Actors.Enemy.Movement.States
 {
-    public class ReturnToStartPosition : BaseMovementState
+    public class ReturnToStartPosition : BaseMovementState<EnemyMoveFsmRealize<MoveData>, MoveData>
     {
         private readonly Vector2 _startPosition;
 
         private bool _hasArrived = false;
         private float _distance = 0.5f;
         
-        public ReturnToStartPosition(EnemyMoveFsm fsm, BaseMovementContext context, Vector2 startPosition) : base(fsm, context)
+        public ReturnToStartPosition(EnemyMoveFsm fsm, DataContext<EnemyMoveFsmRealize<MoveData>, MoveData> dataContext,
+            BaseMovementContext context, Vector2 startPosition) : base(fsm, dataContext, context)
         {
             _startPosition = startPosition;
         }
@@ -28,10 +29,10 @@ namespace Actors.Enemy.Movement.States
             
             base.PhysicsUpdate();
             
-            if (IdleDetected())
+            if (IdleDetected(MoveConfig))
                 StateMachine.ChangeState<PursuitPlayer>();
             
-            BaseMove(_startPosition, MoveData.MoveSettings.speed);
+            BaseMove(_startPosition, MoveConfig.MoveSettings.speed);
 
             // Проверка дистации от начальной точки
             if (CheckDistance(_startPosition, Rb2D.position, _distance))

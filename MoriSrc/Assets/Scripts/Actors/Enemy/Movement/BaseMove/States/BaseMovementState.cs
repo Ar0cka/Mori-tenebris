@@ -6,8 +6,13 @@ using UnityEngine;
 
 namespace Actors.Enemy.Movement.States
 {
-    public class BaseMovementState : MoveEnemyFsmUnityState
+    public class BaseMovementState<TRealize, TConfig> : MoveEnemyFsmUnityState 
+        where TConfig : MoveData 
+        where TRealize : EnemyMoveFsmRealize<TConfig>
     {
+        protected TRealize FsmRealize;
+        protected TConfig MoveConfig;
+        
         protected Vector2 CurrentVelocity = Vector2.zero;
 
         private string _currentAnimationName;
@@ -17,9 +22,12 @@ namespace Actors.Enemy.Movement.States
             SetAnimation(MoveType.Move);
         }
 
-        public BaseMovementState(EnemyMoveFsm enemyMoveFsm, BaseMovementContext baseMovementContext) : base(
-            enemyMoveFsm, baseMovementContext)
+        public BaseMovementState(EnemyMoveFsm enemyMoveFsm, DataContext<TRealize, TConfig> dataContext,
+            BaseMovementContext moveContext) : base(
+            enemyMoveFsm, moveContext)
         {
+            FsmRealize = dataContext.Realize;
+            MoveConfig = dataContext.Config;
         }
         
         public override void PhysicsUpdate()
@@ -40,7 +48,7 @@ namespace Actors.Enemy.Movement.States
         }
         protected virtual void SetAnimation(MoveType moveType)
         {
-            var dictionary = MoveData.MoveSettings.movementAnimationList.Dictionary;
+            var dictionary = MoveConfig.MoveSettings.movementAnimationList.Dictionary;
 
             if (dictionary == null)
                throw new Exception("No movement animation list found");

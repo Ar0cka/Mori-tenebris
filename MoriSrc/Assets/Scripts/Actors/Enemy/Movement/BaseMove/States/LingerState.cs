@@ -3,15 +3,16 @@ using UnityEngine;
 
 namespace Actors.Enemy.Movement.States
 {
-    public class LingerState : BaseMovementState
+    public class LingerState : BaseMovementState<EnemyMoveFsmRealize<MoveData>, MoveData>
     {
         private float _timer;
         private Vector2 _lastCheckPoint;
         private readonly AggressiveSettings _aggressiveSettings;
         
-        public LingerState(EnemyMoveFsm fsm, BaseMovementContext context) : base(fsm, context)
+        public LingerState(EnemyMoveFsm fsm, DataContext<EnemyMoveFsmRealize<MoveData>,
+            MoveData> dataContext, BaseMovementContext context) : base(fsm, dataContext, context)
         {
-            _aggressiveSettings = MoveData.AggressiveSettings;
+            _aggressiveSettings = MoveConfig.AggressiveSettings;
         }
 
         public override void Enter()
@@ -24,7 +25,7 @@ namespace Actors.Enemy.Movement.States
 
         public override void PhysicsUpdate()
         {
-            Vector2 targetPos = DetectedPlayer();
+            Vector2 targetPos = DetectedPlayer(MoveConfig);
             
             Debug.Log(targetPos + " Player position");
             
@@ -40,7 +41,7 @@ namespace Actors.Enemy.Movement.States
             if (_timer >= _aggressiveSettings.lingerTime)
             {
                 Debug.Log("Linger change state");
-                ChooseIdleState(MoveData.MoveSettings);
+                ChooseIdleState(MoveConfig.MoveSettings);
             }
 
             if (_lastCheckPoint == Vector2.zero ||
@@ -51,7 +52,7 @@ namespace Actors.Enemy.Movement.States
             } 
                 
             
-            BaseMove(_lastCheckPoint, MoveData.MoveSettings.speed + 1);
+            BaseMove(_lastCheckPoint, MoveConfig.MoveSettings.speed + 1);
         }
     }
 }

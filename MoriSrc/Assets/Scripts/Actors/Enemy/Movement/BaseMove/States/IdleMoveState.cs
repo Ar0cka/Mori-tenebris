@@ -7,14 +7,16 @@ namespace Actors.Enemy.Movement.States
 {
     public class IdleMoveState : MoveEnemyFsmUnityState
     {
-        public IdleMoveState(EnemyMoveFsm fsm, BaseMovementContext context) : base(fsm, context)
+        protected MoveData MoveData;
+        
+        public IdleMoveState(EnemyMoveFsm fsm, MoveData moveData, BaseMovementContext context) : base(fsm, context)
         {
-            
+            MoveData = moveData;
         }
 
         public override void Update()
         {
-            bool isDetected = IdleDetected();
+            bool isDetected = IdleDetected(MoveData);
 
             if (isDetected)
             {

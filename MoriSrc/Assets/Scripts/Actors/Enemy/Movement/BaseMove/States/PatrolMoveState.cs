@@ -5,26 +5,26 @@ using UnityEngine.Rendering;
 
 namespace Actors.Enemy.Movement.States
 {
-    public class PatrolMoveState : BaseMovementState
+    public class PatrolMoveState : BaseMovementState<EnemyMoveFsmRealize<MoveData>, MoveData>
     {
         private PatrolSettings _patrolSettings;
         
         private int _nodeNumber = 0;
         
-        public PatrolMoveState(EnemyMoveFsm fsm, BaseMovementContext context) 
-            : base(fsm, context)
+        public PatrolMoveState(EnemyMoveFsm fsm, DataContext<EnemyMoveFsmRealize<MoveData>, MoveData> dataContext, BaseMovementContext context) 
+            : base(fsm, dataContext, context)
         {
-            _patrolSettings = MoveData.PatrolSettings;
+            _patrolSettings = MoveConfig.PatrolSettings;
         }
 
         public override void Enter()
         {
-            if (_patrolSettings.patrolPoints.Length == 0)
+            if (_patrolSettings.patrolPoints.Count == 0)
                 StateMachine.ChangeState<IdleMoveState>();
             
             base.Enter();   
             
-            _nodeNumber = Math.Clamp(_nodeNumber, 0, _patrolSettings.patrolPoints.Length - 1);
+            _nodeNumber = Math.Clamp(_nodeNumber, 0, _patrolSettings.patrolPoints.Count - 1);
         }
 
         public override void PhysicsUpdate()
@@ -35,7 +35,7 @@ namespace Actors.Enemy.Movement.States
 
         private void MoveToNode()
         {
-            if (IdleDetected())
+            if (IdleDetected(MoveConfig))
                 StateMachine.ChangeState<PursuitPlayer>();
             
             Vector2 targetPosition = _patrolSettings.patrolPoints[_nodeNumber];
@@ -46,16 +46,11 @@ namespace Actors.Enemy.Movement.States
             {
                 _nodeNumber++;
 
-                if (_nodeNumber >= _patrolSettings.patrolPoints.Length)
+                if (_nodeNumber >= _patrolSettings.patrolPoints.Count)
                 {
                     _nodeNumber = 0;
                 }
             }
-        }
-
-        public override void Exit()
-        {
-            Realize.ChangeViewState(true);
         }
     }
 }

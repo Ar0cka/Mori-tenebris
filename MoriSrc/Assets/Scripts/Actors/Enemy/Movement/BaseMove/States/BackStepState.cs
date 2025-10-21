@@ -4,14 +4,15 @@ using UnityEngine;
 
 namespace Actors.Enemy.Movement.States
 {
-    public class BackStepState : BaseMovementState
+    public class BackStepState : BaseMovementState<MileEnemyMoveRealize, MoveData>
     {
         protected Vector2 _currentTarget;
         protected BackStepSettings _backStepSettings;
         
-        public BackStepState(EnemyMoveFsm fsm, BaseMovementContext context) : base(fsm, context)
+        public BackStepState(EnemyMoveFsm fsm, DataContext<MileEnemyMoveRealize, MoveData> dataContext, 
+            BaseMovementContext context) : base(fsm, dataContext, context)
         {
-            _backStepSettings = MoveData.BackStepSettings;
+            _backStepSettings = MoveConfig.BackStepSettings;
         }
 
         public override void PhysicsUpdate()
@@ -21,7 +22,7 @@ namespace Actors.Enemy.Movement.States
 
         protected virtual void Backstep()
         {
-            Vector2 objectPosition = DetectedPlayer();
+            Vector2 objectPosition = DetectedPlayer(MoveConfig);
             
             if (Vector2.Distance(Rb2D.position, objectPosition) <= _backStepSettings.maxDistance)
             {
@@ -32,13 +33,13 @@ namespace Actors.Enemy.Movement.States
             {
                 if (objectPosition == Vector2.zero)
                 {
-                    ChooseIdleState(MoveData.MoveSettings);
+                    ChooseIdleState(MoveConfig.MoveSettings);
                     return;
                 }
                 
                 _currentTarget = Rb2D.position - objectPosition;
                 
-                Vector2 offset = MoveData.BackStepSettings.backStepOffset;
+                Vector2 offset = _backStepSettings.backStepOffset;
                 
                 _currentTarget += new Vector2(Random.Range(-offset.x, offset.x), Random.Range(-offset.y, offset.y));
                 _currentTarget = _currentTarget.normalized;
@@ -50,7 +51,7 @@ namespace Actors.Enemy.Movement.States
                 return;
             }
             
-            BaseMove(_currentTarget, MoveData.BackStepSettings.backstepSpeed);
+            BaseMove(_currentTarget, _backStepSettings.backstepSpeed);
         }
     }
 }

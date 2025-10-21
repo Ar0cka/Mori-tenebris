@@ -5,20 +5,21 @@ using UnityEngine;
 
 namespace Actors.Enemy.Movement.States
 {
-    public class PursuitPlayer : BaseMovementState
+    public class PursuitPlayer : BaseMovementState<EnemyMoveFsmRealize<MoveData>, MoveData>
     {
         private readonly AggressiveSettings _aggressiveSettings;
         private bool _stopDistance;
         
-        public PursuitPlayer(EnemyMoveFsm fsm, BaseMovementContext context) : base(fsm, context)
+        public PursuitPlayer(EnemyMoveFsm fsm, DataContext<EnemyMoveFsmRealize<MoveData>, 
+            MoveData> dataContext, BaseMovementContext context) : base(fsm, dataContext, context)
         {
-            _aggressiveSettings = MoveData.AggressiveSettings;
+            _aggressiveSettings = MoveConfig.AggressiveSettings;
         }
 
         public override void Enter()
         {
-            if (!Realize.OnSeePlayer)
-                ChooseIdleState(MoveData.MoveSettings);
+            if (DetectedPlayer(MoveConfig) == Vector2.zero)
+                ChooseIdleState(MoveConfig.MoveSettings);
             
             base.Enter();
         }
@@ -32,7 +33,7 @@ namespace Actors.Enemy.Movement.States
 
         private void MoveToPlayer()
         {
-            Vector2 targetPosition = DetectedPlayer();
+            Vector2 targetPosition = DetectedPlayer(MoveConfig);
             
             _stopDistance = Vector2.Distance(Rb2D.position, targetPosition) <= _aggressiveSettings.stopDistance;
             
@@ -44,7 +45,7 @@ namespace Actors.Enemy.Movement.States
             
             if (!_stopDistance)
             {
-                BaseMove(targetPosition, MoveData.MoveSettings.speed);
+                BaseMove(targetPosition, MoveConfig.MoveSettings.speed);
             }
         }
     }

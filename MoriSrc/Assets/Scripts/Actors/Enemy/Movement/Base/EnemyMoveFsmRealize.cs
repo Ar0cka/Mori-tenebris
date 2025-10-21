@@ -1,4 +1,5 @@
 ﻿using Actors.Enemy.Movement.Service;
+using Actors.Enemy.Movement.States;
 using FiniteStateMachine;
 using ScrObj.EnemyMoveScr;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace Actors.Enemy.Movement
         where TConfig : MoveData
     {
         [Header("Configs")]
-        [SerializeField] protected TConfig data;
+        [SerializeField] protected TConfig moveData;
         
         [Header("Components")]
         [SerializeField] protected Animator animator;
@@ -18,10 +19,75 @@ namespace Actors.Enemy.Movement
         [SerializeField] protected SpriteRenderer spriteRenderer;
         
         [Inject] protected DetectedPlayerService DetectedPlayerService;
+        
+        public bool OnSeePlayer { get; private set; }
 
         public override void Initialize()
         {
-            
+            FsmUnityBase = new EnemyMoveFsm();
+            moveData.MoveSettings.movementAnimationList.ToDictionary();
         }
+
+        public virtual void StatesInit(DataContext<EnemyMoveFsmRealize<MoveData>, MoveData> dataContext)
+        {
+            Vector2 currentPosition = transform.position;
+
+            BaseMovementContext baseMovementContext =
+                new BaseMovementContext(spriteRenderer, rb2D, animator, DetectedPlayerService);
+            
+            FsmUnityBase.AddState(new IdleMoveState(FsmUnityBase, moveData, baseMovementContext));
+            FsmUnityBase.AddState(new PursuitPlayer(FsmUnityBase, dataContext, baseMovementContext));
+            FsmUnityBase.AddState(new ReturnToStartPosition(FsmUnityBase, dataContext, baseMovementContext, 
+                new Vector2(currentPosition.x, currentPosition.y)));
+            FsmUnityBase.AddState(new PatrolMoveState(FsmUnityBase, dataContext, baseMovementContext));
+            FsmUnityBase.AddState(new LingerState(FsmUnityBase, dataContext, baseMovementContext));
+        }
+        
+        public void ChangeViewState(bool onSeePlayer)
+        {
+            OnSeePlayer = onSeePlayer;
+        }
+        
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            if (moveData == null || moveData.IdleDetectionSettings == null)
+                return;
+
+            var detectionData = moveData.IdleDetectionSettings;
+
+            Gizmos.color = Color.darkRed;
+            Gizmos.DrawWireSphere(transform.position, moveData.AggressiveSettings.detectionRadius);
+            
+            // Цвет радиуса
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, detectionData.idleDetectionRadius);
+
+            // Получаем направление взгляда (как в DetectTarget)
+            Vector2 lookDirection = spriteRenderer != null && spriteRenderer.flipX ? Vector2.right : Vector2.left;
+
+            // Левая и правая границы угла обзора
+            float halfAngle = detectionData.fieldOfViewAngle / 2f;
+
+            Vector3 leftBoundary = Quaternion.Euler(0, 0, halfAngle) * lookDirection;
+            Vector3 rightBoundary = Quaternion.Euler(0, 0, -halfAngle) * lookDirection;
+
+            // Цвет лучей обзора
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawRay(transform.position, leftBoundary * detectionData.idleDetectionRadius);
+            Gizmos.DrawRay(transform.position, rightBoundary * detectionData.idleDetectionRadius);
+
+            var waypoints = moveData.PatrolSettings.patrolPoints;
+            
+            if (waypoints is null || waypoints.Count == 0)
+                return;
+            
+            foreach (var waypoint in waypoints)
+            {
+                Gizmos.color = Color.deepPink;
+                Gizmos.DrawSphere(waypoint, 0.5f);
+            }
+        } 
+#endif //Gizmos for drawing sphere and angle 
     }
 }
