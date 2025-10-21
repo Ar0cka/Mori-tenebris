@@ -8,7 +8,7 @@ namespace Actors.Enemy.Movement.States
 {
     public class BaseMovementState<TRealize, TConfig> : MoveEnemyFsmUnityState 
         where TConfig : MoveData 
-        where TRealize : EnemyMoveFsmRealize<TConfig>
+        where TRealize : EnemyMoveFsmRealize
     {
         protected TRealize FsmRealize;
         protected TConfig MoveConfig;

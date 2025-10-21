@@ -7,11 +7,10 @@ using Zenject;
 
 namespace Actors.Enemy.Movement
 {
-    public class EnemyMoveFsmRealize<TConfig> : FsmRealizeBase<EnemyMoveFsm, MoveEnemyFsmUnityState> 
-        where TConfig : MoveData
+    public abstract class EnemyMoveFsmRealize : FsmRealizeBase<EnemyMoveFsm, MoveEnemyFsmUnityState> 
     {
         [Header("Configs")]
-        [SerializeField] protected TConfig moveData;
+        protected abstract MoveData MoveData { get; }
         
         [Header("Components")]
         [SerializeField] protected Animator animator;
@@ -25,17 +24,19 @@ namespace Actors.Enemy.Movement
         public override void Initialize()
         {
             FsmUnityBase = new EnemyMoveFsm();
-            moveData.MoveSettings.movementAnimationList.ToDictionary();
+            MoveData.MoveSettings.movementAnimationList.ToDictionary();
         }
 
-        public virtual void StatesInit(DataContext<EnemyMoveFsmRealize<MoveData>, MoveData> dataContext)
+        public virtual void StatesInit(EnemyMoveFsmRealize moveFsmRealize)
         {
             Vector2 currentPosition = transform.position;
 
+            var dataContext = new DataContext<EnemyMoveFsmRealize, MoveData>(MoveData, moveFsmRealize);
+            
             BaseMovementContext baseMovementContext =
                 new BaseMovementContext(spriteRenderer, rb2D, animator, DetectedPlayerService);
             
-            FsmUnityBase.AddState(new IdleMoveState(FsmUnityBase, moveData, baseMovementContext));
+            FsmUnityBase.AddState(new IdleMoveState(FsmUnityBase, MoveData, baseMovementContext));
             FsmUnityBase.AddState(new PursuitPlayer(FsmUnityBase, dataContext, baseMovementContext));
             FsmUnityBase.AddState(new ReturnToStartPosition(FsmUnityBase, dataContext, baseMovementContext, 
                 new Vector2(currentPosition.x, currentPosition.y)));
@@ -49,15 +50,15 @@ namespace Actors.Enemy.Movement
         }
         
 #if UNITY_EDITOR
-        private void OnDrawGizmos()
+        protected virtual void DrawGizmos()
         {
-            if (moveData == null || moveData.IdleDetectionSettings == null)
+            if (MoveData == null || MoveData.IdleDetectionSettings == null)
                 return;
 
-            var detectionData = moveData.IdleDetectionSettings;
+            var detectionData = MoveData.IdleDetectionSettings;
 
             Gizmos.color = Color.darkRed;
-            Gizmos.DrawWireSphere(transform.position, moveData.AggressiveSettings.detectionRadius);
+            Gizmos.DrawWireSphere(transform.position, MoveData.AggressiveSettings.detectionRadius);
             
             // Цвет радиуса
             Gizmos.color = Color.yellow;
@@ -77,7 +78,7 @@ namespace Actors.Enemy.Movement
             Gizmos.DrawRay(transform.position, leftBoundary * detectionData.idleDetectionRadius);
             Gizmos.DrawRay(transform.position, rightBoundary * detectionData.idleDetectionRadius);
 
-            var waypoints = moveData.PatrolSettings.patrolPoints;
+            var waypoints = MoveData.PatrolSettings.patrolPoints;
             
             if (waypoints is null || waypoints.Count == 0)
                 return;

@@ -8,15 +8,16 @@ using Zenject;
 
 namespace Actors.Enemy.Movement
 {
-    public class MileEnemyMoveRealize : EnemyMoveFsmRealize<MoveData>
+    public class MileEnemyMoveRealize : EnemyMoveFsmRealize
     {
+        [SerializeField] private MoveData moveData;
+        protected override MoveData MoveData => moveData;
+
         public override void Initialize()
         {
             base.Initialize();
             
-            var dataContext = new DataContext<EnemyMoveFsmRealize<MoveData>, MoveData>(moveData, this);
-            
-            StatesInit(dataContext);
+            StatesInit(this);
 
             if (moveData.MoveSettings.hasPatrol)
             {

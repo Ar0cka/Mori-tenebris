@@ -4,11 +4,14 @@ using UnityEngine;
 
 namespace Actors.Enemy.Movement
 {
-    public class RangeAiMoveFsmRealize : FsmRealizeBase<EnemyMoveFsm, MoveEnemyFsmUnityState>
+    public class RangeAiMoveFsmRealize : EnemyMoveFsmRealize
     {
+        [SerializeField] private RangeMoveData _rangeData;
+        protected override MoveData MoveData => _rangeData;
+
         public override void Initialize()
         {
-            throw new System.NotImplementedException();
+            base.Initialize();
         }
     }
 }

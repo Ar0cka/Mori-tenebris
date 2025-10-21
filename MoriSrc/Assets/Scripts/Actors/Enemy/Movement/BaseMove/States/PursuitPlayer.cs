@@ -5,12 +5,12 @@ using UnityEngine;
 
 namespace Actors.Enemy.Movement.States
 {
-    public class PursuitPlayer : BaseMovementState<EnemyMoveFsmRealize<MoveData>, MoveData>
+    public class PursuitPlayer : BaseMovementState<EnemyMoveFsmRealize, MoveData>
     {
         private readonly AggressiveSettings _aggressiveSettings;
         private bool _stopDistance;
         
-        public PursuitPlayer(EnemyMoveFsm fsm, DataContext<EnemyMoveFsmRealize<MoveData>, 
+        public PursuitPlayer(EnemyMoveFsm fsm, DataContext<EnemyMoveFsmRealize, 
             MoveData> dataContext, BaseMovementContext context) : base(fsm, dataContext, context)
         {
             _aggressiveSettings = MoveConfig.AggressiveSettings;

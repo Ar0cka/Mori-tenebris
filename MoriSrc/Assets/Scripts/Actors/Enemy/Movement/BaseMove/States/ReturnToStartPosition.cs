@@ -3,14 +3,14 @@ using UnityEngine;
 
 namespace Actors.Enemy.Movement.States
 {
-    public class ReturnToStartPosition : BaseMovementState<EnemyMoveFsmRealize<MoveData>, MoveData>
+    public class ReturnToStartPosition : BaseMovementState<EnemyMoveFsmRealize, MoveData>
     {
         private readonly Vector2 _startPosition;
 
         private bool _hasArrived = false;
         private float _distance = 0.5f;
         
-        public ReturnToStartPosition(EnemyMoveFsm fsm, DataContext<EnemyMoveFsmRealize<MoveData>, MoveData> dataContext,
+        public ReturnToStartPosition(EnemyMoveFsm fsm, DataContext<EnemyMoveFsmRealize, MoveData> dataContext,
             BaseMovementContext context, Vector2 startPosition) : base(fsm, dataContext, context)
         {
             _startPosition = startPosition;

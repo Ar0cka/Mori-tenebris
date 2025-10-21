@@ -5,13 +5,13 @@ using UnityEngine.Rendering;
 
 namespace Actors.Enemy.Movement.States
 {
-    public class PatrolMoveState : BaseMovementState<EnemyMoveFsmRealize<MoveData>, MoveData>
+    public class PatrolMoveState : BaseMovementState<EnemyMoveFsmRealize, MoveData>
     {
         private PatrolSettings _patrolSettings;
         
         private int _nodeNumber = 0;
         
-        public PatrolMoveState(EnemyMoveFsm fsm, DataContext<EnemyMoveFsmRealize<MoveData>, MoveData> dataContext, BaseMovementContext context) 
+        public PatrolMoveState(EnemyMoveFsm fsm, DataContext<EnemyMoveFsmRealize, MoveData> dataContext, BaseMovementContext context) 
             : base(fsm, dataContext, context)
         {
             _patrolSettings = MoveConfig.PatrolSettings;

@@ -3,13 +3,13 @@ using UnityEngine;
 
 namespace Actors.Enemy.Movement.States
 {
-    public class LingerState : BaseMovementState<EnemyMoveFsmRealize<MoveData>, MoveData>
+    public class LingerState : BaseMovementState<EnemyMoveFsmRealize, MoveData>
     {
         private float _timer;
         private Vector2 _lastCheckPoint;
         private readonly AggressiveSettings _aggressiveSettings;
         
-        public LingerState(EnemyMoveFsm fsm, DataContext<EnemyMoveFsmRealize<MoveData>,
+        public LingerState(EnemyMoveFsm fsm, DataContext<EnemyMoveFsmRealize,
             MoveData> dataContext, BaseMovementContext context) : base(fsm, dataContext, context)
         {
             _aggressiveSettings = MoveConfig.AggressiveSettings;
