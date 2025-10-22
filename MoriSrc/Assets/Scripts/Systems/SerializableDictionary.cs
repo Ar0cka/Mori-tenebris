@@ -15,13 +15,15 @@ namespace Scripts.Systems
         public Dictionary<TKey, TValue> ToDictionary()
         {
             if (Dictionary == null)
-                Dictionary = new Dictionary<TKey, TValue>();
-
-            for (int i = 0; i < Math.Min(keys.Count, values.Count); i++)
             {
-                if (!Dictionary.TryAdd(keys[i], values[i]))
+                Dictionary = new Dictionary<TKey, TValue>();
+                
+                for (int i = 0; i < Math.Min(keys.Count, values.Count); i++)
                 {
-                    Debug.LogError($"Dictionary contains duplicate keys {keys[i]}");
+                    if (!Dictionary.TryAdd(keys[i], values[i]))
+                    {
+                        Debug.LogError($"Dictionary contains duplicate keys {keys[i]}");
+                    }
                 }
             }
             

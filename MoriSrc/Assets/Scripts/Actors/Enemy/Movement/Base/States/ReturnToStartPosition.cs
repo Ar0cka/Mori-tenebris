@@ -28,20 +28,33 @@ namespace Actors.Enemy.Movement.Base.States
             if (_hasArrived) return;
             
             base.PhysicsUpdate();
-            
-            if (IdleDetected(MoveConfig))
-                StateMachine.ChangeState<PursuitPlayer>();
+
+            if (!CheckPlayer())
+                return;
             
             BaseMove(_startPosition, MoveConfig.MoveSettings.speed);
 
             // Проверка дистации от начальной точки
             if (CheckDistance(_startPosition, Rb2D.position, _distance))
             {
-                _hasArrived = true; ;
-                StateMachine.ChangeState<IdleMoveState>();
+                IdleState();
             }
         }
 
+        protected virtual void IdleState() => ChangeState<IdleMoveState>();
+        protected virtual void PursuitState() => ChangeState<PursuitPlayer>();
+
+        protected virtual bool CheckPlayer()
+        {
+            if (IdleDetected(MoveConfig))
+            {
+                PursuitState();
+                return false;
+            }
+
+            return true;
+        }
+        
         public override void Exit()
         {
             base.Exit();

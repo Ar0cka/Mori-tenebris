@@ -11,37 +11,45 @@ namespace Actors.Enemy.Movement.Base.RangeMove.States
 {
     public class LargeRadiusState : RadiusBaseMovement
     {
-        private RangeMoveData _rangeData;
         protected override AiRadiusEnum StateAiRadius { get; } = AiRadiusEnum.Large;
+        private RadiusSettings _radiusSettings;
 
         public LargeRadiusState(EnemyMoveFsm fsm, DataContext<RangeAiMoveFsmRealize, RangeMoveData> dataContext,
             BaseMovementContext baseContext, RadiusService<RadiusSettings> radiusService) : base(fsm, dataContext, baseContext, radiusService)
         {
-            _rangeData = dataContext.Config;
+            _radiusSettings = dataContext.Config.RadiusSettings;
         }
 
         public override void PhysicsUpdate()
         {
             base.PhysicsUpdate();
             
+            Debug.Log("Large state");
+            
             MaintenanceDistance();
         }
 
         public void MaintenanceDistance()
         {
-            Vector2 targetPosition = DetectedPlayer(_rangeData);
+            Vector2 targetPosition = GetPosFromState(MoveConfig);
 
-            if (CheckTargetPosition(targetPosition, StateAiRadius))
+            if (!CheckTargetPosition(targetPosition))
+            {
                 return;
-
+            }
+              
             
             Vector2 direction = VectorMathService.GetForwardVector(targetPosition, Rb2D.position);
             Vector2 featurePosition = Rb2D.position + direction * MoveConfig.MoveSettings.speed * Time.fixedDeltaTime;
             
             float distance = Vector2.Distance(targetPosition, featurePosition);
-            var radiusDictionary = _rangeData.RadiusSettings.RadiusDictionary;
+            var radiusDictionary = MoveConfig.RadiusSettings.RadiusDictionary;
 
-            if (distance <= radiusDictionary[AiRadiusEnum.Medium])
+            float distanceWithStopDistance = distance - _radiusSettings.largeStopDistance;
+            
+            Debug.Log("Distance: " + distanceWithStopDistance + "radius: " + radiusDictionary[AiRadiusEnum.Medium]);
+            
+            if (distanceWithStopDistance <= radiusDictionary[AiRadiusEnum.Medium])
             {
                 direction.x = 0;
             }

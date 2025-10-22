@@ -16,8 +16,8 @@ namespace Actors.Enemy.Movement.Base.States
 
         public override void Enter()
         {
-            if (DetectedPlayer(MoveConfig) == Vector2.zero)
-                ChooseIdleState(MoveConfig.MoveSettings);
+            if (DetectedPlayer(MoveConfig.AggressiveSettings.detectionRadius, MoveConfig.TargetMask) == Vector2.zero)
+                ChooseIdleState<IdleMoveState, PatrolMoveState>(MoveConfig.MoveSettings);
             
             base.Enter();
         }
@@ -31,7 +31,7 @@ namespace Actors.Enemy.Movement.Base.States
 
         private void MoveToPlayer()
         {
-            Vector2 targetPosition = DetectedPlayer(MoveConfig);
+            Vector2 targetPosition = DetectedPlayer(MoveConfig.AggressiveSettings.detectionRadius, MoveConfig.TargetMask);
             
             _stopDistance = Vector2.Distance(Rb2D.position, targetPosition) <= _aggressiveSettings.stopDistance;
             

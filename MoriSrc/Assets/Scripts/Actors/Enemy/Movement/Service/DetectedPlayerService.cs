@@ -42,7 +42,6 @@ namespace Actors.Enemy.Movement.Base.Service
                 return false;
             }
             
-            Debug.Log(angle + " player detection");
             return true;
         }
 

@@ -21,7 +21,7 @@ namespace Actors.Enemy.Movement.Base.States
 
         protected virtual void Backstep()
         {
-            Vector2 objectPosition = DetectedPlayer(MoveConfig);
+            Vector2 objectPosition = DetectedPlayer(MoveConfig.AggressiveSettings.detectionRadius, MoveConfig.TargetMask);
             
             if (Vector2.Distance(Rb2D.position, objectPosition) <= _backStepSettings.maxDistance)
             {
@@ -32,7 +32,7 @@ namespace Actors.Enemy.Movement.Base.States
             {
                 if (objectPosition == Vector2.zero)
                 {
-                    ChooseIdleState(MoveConfig.MoveSettings);
+                    ChooseIdleState<IdleMoveState, PatrolMoveState>(MoveConfig.MoveSettings);
                     return;
                 }
                 

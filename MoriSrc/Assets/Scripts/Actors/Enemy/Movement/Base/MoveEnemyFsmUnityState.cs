@@ -22,17 +22,19 @@ namespace Actors.Enemy.Movement.Base
             DetectedPlayerService = baseMovementContext.DetectedPlayerService;
         }
 
-        protected void ChooseIdleState(MoveSettings moveSettings)
+        protected void ChooseIdleState<TIdle, TPatrol>(MoveSettings moveSettings) 
+            where TIdle : MoveEnemyFsmUnityState
+            where TPatrol : MoveEnemyFsmUnityState
         {
             if (moveSettings.hasPatrol)
-                StateMachine.ChangeState<PatrolMoveState>();
+                StateMachine.ChangeState<TPatrol>();
             else
-                StateMachine.ChangeState<ReturnToStartPosition>();
+                StateMachine.ChangeState<TIdle>();
         }
 
-        protected virtual Vector2 DetectedPlayer(MoveData moveData)
+        protected virtual Vector2 DetectedPlayer(float radius, LayerMask targetMask)
         {
-            Vector2 targetPos = DetectedPlayerService.DetectedTarget(moveData.AggressiveSettings.detectionRadius, moveData.TargetMask, Rb2D.position);
+            Vector2 targetPos = DetectedPlayerService.DetectedTarget(radius, targetMask, Rb2D.position);
             
             return targetPos;
         }
@@ -43,6 +45,11 @@ namespace Actors.Enemy.Movement.Base
             
             return DetectedPlayerService.IdleDetection(idleContext.idleDetectionRadius, idleContext.fieldOfViewAngle, 
                 moveData.TargetMask, SpriteRenderer, Rb2D.position);
+        }
+
+        protected void ChangeState<TType>() where TType : MoveEnemyFsmUnityState
+        {
+            StateMachine.ChangeState<TType>();
         }
     }
     

@@ -37,9 +37,6 @@ namespace Actors.Enemy.Movement.Base
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            if (!Initialized)
-                return;
-            
             DrawGizmos();
         }
 #endif

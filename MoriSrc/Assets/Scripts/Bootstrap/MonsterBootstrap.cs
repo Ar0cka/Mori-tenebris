@@ -12,7 +12,7 @@ namespace Project.Bootstrap
         [SerializeField] private EnemyData enemyData;
         [SerializeField] private ChangeInterrupt interrupt;
         [SerializeField] private MonstersBattleController monstersBattleController;
-        [FormerlySerializedAs("fsmRealize")] [SerializeField] private MileEnemyMoveRealize realize;
+        [SerializeField] private EnemyMoveFsmRealize realize;
 
         private void Awake()
         {

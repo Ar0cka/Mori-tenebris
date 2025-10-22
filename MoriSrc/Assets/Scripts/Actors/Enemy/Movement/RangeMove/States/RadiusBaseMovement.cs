@@ -13,7 +13,7 @@ namespace Actors.Enemy.Movement.Base.RangeMove.States
         protected RadiusService<RadiusSettings> RadiusService;
         protected abstract AiRadiusEnum StateAiRadius { get; }
 
-        public RadiusBaseMovement(EnemyMoveFsm fsm, DataContext<RangeAiMoveFsmRealize,
+        protected RadiusBaseMovement(EnemyMoveFsm fsm, DataContext<RangeAiMoveFsmRealize,
                 RangeMoveData> dataContext, BaseMovementContext baseMovementContext,
             RadiusService<RadiusSettings> radiusService) : base(fsm, dataContext,
             baseMovementContext)
@@ -21,19 +21,21 @@ namespace Actors.Enemy.Movement.Base.RangeMove.States
             RadiusService = radiusService;
         }
 
-        protected virtual bool CheckTargetPosition(Vector2 targetPosition, AiRadiusEnum stateRadius)
+        protected virtual bool CheckTargetPosition(Vector2 targetPosition)
         {
             var radiusType = RadiusService.CheckCirclePosition(targetPosition, Rb2D.position);
 
             if (targetPosition == Vector2.zero)
             {
-                ChooseIdleState(MoveConfig.MoveSettings);
+                ChangeState<RangeReturnToStart>();
+                Debug.Log("Return to start pos");
                 return false;
             }
 
             if (radiusType != StateAiRadius)
             {
                 ChangeMoveType(radiusType);
+                Debug.Log("not needed type, change");
                 return false;
             }
 
@@ -45,16 +47,19 @@ namespace Actors.Enemy.Movement.Base.RangeMove.States
             switch (status)
             {
                 case AiRadiusEnum.Large:
-                    StateMachine.ChangeState<LargeRadiusState>();
+                    ChangeState<LargeRadiusState>();
+                    Debug.Log("Change on large");
                     break;
                 case AiRadiusEnum.Medium:
-                    StateMachine.ChangeState<MediumRadiusState>();
+                    ChangeState<MediumRadiusState>();
+                    Debug.Log("Change on medium");
                     break;
                 case AiRadiusEnum.Small:
-                    StateMachine.ChangeState<PursuitPlayer>();
+                    ChangeState<SmallRadiusState>();
+                    Debug.Log("Change on small");
                     break;
                 default:
-                    StateMachine.ChangeState<IdleMoveState>();
+                    ChangeState<RangeReturnToStart>();
                     break;
             }
         }
@@ -64,6 +69,18 @@ namespace Actors.Enemy.Movement.Base.RangeMove.States
             CurrentVelocity = targetPos * speed * Time.deltaTime;
             Rb2D.MovePosition(Rb2D.position + CurrentVelocity);
             SetSpriteSide();
+        }
+
+        protected Vector2 GetPosFromState(RangeMoveData data)
+        {
+            var radiusDictionary = data.RadiusSettings.RadiusDictionary;
+
+            if (radiusDictionary != null && radiusDictionary.ContainsKey(StateAiRadius))
+            {
+                return DetectedPlayer(radiusDictionary[StateAiRadius], data.TargetMask);
+            }
+            
+            return Vector2.zero;
         }
     }
 }

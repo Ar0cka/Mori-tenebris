@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 533f68218cb74fc99e566c0e0d96b4f1, type: 3}
+  m_Name: RangeMoveData
+  m_EditorClassIdentifier: Assembly-CSharp::ScrObj.EnemyMoveScr.RangeMoveData
+  <MoveSettings>k__BackingField:
+    movementAnimationList:
+      keys: 
+      values: []
+    speed: 2
+    speedMin: 1
+    acceleration: 0
+    deceleration: 0
+    hasPatrol: 0
+  <PatrolSettings>k__BackingField:
+    patrolPoints: []
+    patrolSpeed: 0
+    switchNodeDistance: 0
+  <AggressiveSettings>k__BackingField:
+    detectionRadius: 0
+    lingerTime: 2
+    lingerDistance: 0.3
+    stopDistance: 1.5
+  <IdleDetectionSettings>k__BackingField:
+    fieldOfViewAngle: 65
+    idleDetectionRadius: 4
+    alertRadius: 0
+  <BackStepSettings>k__BackingField:
+    backstepSpeed: 0
+    distanceForChangeVector: 0
+    backStepOffset: {x: 0, y: 0}
+    maxDistance: 0
+  <TargetMask>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 256
+  <RadiusSettings>k__BackingField:
+    radiusDictionary:
+      keys: 000000000100000002000000
+      values:
+      - 3
+      - 8
+      - 12

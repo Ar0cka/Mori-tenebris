@@ -25,7 +25,7 @@ namespace Actors.Enemy.Movement.Base.States
 
         public override void PhysicsUpdate()
         {
-            Vector2 targetPos = DetectedPlayer(MoveConfig);
+            Vector2 targetPos = DetectedPlayer(MoveConfig.AggressiveSettings.detectionRadius, MoveConfig.TargetMask);
             
             Debug.Log(targetPos + " Player position");
             
@@ -41,7 +41,7 @@ namespace Actors.Enemy.Movement.Base.States
             if (_timer >= _aggressiveSettings.lingerTime)
             {
                 Debug.Log("Linger change state");
-                ChooseIdleState(MoveConfig.MoveSettings);
+                ChooseIdleState<IdleMoveState, PatrolMoveState>(MoveConfig.MoveSettings);
             }
 
             if (_lastCheckPoint == Vector2.zero ||

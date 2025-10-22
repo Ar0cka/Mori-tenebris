@@ -6,7 +6,7 @@ namespace Actors.Enemy.Movement.Service
 {
     public class RadiusService<TRadiusConfig> where TRadiusConfig : RadiusSettings
     {
-        public AiRadiusEnum CurrentAiRadius { get; private set; } = AiRadiusEnum.Idle;
+        public AiRadiusEnum CurrentAiRadius { get; private set; } = AiRadiusEnum.Small;
         
         private readonly TRadiusConfig _radiusConfig;
 
@@ -29,12 +29,12 @@ namespace Actors.Enemy.Movement.Service
                 }
             }
 
-            return AiRadiusEnum.Idle;
+            return AiRadiusEnum.None;
         }
 
         private bool CheckDistance(float distance, float radius)
         {
-            return distance >= radius;
+            return distance <= radius;
         }
     }
 }

@@ -12,11 +12,12 @@ namespace Actors.Enemy.Movement.RangeMove.States
     {
         protected override AiRadiusEnum StateAiRadius { get; } =  AiRadiusEnum.Small;
 
+        private RangeMoveData _rangeData;
+        
         public SmallRadiusState(EnemyMoveFsm fsm, DataContext<RangeAiMoveFsmRealize, RangeMoveData> dataContext,
             BaseMovementContext baseMovementContext, RadiusService<RadiusSettings> radiusService) : base(fsm,
             dataContext, baseMovementContext, radiusService)
         {
-            
         }
 
         public override void PhysicsUpdate()
@@ -27,9 +28,9 @@ namespace Actors.Enemy.Movement.RangeMove.States
         }
         private void PursuitPlayer()
         {
-            Vector2 targetPosition = DetectedPlayer(MoveConfig);
+            Vector2 targetPosition = GetPosFromState(MoveConfig);
             
-            if (!CheckTargetPosition(targetPosition, StateAiRadius))
+            if (!CheckTargetPosition(targetPosition))
                 return;
 
             Vector2 direction = VectorMathService.GetForwardVector(targetPosition, Rb2D.position);

@@ -15,6 +15,8 @@ namespace ScrObj.EnemyMoveScr
     [Serializable]
     public class RadiusSettings
     {
+        public float largeStopDistance;
+        
         [SerializeField] private SerializableDictionary<AiRadiusEnum, float> radiusDictionary;
         public Dictionary<AiRadiusEnum, float> RadiusDictionary => radiusDictionary.ToDictionary();
     }
