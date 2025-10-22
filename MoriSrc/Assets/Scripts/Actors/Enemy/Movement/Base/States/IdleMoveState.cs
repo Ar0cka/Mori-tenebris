@@ -1,9 +1,9 @@
-﻿using Actors.Enemy.Movement;
+﻿using Actors.Enemy.Movement.Base;
 using ScrObj.EnemyMoveScr;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Actors.Enemy.Movement.States
+namespace Actors.Enemy.Movement.Base.States
 {
     public class IdleMoveState : MoveEnemyFsmUnityState
     {

@@ -1,4 +1,4 @@
-using Actors.Enemy.Movement.Service;
+using Actors.Enemy.Movement.Base.Service;
 using Zenject;
 
 namespace Scripts.Zenject.GlobalServices

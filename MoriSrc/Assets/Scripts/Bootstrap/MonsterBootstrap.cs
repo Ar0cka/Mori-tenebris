@@ -1,6 +1,6 @@
 using System;
 using Actors.Enemy.Monsters.AbstractEnemy;
-using Actors.Enemy.Movement;
+using Actors.Enemy.Movement.Base;
 using Actors.Enemy.Stats.Scripts;
 using UnityEngine;
 using UnityEngine.Serialization;

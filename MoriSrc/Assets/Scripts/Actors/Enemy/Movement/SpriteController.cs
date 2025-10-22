@@ -1,7 +1,7 @@
 using Actors.Player.Movement.Scripts;
 using UnityEngine;
 
-namespace Actors.Enemy.Movement
+namespace Actors.Enemy.Movement.Base
 {
     public abstract class SpriteController : MonoBehaviour
     {

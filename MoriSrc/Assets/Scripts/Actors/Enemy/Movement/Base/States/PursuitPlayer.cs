@@ -1,9 +1,7 @@
-﻿using Actors.Enemy.Movement;
-using Actors.Enemy.Movement.States;
-using ScrObj.EnemyMoveScr;
+﻿using ScrObj.EnemyMoveScr;
 using UnityEngine;
 
-namespace Actors.Enemy.Movement.States
+namespace Actors.Enemy.Movement.Base.States
 {
     public class PursuitPlayer : BaseMovementState<EnemyMoveFsmRealize, MoveData>
     {

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Actors.Enemy.Movement.Service
+namespace Actors.Enemy.Movement.Base.Service
 {
     public class DetectedPlayerService
     {

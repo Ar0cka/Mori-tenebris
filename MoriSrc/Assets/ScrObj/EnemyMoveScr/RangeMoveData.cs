@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using Actors.Enemy.Movement.Enums;
+using Scripts.Systems;
 using UnityEngine;
 
 namespace ScrObj.EnemyMoveScr
@@ -6,14 +9,13 @@ namespace ScrObj.EnemyMoveScr
     [CreateAssetMenu(fileName = "RangeMoveData", menuName = "Enemy/RangeMove", order = 0)]
     public class RangeMoveData : MoveData
     {
-        [field:SerializeField] public RangeRadiusSettings RangeRadiusSettings { get; private set; }
+        [field:SerializeField] public RadiusSettings RadiusSettings { get; private set; }
     }
 
     [Serializable]
-    public class RangeRadiusSettings
+    public class RadiusSettings
     {
-        public float smallRadius; //Радиус для перехода в мили
-        public float mediumRadius; //Радиус когда моб пытается держать дистанцию
-        public float largeRadius; //Дистанция на которой моб подстраивается под край медиум радиуса
+        [SerializeField] private SerializableDictionary<AiRadiusEnum, float> radiusDictionary;
+        public Dictionary<AiRadiusEnum, float> RadiusDictionary => radiusDictionary.ToDictionary();
     }
 }

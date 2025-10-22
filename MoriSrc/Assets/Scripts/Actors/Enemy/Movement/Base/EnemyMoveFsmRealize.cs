@@ -1,11 +1,11 @@
-﻿using Actors.Enemy.Movement.Service;
-using Actors.Enemy.Movement.States;
+﻿using Actors.Enemy.Movement.Base.States;
+using Actors.Enemy.Movement.Base.Service;
 using FiniteStateMachine;
 using ScrObj.EnemyMoveScr;
 using UnityEngine;
 using Zenject;
 
-namespace Actors.Enemy.Movement
+namespace Actors.Enemy.Movement.Base
 {
     public abstract class EnemyMoveFsmRealize : FsmRealizeBase<EnemyMoveFsm, MoveEnemyFsmUnityState> 
     {
@@ -20,6 +20,7 @@ namespace Actors.Enemy.Movement
         [Inject] protected DetectedPlayerService DetectedPlayerService;
         
         public bool OnSeePlayer { get; private set; }
+        protected bool Initialized = false;
 
         public override void Initialize()
         {
@@ -27,14 +28,11 @@ namespace Actors.Enemy.Movement
             MoveData.MoveSettings.movementAnimationList.ToDictionary();
         }
 
-        public virtual void StatesInit(EnemyMoveFsmRealize moveFsmRealize)
+        protected virtual void StatesInit(EnemyMoveFsmRealize moveFsmRealize, BaseMovementContext baseMovementContext)
         {
             Vector2 currentPosition = transform.position;
 
             var dataContext = new DataContext<EnemyMoveFsmRealize, MoveData>(MoveData, moveFsmRealize);
-            
-            BaseMovementContext baseMovementContext =
-                new BaseMovementContext(spriteRenderer, rb2D, animator, DetectedPlayerService);
             
             FsmUnityBase.AddState(new IdleMoveState(FsmUnityBase, MoveData, baseMovementContext));
             FsmUnityBase.AddState(new PursuitPlayer(FsmUnityBase, dataContext, baseMovementContext));
@@ -47,6 +45,11 @@ namespace Actors.Enemy.Movement
         public void ChangeViewState(bool onSeePlayer)
         {
             OnSeePlayer = onSeePlayer;
+        }
+        
+        protected BaseMovementContext CreateMovementContext()
+        {
+            return new BaseMovementContext(spriteRenderer, rb2D, animator, DetectedPlayerService);
         }
         
 #if UNITY_EDITOR

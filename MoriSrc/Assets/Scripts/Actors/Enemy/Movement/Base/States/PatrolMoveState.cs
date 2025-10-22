@@ -3,7 +3,7 @@ using ScrObj.EnemyMoveScr;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Actors.Enemy.Movement.States
+namespace Actors.Enemy.Movement.Base.States
 {
     public class PatrolMoveState : BaseMovementState<EnemyMoveFsmRealize, MoveData>
     {

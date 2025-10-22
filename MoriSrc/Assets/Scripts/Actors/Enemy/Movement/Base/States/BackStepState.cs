@@ -1,8 +1,7 @@
-using Actors.Enemy.Movement.Enums;
 using ScrObj.EnemyMoveScr;
 using UnityEngine;
 
-namespace Actors.Enemy.Movement.States
+namespace Actors.Enemy.Movement.Base.States
 {
     public class BackStepState : BaseMovementState<MileEnemyMoveRealize, MoveData>
     {

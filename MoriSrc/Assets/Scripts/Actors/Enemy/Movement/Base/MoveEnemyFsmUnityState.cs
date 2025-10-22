@@ -1,11 +1,11 @@
 ﻿using System;
-using Actors.Enemy.Movement.Service;
-using Actors.Enemy.Movement.States;
+using Actors.Enemy.Movement.Base.Service;
+using Actors.Enemy.Movement.Base.States;
 using FiniteStateMachine;
 using ScrObj.EnemyMoveScr;
 using UnityEngine;
 
-namespace Actors.Enemy.Movement
+namespace Actors.Enemy.Movement.Base
 {
     public class MoveEnemyFsmUnityState : FsmUnityState<EnemyMoveFsm, MoveEnemyFsmUnityState>
     {

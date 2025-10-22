@@ -1,7 +1,7 @@
 using System;
 using Actors.Enemy.Data.Scripts;
 using Actors.Enemy.Monsters.Slime;
-using Actors.Enemy.Movement;
+using Actors.Enemy.Movement.Base;
 using Actors.Enemy.Stats.Scripts;
 using UnityEngine;
 using UnityEngine.Serialization;

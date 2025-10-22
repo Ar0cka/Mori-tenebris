@@ -1,10 +1,10 @@
 ﻿using System;
-using Actors.Enemy.Movement;
-using Actors.Enemy.Movement.Service;
+using Actors.Enemy.Movement.Base;
+using Actors.Enemy.Movement.Base.Service;
 using ScrObj.EnemyMoveScr;
 using UnityEngine;
 
-namespace Actors.Enemy.Movement.States
+namespace Actors.Enemy.Movement.Base.States
 {
     public class BaseMovementState<TRealize, TConfig> : MoveEnemyFsmUnityState 
         where TConfig : MoveData 

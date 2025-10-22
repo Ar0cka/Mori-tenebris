@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
-using Actors.Enemy.Movement.Service;
-using Actors.Enemy.Movement.States;
+﻿using System;
+using System.Collections.Generic;
+using Actors.Enemy.Movement.Base.Service;
+using Actors.Enemy.Movement.Base.States;
 using FiniteStateMachine;
 using ScrObj.EnemyMoveScr;
 using UnityEngine;
 using Zenject;
 
-namespace Actors.Enemy.Movement
+namespace Actors.Enemy.Movement.Base
 {
     public class MileEnemyMoveRealize : EnemyMoveFsmRealize
     {
@@ -17,7 +18,9 @@ namespace Actors.Enemy.Movement
         {
             base.Initialize();
             
-            StatesInit(this);
+            BaseMovementContext movementContext = CreateMovementContext();
+            
+            StatesInit(this, movementContext);
 
             if (moveData.MoveSettings.hasPatrol)
             {
@@ -27,6 +30,19 @@ namespace Actors.Enemy.Movement
             {
                 FsmUnityBase.ChangeState<IdleMoveState>();
             }
+
+            Initialized = true;
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            if (!Initialized)
+                return;
+            
+            DrawGizmos();
+        }
+#endif
+        
     }
 }

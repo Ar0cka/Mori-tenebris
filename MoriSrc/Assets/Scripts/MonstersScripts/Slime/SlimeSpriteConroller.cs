@@ -1,4 +1,4 @@
-using Actors.Enemy.Movement;
+using Actors.Enemy.Movement.Base;
 using Actors.Player.Movement.Scripts;
 using UnityEngine;
 using UnityEngine.Serialization;
