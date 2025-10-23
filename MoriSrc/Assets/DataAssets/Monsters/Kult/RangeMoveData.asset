@@ -29,9 +29,9 @@ MonoBehaviour:
     detectionRadius: 0
     lingerTime: 2
     lingerDistance: 0.3
-    stopDistance: 1.5
+    stopDistance: 2
   <IdleDetectionSettings>k__BackingField:
-    fieldOfViewAngle: 65
+    fieldOfViewAngle: 71.5
     idleDetectionRadius: 4
     alertRadius: 0
   <BackStepSettings>k__BackingField:
@@ -43,6 +43,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   <RadiusSettings>k__BackingField:
+    largeStopDistance: 1
     radiusDictionary:
       keys: 000000000100000002000000
       values:
