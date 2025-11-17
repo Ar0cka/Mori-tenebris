@@ -8,22 +8,20 @@ using UnityEngine;
 
 namespace Actors.Enemy.Movement.Base.RangeMove.States
 {
-    public abstract class RadiusBaseMovement : BaseMovementState<RangeAiMoveFsmRealize, RangeMoveData>
+    public abstract class RadiusBaseMovement : BaseMovementState<EnemyMoveFsm, RangeMoveData>
     {
         protected RadiusService<RadiusSettings> RadiusService;
         protected abstract AiRadiusEnum StateAiRadius { get; }
 
-        protected RadiusBaseMovement(EnemyMoveFsm fsm, DataContext<RangeAiMoveFsmRealize,
-                RangeMoveData> dataContext, BaseMovementContext baseMovementContext,
-            RadiusService<RadiusSettings> radiusService) : base(fsm, dataContext,
-            baseMovementContext)
+        protected RadiusBaseMovement(BaseMovementContext<RangeMoveData, EnemyMoveFsm> context,
+            RadiusService<RadiusSettings> radiusService) : base(context)
         {
             RadiusService = radiusService;
         }
 
         protected virtual bool CheckTargetPosition(Vector2 targetPosition)
         {
-            var radiusType = RadiusService.CheckCirclePosition(targetPosition, Rb2D.position);
+            var radiusType = RadiusService.CheckCirclePosition(targetPosition, Ctx.Rb2D.position);
 
             if (targetPosition == Vector2.zero)
             {
@@ -67,7 +65,7 @@ namespace Actors.Enemy.Movement.Base.RangeMove.States
         protected override void BaseMove(Vector2 targetPos, float speed)
         {
             CurrentVelocity = targetPos * speed * Time.deltaTime;
-            Rb2D.MovePosition(Rb2D.position + CurrentVelocity);
+            Ctx.Rb2D.MovePosition(Ctx.Rb2D.position + CurrentVelocity);
             SetSpriteSide();
         }
 

@@ -5,22 +5,22 @@ using UnityEngine.Rendering;
 
 namespace Actors.Enemy.Movement.Base.States
 {
-    public class PatrolMoveState : BaseMovementState<EnemyMoveFsmRealize, MoveData>
+    public class PatrolMoveState : BaseMovementState<EnemyMoveFsm, MoveData>
     {
         private PatrolSettings _patrolSettings;
         
         private int _nodeNumber = 0;
         
-        public PatrolMoveState(EnemyMoveFsm fsm, DataContext<EnemyMoveFsmRealize, MoveData> dataContext, BaseMovementContext context) 
-            : base(fsm, dataContext, context)
+        public PatrolMoveState(BaseMovementContext<MoveData, EnemyMoveFsm> context) 
+            : base(context)
         {
-            _patrolSettings = MoveConfig.PatrolSettings;
+            _patrolSettings = Ctx.Config.PatrolSettings;
         }
 
         public override void Enter()
         {
             if (_patrolSettings.patrolPoints.Count == 0)
-                StateMachine.ChangeState<IdleMoveState>();
+                Ctx.Fsm.ChangeState<MileIdle>();
             
             base.Enter();   
             
@@ -35,14 +35,14 @@ namespace Actors.Enemy.Movement.Base.States
 
         private void MoveToNode()
         {
-            if (IdleDetected(MoveConfig))
-                StateMachine.ChangeState<PursuitPlayer>();
+            if (IdleDetected(Ctx.Config))
+                Ctx.Fsm.ChangeState<PursuitPlayer>();
             
             Vector2 targetPosition = _patrolSettings.patrolPoints[_nodeNumber];
             
             BaseMove(targetPosition, _patrolSettings.patrolSpeed);
 
-            if (CheckDistance(targetPosition, Rb2D.position, _patrolSettings.switchNodeDistance))
+            if (CheckDistance(targetPosition, Ctx.Rb2D.position, _patrolSettings.switchNodeDistance))
             {
                 _nodeNumber++;
 

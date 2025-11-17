@@ -3,21 +3,19 @@ using System.Collections.Generic;
 
 namespace FiniteStateMachine
 {
-    public abstract class FsmUnityBase<TFsm, TState>
-    where TFsm : FsmUnityBase<TFsm, TState>
-    where TState : FsmUnityState<TFsm, TState>
+    public abstract class FsmUnityBase
     {
-        private TState _currentState;
-        private Dictionary<Type, TState> _states = new();
+        private FsmState _currentState;
+        private Dictionary<Type, FsmState> _states = new();
         
-        public TState CurrentState => _currentState;
+        public FsmState CurrentState => _currentState;
 
-        public void AddState(TState state)
+        public void AddState(FsmState state)
         {
             _states.Add(state.GetType(), state);
         }
 
-        public void ChangeState<T>() where T : TState
+        public void ChangeState<T>() where T : FsmState
         {
             if (_currentState is not null)
                 _currentState.Exit();
@@ -34,12 +32,12 @@ namespace FiniteStateMachine
             }
         }
         
-        public void Update()
+        public virtual void Update()
         {
             _currentState?.Update();
         }
 
-        public void PhysicsUpdate()
+        public virtual void PhysicsUpdate()
         {
             _currentState?.PhysicsUpdate();
         }

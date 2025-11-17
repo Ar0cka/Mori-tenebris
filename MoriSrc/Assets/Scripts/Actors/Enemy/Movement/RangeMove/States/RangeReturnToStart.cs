@@ -11,9 +11,8 @@ namespace Actors.Enemy.Movement.RangeMove.States
         private RadiusSettings _radiusSettings;
         private const AiRadiusEnum MediumState = AiRadiusEnum.Medium;
         
-        public RangeReturnToStart(EnemyMoveFsm fsm, DataContext<EnemyMoveFsmRealize, MoveData> dataContext,
-            BaseMovementContext context, Vector2 startPosition, RadiusSettings radiusSettings) : 
-            base(fsm, dataContext, context, startPosition)
+        public RangeReturnToStart(BaseMovementContext<MoveData, EnemyMoveFsm> context, Vector2 startPosition, RadiusSettings radiusSettings) : 
+            base(context, startPosition)
         {
             _radiusSettings = radiusSettings;
         }
@@ -31,9 +30,9 @@ namespace Actors.Enemy.Movement.RangeMove.States
         {
             var dictionary = _radiusSettings.RadiusDictionary;
 
-            if (DetectedPlayerService.IdleDetection(dictionary[MediumState],
-                    MoveConfig.IdleDetectionSettings.fieldOfViewAngle, MoveConfig.TargetMask, SpriteRenderer,
-                    Rb2D.position))
+            if (Ctx.DetectedPlayerService.IdleDetection(dictionary[MediumState],
+                    Ctx.Config.IdleDetectionSettings.fieldOfViewAngle, Ctx.Config.TargetMask, Ctx.SpriteRenderer,
+                    Ctx.Rb2D.position))
             {
                 PursuitState();
                 return false;

@@ -12,12 +12,10 @@ namespace Actors.Enemy.Movement.Base.RangeMove.States
     public class LargeRadiusState : RadiusBaseMovement
     {
         protected override AiRadiusEnum StateAiRadius { get; } = AiRadiusEnum.Large;
-        private RadiusSettings _radiusSettings;
 
-        public LargeRadiusState(EnemyMoveFsm fsm, DataContext<RangeAiMoveFsmRealize, RangeMoveData> dataContext,
-            BaseMovementContext baseContext, RadiusService<RadiusSettings> radiusService) : base(fsm, dataContext, baseContext, radiusService)
+        public LargeRadiusState(BaseMovementContext<RangeMoveData, EnemyMoveFsm> context,
+            RadiusService<RadiusSettings> radiusService) : base(context, radiusService)
         {
-            _radiusSettings = dataContext.Config.RadiusSettings;
         }
 
         public override void PhysicsUpdate()
@@ -31,7 +29,7 @@ namespace Actors.Enemy.Movement.Base.RangeMove.States
 
         public void MaintenanceDistance()
         {
-            Vector2 targetPosition = GetPosFromState(MoveConfig);
+            Vector2 targetPosition = GetPosFromState(Ctx.Config);
 
             if (!CheckTargetPosition(targetPosition))
             {
@@ -39,13 +37,13 @@ namespace Actors.Enemy.Movement.Base.RangeMove.States
             }
               
             
-            Vector2 direction = VectorMathService.GetForwardVector(targetPosition, Rb2D.position);
-            Vector2 featurePosition = Rb2D.position + direction * MoveConfig.MoveSettings.speed * Time.fixedDeltaTime;
+            Vector2 direction = VectorMathService.GetForwardVector(targetPosition, Ctx.Rb2D.position);
+            Vector2 featurePosition = Ctx.Rb2D.position + direction * Ctx.Config.MoveSettings.speed * Time.fixedDeltaTime;
             
             float distance = Vector2.Distance(targetPosition, featurePosition);
-            var radiusDictionary = MoveConfig.RadiusSettings.RadiusDictionary;
+            var radiusDictionary = Ctx.Config.RadiusSettings.RadiusDictionary;
 
-            float distanceWithStopDistance = distance - _radiusSettings.largeStopDistance;
+            float distanceWithStopDistance = distance - Ctx.Config.RadiusSettings.largeStopDistance;
             
             Debug.Log("Distance: " + distanceWithStopDistance + "radius: " + radiusDictionary[AiRadiusEnum.Medium]);
             
@@ -54,7 +52,7 @@ namespace Actors.Enemy.Movement.Base.RangeMove.States
                 direction.x = 0;
             }
             
-            BaseMove(direction, MoveConfig.MoveSettings.speed);
+            BaseMove(direction, Ctx.Config.MoveSettings.speed);
         }
     }
 }

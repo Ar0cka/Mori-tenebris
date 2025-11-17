@@ -2,7 +2,7 @@
 
 namespace Actors.Enemy.Movement.Base
 {
-    public class EnemyMoveFsm : FsmUnityBase<EnemyMoveFsm, MoveEnemyFsmUnityState>
+    public class EnemyMoveFsm : FsmUnityBase
     {
         
     }

@@ -3,15 +3,14 @@ using UnityEngine;
 
 namespace Actors.Enemy.Movement.Base.States
 {
-    public class ReturnToStartPosition : BaseMovementState<EnemyMoveFsmRealize, MoveData>
+    public class ReturnToStartPosition : BaseMovementState<EnemyMoveFsm, MoveData>
     {
         private readonly Vector2 _startPosition;
 
         private bool _hasArrived = false;
         private float _distance = 0.5f;
         
-        public ReturnToStartPosition(EnemyMoveFsm fsm, DataContext<EnemyMoveFsmRealize, MoveData> dataContext,
-            BaseMovementContext context, Vector2 startPosition) : base(fsm, dataContext, context)
+        public ReturnToStartPosition(BaseMovementContext<MoveData, EnemyMoveFsm> context, Vector2 startPosition) : base(context)
         {
             _startPosition = startPosition;
         }
@@ -32,21 +31,20 @@ namespace Actors.Enemy.Movement.Base.States
             if (!CheckPlayer())
                 return;
             
-            BaseMove(_startPosition, MoveConfig.MoveSettings.speed);
+            BaseMove(_startPosition, Ctx.Config.MoveSettings.speed);
 
             // Проверка дистации от начальной точки
-            if (CheckDistance(_startPosition, Rb2D.position, _distance))
+            if (CheckDistance(_startPosition, Ctx.Rb2D.position, _distance))
             {
                 IdleState();
             }
         }
 
-        protected virtual void IdleState() => ChangeState<IdleMoveState>();
+        protected virtual void IdleState() => ChangeState<MileIdle>();
         protected virtual void PursuitState() => ChangeState<PursuitPlayer>();
-
         protected virtual bool CheckPlayer()
         {
-            if (IdleDetected(MoveConfig))
+            if (IdleDetected(Ctx.Config))
             {
                 PursuitState();
                 return false;
@@ -54,7 +52,6 @@ namespace Actors.Enemy.Movement.Base.States
 
             return true;
         }
-        
         public override void Exit()
         {
             base.Exit();

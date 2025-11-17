@@ -13,9 +13,8 @@ namespace Actors.Enemy.Movement.RangeMove.States
     {
         protected override AiRadiusEnum StateAiRadius { get; } = AiRadiusEnum.Medium;
 
-        public MediumRadiusState(EnemyMoveFsm fsm, 
-            DataContext<RangeAiMoveFsmRealize, RangeMoveData> dataContext, 
-            BaseMovementContext baseMovementContext, RadiusService<RadiusSettings> radiusService) : base(fsm, dataContext, baseMovementContext, radiusService)
+        public MediumRadiusState(BaseMovementContext<RangeMoveData, EnemyMoveFsm> context,
+            RadiusService<RadiusSettings> radiusService) : base(context, radiusService)
         {
         }
 
@@ -27,15 +26,15 @@ namespace Actors.Enemy.Movement.RangeMove.States
 
         private void Backstep()
         {
-            var targetPosition = GetPosFromState(MoveConfig);
+            var targetPosition = GetPosFromState(Ctx.Config);
 
             if (!CheckTargetPosition(targetPosition))
                 return;
 
             var direction =
-                VectorMathService.GetBackstepVector(targetPosition, Rb2D.position, MoveConfig.BackStepSettings);
+                VectorMathService.GetBackstepVector(targetPosition, Ctx.Rb2D.position, Ctx.Config.BackStepSettings);
             
-            BaseMove(direction, MoveConfig.MoveSettings.speed);
+            BaseMove(direction, Ctx.Config.MoveSettings.speed);
         }
     }
 }

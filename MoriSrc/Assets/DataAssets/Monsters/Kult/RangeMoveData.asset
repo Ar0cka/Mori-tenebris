@@ -29,7 +29,7 @@ MonoBehaviour:
     detectionRadius: 0
     lingerTime: 2
     lingerDistance: 0.3
-    stopDistance: 2
+    stopDistance: 1.5
   <IdleDetectionSettings>k__BackingField:
     fieldOfViewAngle: 71.5
     idleDetectionRadius: 4

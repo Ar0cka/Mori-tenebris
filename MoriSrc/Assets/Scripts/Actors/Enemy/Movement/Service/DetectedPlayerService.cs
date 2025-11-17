@@ -20,12 +20,13 @@ namespace Actors.Enemy.Movement.Base.Service
             
             return Vector2.zero;
         }
+        
         public bool IdleDetection(float radius, float fieldOfViewAngle, LayerMask layerMask, SpriteRenderer spriteRenderer, Vector2 currentPosition)
         {
             var hits =
                 Physics2D.OverlapCircle(currentPosition, radius, layerMask);
 
-            if (hits is null)
+            if (!hits)
             {
                 Debug.Log("Not find player");
                 return false;
@@ -56,7 +57,6 @@ namespace Actors.Enemy.Movement.Base.Service
 
             return true;
         }
-        
         public Vector2 DetectedGroupObject(float radius, List<LayerMask> layerMasks, Vector2 currentPosition)
         {
             float minDistance = float.MaxValue;

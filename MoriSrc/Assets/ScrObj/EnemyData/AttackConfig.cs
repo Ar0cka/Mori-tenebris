@@ -9,6 +9,9 @@ namespace Actors.Enemy.Data.Scripts
     [Serializable]
     public class AttackConfig
     {
+        [Header("HitLayers")]
+        public LayerMask hitLayer;
+        
         [Header("Animations")]
         public string nameAttack;
         public List<AnimAttackSettings> animAttackSettings;

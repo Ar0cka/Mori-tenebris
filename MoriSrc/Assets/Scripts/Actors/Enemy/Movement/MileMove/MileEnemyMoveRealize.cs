@@ -18,9 +18,7 @@ namespace Actors.Enemy.Movement.Base
         {
             base.Initialize();
             
-            BaseMovementContext movementContext = CreateMovementContext();
-            
-            StatesInit(this, movementContext);
+            StatesInit();
 
             if (moveData.MoveSettings.hasPatrol)
             {
@@ -28,7 +26,7 @@ namespace Actors.Enemy.Movement.Base
             }
             else
             {
-                FsmUnityBase.ChangeState<IdleMoveState>();
+                FsmUnityBase.ChangeState<MileIdle>();
             }
 
             Initialized = true;

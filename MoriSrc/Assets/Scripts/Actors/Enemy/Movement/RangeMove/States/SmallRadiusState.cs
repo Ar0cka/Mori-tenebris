@@ -11,12 +11,9 @@ namespace Actors.Enemy.Movement.RangeMove.States
     public class SmallRadiusState : RadiusBaseMovement
     {
         protected override AiRadiusEnum StateAiRadius { get; } =  AiRadiusEnum.Small;
-
-        private RangeMoveData _rangeData;
         
-        public SmallRadiusState(EnemyMoveFsm fsm, DataContext<RangeAiMoveFsmRealize, RangeMoveData> dataContext,
-            BaseMovementContext baseMovementContext, RadiusService<RadiusSettings> radiusService) : base(fsm,
-            dataContext, baseMovementContext, radiusService)
+        public SmallRadiusState(BaseMovementContext<RangeMoveData, EnemyMoveFsm> context,
+            RadiusService<RadiusSettings> radiusService) : base(context, radiusService)
         {
         }
 
@@ -28,14 +25,14 @@ namespace Actors.Enemy.Movement.RangeMove.States
         }
         private void PursuitPlayer()
         {
-            Vector2 targetPosition = GetPosFromState(MoveConfig);
+            Vector2 targetPosition = GetPosFromState(Ctx.Config);
             
-            if (!CheckTargetPosition(targetPosition))
+            if (!CheckTargetPosition(targetPosition) || CheckDistance(targetPosition, Ctx.Rb2D.position, Ctx.Config.AggressiveSettings.stopDistance))
                 return;
 
-            Vector2 direction = VectorMathService.GetForwardVector(targetPosition, Rb2D.position);
+            Vector2 direction = VectorMathService.GetForwardVector(targetPosition, Ctx.Rb2D.position);
             
-            BaseMove(direction, MoveConfig.MoveSettings.speed);
+            BaseMove(direction, Ctx.Config.MoveSettings.speed);
         }
     }
 }

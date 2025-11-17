@@ -29,24 +29,22 @@ namespace Actors.Enemy.Movement.RangeMove
             
             base.Initialize();
             
-            BaseMovementContext baseMovementContext = CreateMovementContext();
-            
-            StatesInit(this, baseMovementContext);
+            StatesInit();
             
             FsmUnityBase.ChangeState<RangeIdleState>();
         }
 
-        protected override void StatesInit(EnemyMoveFsmRealize moveFsmRealize, BaseMovementContext baseMovementContext)
+        protected override void StatesInit()
         {
-            var dataContext = new DataContext<RangeAiMoveFsmRealize, RangeMoveData>(rangeData, this);
-            var baseDataContext = new DataContext<EnemyMoveFsmRealize, MoveData>(rangeData, this);
+            var baseContext = new BaseMovementContext<RangeMoveData, EnemyMoveFsm>(rangeData, FsmUnityBase, rb2D,
+                animator, spriteRenderer, DetectedPlayerService);
             
-            FsmUnityBase.AddState(new RangeReturnToStart(FsmUnityBase, baseDataContext, baseMovementContext, 
-                new Vector2(rb2D.position.x, rb2D.position.y), rangeData.RadiusSettings));
-            FsmUnityBase.AddState(new RangeIdleState(FsmUnityBase, dataContext, baseMovementContext, RadiusService));
-            FsmUnityBase.AddState(new SmallRadiusState(FsmUnityBase, dataContext, baseMovementContext, RadiusService));
-            FsmUnityBase.AddState(new MediumRadiusState(FsmUnityBase, dataContext, baseMovementContext, RadiusService));
-            FsmUnityBase.AddState(new LargeRadiusState(FsmUnityBase, dataContext, baseMovementContext, RadiusService));
+            FsmUnityBase.AddState(new RangeReturnToStart(new BaseMovementContext<MoveData, EnemyMoveFsm>(rangeData, FsmUnityBase, rb2D,
+                animator, spriteRenderer, DetectedPlayerService), new Vector2(rb2D.position.x, rb2D.position.y), rangeData.RadiusSettings));
+            FsmUnityBase.AddState(new RangeIdleState(baseContext, RadiusService));
+            FsmUnityBase.AddState(new SmallRadiusState(baseContext, RadiusService));
+            FsmUnityBase.AddState(new MediumRadiusState(baseContext, RadiusService));
+            FsmUnityBase.AddState(new LargeRadiusState(baseContext, RadiusService));
         }
 
         protected override void DrawGizmos()

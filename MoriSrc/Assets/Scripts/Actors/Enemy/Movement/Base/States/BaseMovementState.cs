@@ -1,33 +1,30 @@
 ﻿using System;
 using Actors.Enemy.Movement.Base;
 using Actors.Enemy.Movement.Base.Service;
+using FiniteStateMachine;
 using ScrObj.EnemyMoveScr;
 using UnityEngine;
 
 namespace Actors.Enemy.Movement.Base.States
 {
-    public class BaseMovementState<TRealize, TConfig> : MoveEnemyFsmUnityState 
+    public class BaseMovementState<TFsm, TConfig> : FsmState
         where TConfig : MoveData 
-        where TRealize : EnemyMoveFsmRealize
+        where TFsm : FsmUnityBase
     {
-        protected TRealize FsmRealize;
-        protected TConfig MoveConfig;
+        protected BaseMovementContext<TConfig, TFsm> Ctx;
         
         protected Vector2 CurrentVelocity = Vector2.zero;
 
         private string _currentAnimationName;
-
+        
         public override void Enter()
         {
             SetAnimation(MoveType.Move);
         }
 
-        public BaseMovementState(EnemyMoveFsm enemyMoveFsm, DataContext<TRealize, TConfig> dataContext,
-            BaseMovementContext moveContext) : base(
-            enemyMoveFsm, moveContext)
+        public BaseMovementState(BaseMovementContext<TConfig, TFsm> moveContext)
         {
-            FsmRealize = dataContext.Realize;
-            MoveConfig = dataContext.Config;
+            Ctx = moveContext;
         }
         
         public override void PhysicsUpdate()
@@ -39,16 +36,16 @@ namespace Actors.Enemy.Movement.Base.States
             if (CurrentVelocity == Vector2.zero)
                 return;
             
-            var ray = Physics2D.Raycast(Rb2D.position, CurrentVelocity.normalized, 5f, LayerMask.GetMask("Obstacle"));
+            var ray = Physics2D.Raycast(Ctx.Rb2D.position, CurrentVelocity.normalized, 5f, LayerMask.GetMask("Obstacle"));
 
             if (ray.collider != null)
             {
-                StateMachine.ChangeState<PathfinderMove>();
+                Ctx.Fsm.ChangeState<PathfinderMove>();
             }
         }
         protected virtual void SetAnimation(MoveType moveType)
         {
-            var dictionary = MoveConfig.MoveSettings.movementAnimationList.Dictionary;
+            var dictionary = Ctx.Config.MoveSettings.movementAnimationList.Dictionary;
 
             if (dictionary == null)
                throw new Exception("No movement animation list found");
@@ -62,9 +59,9 @@ namespace Actors.Enemy.Movement.Base.States
                     throw new Exception("Not find animation with type: " + moveType);
                 
                 if (!string.IsNullOrEmpty(_currentAnimationName)) 
-                    Animator.SetBool(_currentAnimationName, false);
+                    Ctx.Animator.SetBool(_currentAnimationName, false);
                 
-                Animator.SetBool(animation, true);
+                Ctx.Animator.SetBool(animation, true);
                 _currentAnimationName = animation;
             }
         }
@@ -72,29 +69,60 @@ namespace Actors.Enemy.Movement.Base.States
         {
             if (CurrentVelocity == Vector2.zero)
             {
-                SpriteRenderer.flipX = false;
+                Ctx.SpriteRenderer.flipX = false;
                 return;
             }
             
-            SpriteRenderer.flipX = CurrentVelocity.x > 0;
+            Ctx.SpriteRenderer.flipX = CurrentVelocity.x > 0;
+        }
+        
+        protected virtual void BaseMove(Vector2 targetPos, float speed)
+        {
+            Vector2 moveDirection = (targetPos - Ctx.Rb2D.position).normalized;
+            CurrentVelocity = moveDirection * speed;
+            
+            Ctx. Rb2D.MovePosition(Ctx.Rb2D.position + CurrentVelocity * Time.fixedDeltaTime);
+            
+            SetSpriteSide();
+        }
+        
+        protected void ChooseIdleState<TIdle, TPatrol>(MoveSettings moveSettings) 
+            where TIdle : FsmState
+            where TPatrol : FsmState
+        {
+            if (moveSettings.hasPatrol)
+                Ctx.Fsm.ChangeState<TPatrol>();
+            else
+                Ctx.Fsm.ChangeState<TIdle>();
+        }
+
+        protected virtual Vector2 DetectedPlayer(float radius, LayerMask targetMask)
+        {
+            Vector2 targetPos = Ctx.DetectedPlayerService.DetectedTarget(radius, targetMask, Ctx.Rb2D.position);
+            
+            return targetPos;
+        }
+
+        protected virtual bool IdleDetected(MoveData moveData)
+        {
+            var idleContext = moveData.IdleDetectionSettings;
+            
+            return Ctx.DetectedPlayerService.IdleDetection(idleContext.idleDetectionRadius, idleContext.fieldOfViewAngle, 
+                moveData.TargetMask, Ctx.SpriteRenderer, Ctx.Rb2D.position);
         }
         protected bool CheckDistance(Vector2 targetPosition, Vector2 currentPosition, float distance)
         {
             return Vector2.Distance(targetPosition, currentPosition) <= distance;
         }
-        protected virtual void BaseMove(Vector2 targetPos, float speed)
+        protected void ChangeState<TType>() where TType : FsmState
         {
-            Vector2 moveDirection = (targetPos - Rb2D.position).normalized;
-            CurrentVelocity = moveDirection * speed;
-            
-            Rb2D.MovePosition(Rb2D.position + CurrentVelocity * Time.fixedDeltaTime);
-            
-            SetSpriteSide();
+            Ctx.Fsm.ChangeState<TType>();
         }
+        
         public override void Exit()
         {
             if (_currentAnimationName != null)
-                Animator.SetBool(_currentAnimationName, false);
+                Ctx.Animator.SetBool(_currentAnimationName, false);
         }
     }
 }

@@ -7,7 +7,7 @@ using Zenject;
 
 namespace Actors.Enemy.Movement.Base
 {
-    public abstract class EnemyMoveFsmRealize : FsmRealizeBase<EnemyMoveFsm, MoveEnemyFsmUnityState> 
+    public abstract class EnemyMoveFsmRealize : FsmRealizeBase<EnemyMoveFsm> 
     {
         [Header("Configs")]
         protected abstract MoveData MoveData { get; }
@@ -28,28 +28,23 @@ namespace Actors.Enemy.Movement.Base
             MoveData.MoveSettings.movementAnimationList.ToDictionary();
         }
 
-        protected virtual void StatesInit(EnemyMoveFsmRealize moveFsmRealize, BaseMovementContext baseMovementContext)
+        protected virtual void StatesInit()
         {
             Vector2 currentPosition = transform.position;
-
-            var dataContext = new DataContext<EnemyMoveFsmRealize, MoveData>(MoveData, moveFsmRealize);
             
-            FsmUnityBase.AddState(new IdleMoveState(FsmUnityBase, MoveData, baseMovementContext));
-            FsmUnityBase.AddState(new PursuitPlayer(FsmUnityBase, dataContext, baseMovementContext));
-            FsmUnityBase.AddState(new ReturnToStartPosition(FsmUnityBase, dataContext, baseMovementContext, 
+            var baseMovementContext = 
+                new BaseMovementContext<MoveData, EnemyMoveFsm>(MoveData, FsmUnityBase, rb2D, animator, spriteRenderer, DetectedPlayerService);
+            
+            FsmUnityBase.AddState(new MileIdle(baseMovementContext));
+            FsmUnityBase.AddState(new PursuitPlayer(baseMovementContext));
+            FsmUnityBase.AddState(new ReturnToStartPosition(baseMovementContext, 
                 new Vector2(currentPosition.x, currentPosition.y)));
-            FsmUnityBase.AddState(new PatrolMoveState(FsmUnityBase, dataContext, baseMovementContext));
-            FsmUnityBase.AddState(new LingerState(FsmUnityBase, dataContext, baseMovementContext));
+            FsmUnityBase.AddState(new PatrolMoveState(baseMovementContext));
+            FsmUnityBase.AddState(new LingerState(baseMovementContext));
         }
-        
         public void ChangeViewState(bool onSeePlayer)
         {
             OnSeePlayer = onSeePlayer;
-        }
-        
-        protected BaseMovementContext CreateMovementContext()
-        {
-            return new BaseMovementContext(spriteRenderer, rb2D, animator, DetectedPlayerService);
         }
         
 #if UNITY_EDITOR

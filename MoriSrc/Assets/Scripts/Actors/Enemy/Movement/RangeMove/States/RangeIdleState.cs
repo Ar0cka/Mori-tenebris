@@ -11,8 +11,8 @@ namespace Actors.Enemy.Movement.RangeMove.States
     {
         protected override AiRadiusEnum StateAiRadius { get; } = AiRadiusEnum.Medium;
 
-        public RangeIdleState(EnemyMoveFsm moveFsm, DataContext<RangeAiMoveFsmRealize, RangeMoveData> dataContext, 
-            BaseMovementContext componentContext, RadiusService<RadiusSettings> radiusService) : base(moveFsm, dataContext, componentContext, radiusService)
+        public RangeIdleState(BaseMovementContext<RangeMoveData, EnemyMoveFsm> context,
+            RadiusService<RadiusSettings> radiusService) : base(context, radiusService)
         {
         }
 
@@ -28,16 +28,16 @@ namespace Actors.Enemy.Movement.RangeMove.States
 
         private void IdleCheck()
         {
-            var dictionary = MoveConfig.RadiusSettings.RadiusDictionary;
+            var dictionary = Ctx.Config.RadiusSettings.RadiusDictionary;
 
-            if (dictionary == null || !dictionary.ContainsKey(StateAiRadius))
-                return;
-            
-            if (DetectedPlayerService.IdleDetection(dictionary[StateAiRadius], MoveConfig.IdleDetectionSettings.fieldOfViewAngle, 
-                    MoveConfig.TargetMask, SpriteRenderer, Rb2D.position))
-            { 
-                Debug.Log($"Detected player");
-                ChangeMoveType(StateAiRadius);
+            if (dictionary.TryGetValue(StateAiRadius, out var state))
+            {
+                if (Ctx.DetectedPlayerService.IdleDetection(state, Ctx.Config.IdleDetectionSettings.fieldOfViewAngle, 
+                        Ctx.Config.TargetMask, Ctx.SpriteRenderer, Ctx.Rb2D.position))
+                { 
+                    Debug.Log($"Detected player");
+                    ChangeMoveType(StateAiRadius);
+                }
             }
         }
     }
